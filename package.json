@@ -1,0 +1,35 @@
+{
+    "name": "ifnode",
+    "version": "0.0.1",
+    "description": "Node.js MVC Framework",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ilfroloff/ifnode.git"
+    },
+    "keywords": [
+        "mvc", "framework"
+    ],
+    "author": "ilfroloff <ilfroloff@gmail.com> (https://twitter.com/ilfroloff)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ilfroloff/ifnode/issues"
+    },
+    "dependencies": {
+        "express": "latest",
+        "jade": "latest",
+        "jugglingdb": "latest",
+        "jugglingdb-mysql": "latest",
+        "mysql": "latest",
+        "passport": "latest",
+        "passport-local": "latest",
+        "passport-facebook": "latest",
+        "commander": "latest"
+    },
+    "devDependencies": {
+        "mocha": "latest"
+    }
+}
