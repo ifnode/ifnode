@@ -1,3 +1,8 @@
-module.exports = {
-    extended_response: require('./response')
+var middleware = function(app) {
+    return {
+        auth: require('./auth')(app),
+        rest: require('./rest')
+    }
 };
+
+module.exports = middleware;

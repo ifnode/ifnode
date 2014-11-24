@@ -1,112 +1,294 @@
-var ERROR = require('./error'),
-    f = require('./libs/fns'),
-    Action = require('./action'),
-    Routes = require('./routes'),
-    Controller;
+var helper = require('./helper'),
 
-var path = require('path');
-var is_composite_path = function(path) {
-    return path.split(this.sep).length > 1;
-};
+    _ = require('underscore'),
+    express = require('express');
 
-const DEFAULT_LAYOUT = 'index';
-const DEFAULT_LAYOUTS_FOLDER_PATH = 'layouts';
-
-Controller = function(options) {
-    if( !(this instanceof Controller) ) {
-        options.name = options.name || Controller._current_inited_file;
-        return new Controller(options);
+var Controller = function(config) {
+    if(!(this instanceof Controller)) {
+        return new Controller(config);
     }
-    this.init.apply(this, arguments);
+    this.init(config);
 };
 
 Controller.fn = Controller.prototype;
-Controller.fn.init = function(options) {
-    this.name = options.name;
-    this._layouts_folder_path = require('./application').config.folders.layouts || DEFAULT_LAYOUTS_FOLDER_PATH;
+Controller.fn._roles = {
+    all: '*',
+    guest: '?',
+    authenticated: '@',
 
-    if( !f.is_object(options) ) {
-        ERROR.WrongType('ololo');
+    // TODO
+    admin: 'administrator'
+};
+Controller.fn.is_url = function(url) {
+    if(_.isUndefined(url)) {
+        return false;
+    }
+    if(!_.isString(url)) {
+        throw new Error('Url wrong type. Must be string');
+    }
+    return true;
+};
+Controller.fn._is_options = Controller.fn._is_config = function(obj) {
+//  if(_.isUndefined(obj)) {
+//    return false;
+//  }
+//
+//  if(!helper.is_plain_object(obj)) {
+//    throw new Error('Access option wrong type. Must be object');
+//  }
+//
+//  return true;
+    return helper.is_plain_object(obj);
+};
+Controller.fn.is_access_options = function(roles) {
+//  if(_.isUndefined(roles)) {
+//    return false;
+//  }
+//
+//  if(!_.isArray(roles)) {
+//    throw new Error('Access roles wrong type. Must be array');
+//  }
+//
+//  roles.forEach(function(role) {
+//    if(!_.isString(role)) {
+//      throw new Error('One of access role wrong type: %s. Must be string', JSON.stringify(role));
+//    }
+//
+//    // TODO: need form list of roles
+////    if(!_.contains(this._roles._list, role)) {
+////      throw new Error('Unknow role: %s. Must be one of list: %s', options.access, this._roles._list);
+////    }
+//  });
+//
+//  return true;
+    return _.isArray(roles);
+};
+Controller.fn.is_callback = function(callback) {
+//  if(!_.isFunction(callback)) {
+//    throw new Error('Callback wrong type. Must be only function');
+//  }
+//
+//  return true;
+    return _.isFunction(callback);
+};
+Controller.fn._default_config = {
+    root: '/',
+    //ajax: ,
+    access: [Controller.fn._roles.all]
+};
+Controller.fn._page_only_ajax = function(request, response, next) {
+    response.fail('ajaxRequestOnly');
+//  response.send(400, 'only ajax request');
+};
+Controller.fn._page_without_ajax = function(request, response, next) {
+    response.fail('ajaxRequestDenied');
+//  response.send(400, 'without ajax request');
+};
+Controller.fn._page_access_denied = function(request, response, next) {
+    response.fail('permissionDenied');
+};
+Controller.fn._page_not_found = function(request, response, next) {
+    response.fail('notFound');
+//  response.fail('pageNotFound');
+};
+
+Controller.fn._process_config = function(controller_config) {
+    if(!this._is_config(controller_config)) {
+        return this._default_config;
     }
 
-    this._initialize_actions(options.routes);
-    this._initialize_ajax(options.ajax);
-    this._initialize_hooks(options.before);
-    this._initialize_filters(options.filter);
-};
+    controller_config.root = this.is_url(controller_config.root) ?
+        controller_config.root :
+        this._default_config.root;
 
-Controller.fn._initialize_filters = function(filters) {
-    // access etc
-};
-Controller.fn._initialize_actions = function(routes) {
-    this._actions = {};
-    this._routes = Routes(routes);
-};
-Controller.fn._initialize_hooks = function(hooks) {
-    // before|after|run etc
-};
-Controller.fn._initialize_ajax = function(ajax) {
-    var self = this;
+    controller_config.access = this.is_access_options(controller_config.access)?
+        controller_config.access :
+        this._default_config.access;
 
-    if( f.is_object(ajax) ) {
-        if( f.is_defined(ajax.only) ) {
-            ajax.only = f.to_array(ajax.only);
-            console.log(self._actions)
-            ajax.only.forEach(function(action_name) {
-                self._actions[action_name].ajax_only();
-            });
+    if(this.is_access_options(controller_config.access)) {
+        if(!_.contains(controller_config.access, this._roles.admin)) {
+            controller_config.access.push(this._roles.admin);
         }
-        if( f.is_defined(ajax.never) ) {
-            !Array.isArray(ajax.never) || (ajax.never = [ajax.never]);
-            ajax.never.forEach(function(action_name) {
-                self._actions[action_name].ajax_never();
-            });
-        }
+    } else {
+        controller_config.access = [this._roles.all];
     }
+    
+    return controller_config;
 };
 
-Controller.fn._add_action = function(name, handler) {
-    if(name in this._actions) {
-        throw new Error('Action already set');
-    }
-    this._actions[name] = Action(name, handler, this._name);
+Controller.fn.init = function(config) {
+    this._config = this._process_config(config);
+    this._router = express.Router();
+
+    this.id = helper.uid();
+    this.name = this._config.name || this.id;
+    this._root = this._config.root;
+    this._common_options = _.pick(this._config, ['ajax', 'access']);
 };
-Controller.fn._add_action_route = function(name) {
-    if( !(name in this._routes) ) {
-        // TODO: add default route?
-        console.log(this._routes, name);
-        throw new Error('Not found route for action');
-    }
-    this._routes[name].handler = this._actions[name].handler;
-    Routes.add(this._routes[name]);
-};
-Controller.fn.actions = function(new_actions) {
+
+// TODO: make method who init all custom middleware
+Controller.fn._middleware_extend_response = function(options) {
     var self = this;
-
-    f.each(new_actions, function(handler, name) {
-        self._add_action(name, handler);
-        self._add_action_route(name);
-    });
-};
-
-Controller.fn.get_view_paths = function(options) {
-    var layout, view;
-
-    if( !(f.is_object(options) || f.is_string(options)) ) {
-        ERROR.WrongType();
-    }
-
-    if( f.is_string(options)) {
-        options = { view: options };
-    }
-
-    view = options.view;
-    layout = options.layout || DEFAULT_LAYOUT;
-
-    return {
-        view: is_composite_path(view)? view : path.join(this._name, view),
-        layout: is_composite_path(layout)? layout : path.join(this._layouts_folder_path, layout)
+    
+    return function(request, response, next) {
+        response.page_not_found = response.pageNotFound = function() {
+            self._page_not_found(request, response, next);
+        };
+        next();
     };
 };
+
+Controller.fn._middleware = function(options) {
+    var self = this,
+        roles = self._roles,
+        both_request_types = true,
+        only_ajax, without_ajax,
+        access;
+
+    if(_.isBoolean(options.ajax)) {
+        both_request_types = false;
+        only_ajax = options.ajax;
+        without_ajax = !options.ajax;
+    }
+
+    if(this.is_access_options(options.access)) {
+        access = options.access;
+    } else {
+        access = [roles.admin];
+    }
+
+    return function(request, response, next) {
+        if(!both_request_types) {
+            if(only_ajax && !request.xhr) {
+                return self._page_only_ajax.apply(self, arguments);
+            }
+            if(without_ajax && request.xhr) {
+                return self._page_without_ajax.apply(self, arguments);
+            }
+        }
+
+        if(!_.contains(access, roles.all)) {
+            var is_authenticated = request.isAuthenticated();
+            //console.log('access: %s, auth: %s', access, is_authenticated);
+
+            if(is_authenticated) {
+                var userType = request.user.userType;
+                if(!(_.contains(access, roles.authenticated) || _.contains(access, userType))) {
+                    return self._page_access_denied.apply(self, arguments);
+                }
+            } else if(!_.contains(access, roles.guest)) {
+                return self._page_access_denied.apply(self, arguments);
+                //return self._page_not_found.apply(self, arguments);
+            }
+        }
+
+        next();
+    };
+};
+
+Controller.fn._regulize_route_params = function(args) {
+    var url, options, callbacks;
+
+    if(this.is_callback(args[0])) {
+        url = '/';
+        options = _.clone(this._common_options);
+        callbacks = args;
+    } else if(this._is_options(args[0])) {
+        url = '/';
+        options = _.extend(_.clone(this._common_options), args[0]);
+        callbacks = args.slice(1);
+    } else {
+        url = args[0];
+        if(this._is_options(args[1])) {
+            options = _.extend(_.clone(this._common_options), args[1]);
+            callbacks = args.slice(2);
+        } else {
+            options = _.clone(this._common_options);
+            callbacks = args.slice(1);
+        }
+    }
+
+    return [url, options, callbacks];
+};
+Controller.fn._generate_url = function(method) {
+    var args = helper.to_array(arguments, 1),
+        params = this._regulize_route_params(args),
+
+        url = params[0],
+        options = params[1],
+        callbacks = params[2];
+
+    console.log('method: %s, root: %s, url: %s, options: %s', method, this._root, url, options, callbacks);
+
+    for(var i = callbacks.length; i--; ) {
+        callbacks[i] = callbacks[i].bind(this);
+    }
+
+    this._router[method].apply(this._router, [url,
+            this._middleware_extend_response(),
+            this._middleware(options)
+        ].concat(callbacks)
+    );
+};
+
+Controller.fn.method = function(methods/*, url, options, callbacks */) {
+    var self = this,
+        args = helper.to_array(arguments, 1);
+
+    if(!Array.isArray(methods)) {
+        methods = [methods];
+    }
+
+    methods.forEach(function(method) {
+        self._generate_url.apply(self, [method].concat(args));
+    });
+
+    return this;
+};
+
+[
+    { method: 'get'   , alias: ['get'] },
+    { method: 'post'  , alias: ['post'] },
+    { method: 'put'   , alias: ['put'] },
+    { method: 'patch' , alias: ['patch'] },
+    { method: 'delete', alias: ['delete', 'del'] }
+].forEach(function(data) {
+    var to_array = helper.to_array,
+        make_sugar = function(method) {
+            return function() {
+                this.method.apply(this, [method].concat(to_array(arguments)));
+                return this;
+            };
+        };
+
+    data.alias.forEach(function(alias) {
+        Controller.fn[alias] = make_sugar(data.method);
+    });
+});
+
+Controller.fn.end = function() {
+    this.use(this._page_not_found.bind(this));
+    return this;
+};
+Controller.fn.use = function(callbacks) {
+    callbacks = helper.to_array(arguments);
+    this._router.use.apply(this._router, callbacks);
+    return this;
+};
+
+//Controller.fn.to = function(controller) {
+//};
+
+Controller.fn.before = function(callbacks) {
+    callbacks = helper.to_array(arguments);
+    this._common_options.through = callbacks;
+};
+Controller.fn.access_denied = Controller.fn.accessDenied = function(callback) {
+    this._page_access_denied = callback;
+    return this;
+};
+
+Controller.fn.__defineGetter__('root', function() { return this._root; });
+Controller.fn.__defineGetter__('router', function() { return this._router; });
 
 module.exports = Controller;

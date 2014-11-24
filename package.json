@@ -1,35 +1,48 @@
 {
-    "name": "ifnode",
-    "version": "0.0.1",
-    "description": "Node.js MVC Framework",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ilfroloff/ifnode.git"
-    },
-    "keywords": [
-        "mvc", "framework"
-    ],
-    "author": "ilfroloff <ilfroloff@gmail.com> (https://twitter.com/ilfroloff)",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/ilfroloff/ifnode/issues"
-    },
-    "dependencies": {
-        "express": "latest",
-        "jade": "latest",
-        "jugglingdb": "latest",
-        "jugglingdb-mysql": "latest",
-        "mysql": "latest",
-        "passport": "latest",
-        "passport-local": "latest",
-        "passport-facebook": "latest",
-        "commander": "latest"
-    },
-    "devDependencies": {
-        "mocha": "latest"
-    }
+  "name": "ifnode",
+  "version": "0.0.1",
+  "description": "Node.js MVC Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/ifnode/ifnode.git"
+  },
+  "keywords": [
+    "mvc",
+    "framework"
+  ],
+  "author": "ilfroloff <ilfroloff@gmail.com> (https://twitter.com/ilfroloff)",
+  "license": "MIT",
+  "dependencies": {
+    "diread": "git://github.com/ilfroloff/node-directory-reader.git",
+    "express": "4.9.7",
+    "express-method-override": "0.0.3",
+    "express-session": "1.8.2",
+    "body-parser": "1.9.0",
+    "connect-multiparty": "1.2.4",
+    "cookie-parser": "1.3.3",
+    "cookie-session": "1.0.2",
+    "serve-favicon": "2.1.5",
+    "serve-static": "latest",
+    "connect-mongo": "latest",
+
+    "jade": "latest",
+    "hjs": "latest",
+    "underscore": "latest",
+
+    "mongoose": "latest",
+
+    "passport": "latest",
+    "passport-local": "latest",
+    "passport-facebook": "latest",
+    "passport-google-oauth": "latest",
+    "passport-twitter": "latest"
+
+  },
+  "devDependencies": {
+    "mocha": "latest"
+  }
 }

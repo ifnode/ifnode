@@ -1,7 +1,13 @@
 var ifnode = require('./core/application');
 
-ifnode.Controller = require('./core/controller');
-ifnode.Model = require('./core/model');
-ifnode.Action = require('./core/action');
+ifnode.helper = require('./core/helper');
 
-module.exports = ifnode;
+ifnode._applications = [];
+module.exports = function(configuration) {
+    // TODO: create possibility of creating many
+    if(!ifnode._applications.length) {
+        ifnode._applications.push(ifnode.make(configuration));
+    }
+
+    return ifnode._applications[0];
+};

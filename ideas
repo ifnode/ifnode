@@ -1,0 +1,80 @@
+- Controller:
+
+-- проброс данных параметров в root контроллера
+var insight_controller = app.Controller({ root: '/api/insight/:id' });
+
+# ://localhost/api/insight/1
+insight_controller.get(function(req, res, next) {
+    console.log(req.params.id) // 1
+});
+
+
+-- привязка одного контроллера к другому
+var insight_controller = app.Controller({ root: '/api/insight/:id' });
+insight_controller.get(...);
+
+var elements_controller = app.Controller({
+    to: insight_controller,
+    path: '/views/:view_id'
+});
+
+# ://localhost/api/insight/10/views/100/1000
+elements_controller.get('/:same_param', function(req, res, next) {
+    console.log(req.params.id) // 10 (контроллер insight_controller)
+    console.log(req.params.view_id) // 100 (контроллер elements_controller)
+    console.log(req.params.same_param) // 100 (метод get)
+});
+
+
+-- поддержка before, after
+var insight_controller = app.Controller({ root: '/api/insight/:id' });
+
+insight_controller.before(function(req, res, next) { next(); });
+insight_controller.after(function(/* ничего */) { console.log(); });
+
+insight_controller
+    .get('/:element_id', function() {})
+    .post(check_data, function() {})
+    .put(check_data, function() {})
+    .del('/:element_id', function() {})
+    .method(['put', 'patch'], '/:element_id', function() {});
+
+-- Model:
+
+-- виртуальные модели (модель не связана с базой данных)
+var virtual_model = app.Model({}, 'virtual');
+
+-- Global
+
+-- опция components в конфиге приложения
+module.exports = {
+    components: {
+        emailer: {
+            alias: ['e', 'mail'],
+            config: {
+
+            }
+        }
+    }
+}
+...
+var app = require('ifnode')();
+app.e === app.mail === app.emailer
+
+
+-- опции models/controllers для системных настроек (порядок загрузки, алиасы, тип коннектора и пр.)
+module.exports = {
+    models: {
+        insight: {
+            depend: ['views', 'visualization_elements']
+        },
+        visualization_elements: {
+            alias: ['elements', 'el']
+        },
+        views: {
+            alias: 'v',
+            depend: 'visualization_elements',
+            driver: 'mongoose'
+        }
+    }
+}

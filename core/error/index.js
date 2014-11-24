@@ -1,1 +1,0 @@
-exports.WrongType = require('./WrongType');
