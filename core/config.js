@@ -1,6 +1,34 @@
 var _ = require('underscore'),
 
     config,
+    default_config = {
+        site: {
+            local: {
+                host: 'localhost',
+                ssl: false
+            },
+            global: {
+                host: 'localhost',
+                ssl: false
+
+                // TODO: support of https
+                //ssl: {
+                //    key: 'path/to/file',
+                //    cert: ''path/to/file
+                //}
+            }
+        },
+        application: {
+            session: {
+                secret: 'it\'s secret'
+            }
+        },
+        components: {
+            emailer: {
+                disabled: true
+            }
+        }
+    },
     add_application_version = function(app_path) {
         var path = require('path'),
             application_package = require( path.join(app_path, 'package.json') );
@@ -18,46 +46,33 @@ var _ = require('underscore'),
                 return this.origin + pathname;
             },
 
-            default_config = {
-                host: 'localhost',
-                ssl: false,
-
-                // TODO: support of https
-                //ssl: {
-                //    key: 'path/to/file',
-                //    cert: ''path/to/file
-                //}
-            },
-
-            init_config = function(site_config) {
+            init_config = function(site_config, default_config) {
                 site_config = site_config?
                     _.defaults(site_config, default_config) :
-                    default_config;
+                    _.clone(default_config);
 
                 Object.defineProperties(site_config, {
                     'origin': { enumerable: true, get: origin_getter },
-                    'url': { enumerable: true, value: generate_url },
+                    'url': { enumerable: true, value: generate_url }
                 });
             };
 
-        init_config(config.site.local);
-        init_config(config.site.global);
+        init_config(config.site.local, default_config.site.local);
+        init_config(config.site.global, default_config.site.global);
     },
     initialize_session_config = function() {
-        var session_config;
+        var session_config = config.application.session,
+            default_session_config = default_config.application.session;
 
-        if(!config.application.session) {
-            config.application.session = {};
-        }
-        session_config = config.application.session;
-
-        if(!session_config.secret) {
-            session_config.secret = 'it\'s secret';
+        if(!session_config) {
+            config.application.session = _.clone(default_session_config);
+        } else if(!session_config.secret) {
+            session_config.secret = default_session_config.secret;
         }
     },
     initialize_components_config = function() {
         if(!config.components) {
-            config.components = {};
+            config.components = _.clone(default_config.components);
         }
     },
     initialize_config_helpers = function() {
@@ -80,6 +95,11 @@ var _ = require('underscore'),
     },
 
     initialize_config = function(options) {
+        if(!options.config_path) {
+            config = default_config;
+            return;
+        }
+
         config = require(options.config_path);
 
         add_application_version(options.app_path);

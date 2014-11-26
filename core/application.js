@@ -45,8 +45,12 @@ Application.fn._define_properties = function(properties) {
     Object.freeze(Application.fn);
 };
 
-Application.fn._init_config = function() {
-    var config_path = path.resolve(this._project_folder, 'config/', this._environment);
+Application.fn._init_config = function(environment) {
+    var config_path;
+
+    if(environment) {
+        config_path = path.resolve(this._project_folder, 'config/', environment);
+    }
 
     this._config = require('./config')({
         app_path: this._project_folder,
@@ -81,7 +85,9 @@ Application.fn._init_server = function() {
 
         project_folder = this._project_folder,
         backend_folder = this._backend_folder,
-        middleware = require('./middleware')(this);
+
+        rest = require('./middleware/rest'),
+        auth;
 
     app.set('view engine', app_config.view_engine || 'jade');
     app.set('views', path.resolve(backend_folder, 'views/'));
@@ -94,6 +100,7 @@ Application.fn._init_server = function() {
     app.use(method_override());
     app.use(multiparty());
     app.use(cookie_parser());
+    app.use(rest());
 
     if(session_config.store) {
         (function() {
@@ -119,22 +126,24 @@ Application.fn._init_server = function() {
 
     if(Array.isArray(app_static_files)) {
         app_static_files.forEach(function(file_path) {
-            app.use(serve_static(file_path));
+            app.use(serve_static(path.resolve(project_folder, file_path)));
         });
     } else if(typeof app_static_files === 'string') {
-        app.use(serve_static(app_static_files));
+        app.use(serve_static(path.resolve(project_folder, app_static_files)));
     }
 
     if(app_config.debug === true) {
-        // TODO: check logger module
+        // TODO: check logger module (check node-bunyan)
         //app.use(logger('dev'));
     }
 
-    // TODO: auth how component
-    app.use(middleware.auth.initialize());
-    app.use(middleware.auth.session());
-    app.use(middleware.rest());
-    this.auth = middleware.auth;
+    if(config.auth) {
+        // TODO: auth how component
+        auth = require('./middleware/auth')(this);
+        app.use(auth.initialize());
+        app.use(auth.session());
+        this.auth = auth;
+    }
 
     this._server = app;
     this._http_server = this._init_http_server();
@@ -337,13 +346,12 @@ Application.fn.run = function(callback) {
     this._start_server(callback);
 };
 
-Application.fn.init = Application.fn.initialize = function(configuration) {
-    this._environment = configuration.environment || 'local';
+Application.fn.init = Application.fn.initialize = function(app_config) {
     this._ifnode_core_folder = __dirname;
-    this._project_folder = configuration.project_folder || path.resolve(this._ifnode_core_folder, '../../../');
+    this._project_folder = app_config.project_folder || path.resolve(this._ifnode_core_folder, '../../../');
     this._backend_folder = path.resolve(this._project_folder, 'protected/');
 
-    this._init_config();
+    this._init_config(app_config.env || app_config.environment);
     this._init_server();
 };
 Application.fn.load = function(parts) {
@@ -352,7 +360,7 @@ Application.fn.load = function(parts) {
             'models': '_init_models',
             'controllers': '_init_controllers'
         },
-        self = this;;
+        self = this;
 
     parts.forEach(function(load_part) {
         self[load_hash[load_part]]();
