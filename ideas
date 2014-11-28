@@ -1,5 +1,25 @@
 - Controller:
 
+-- опция only
+var c = app.Controller();
+
+c.get('/login', { only: '?' }, function(req, res, next) {
+    console.log('login page')
+    next()
+});
+c.get('/', function(req, res, next) {
+    console.log('main page')
+});
+
+# ://localhost/login
+незалогиненый юзер:
+login page
+main page
+
+залогиненый юзер:
+main page
+
+
 -- проброс данных параметров в root контроллера
 var insight_controller = app.Controller({ root: '/api/insight/:id' });
 
