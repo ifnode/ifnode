@@ -216,19 +216,41 @@ Controller.fn._generate_url = function(method) {
 
         url = params[0],
         options = params[1],
-        callbacks = params[2];
+        before_callbacks = this._common_options.before || [],
+        user_callbacks = params[2],
+        callbacks = [];
 
-    console.log('method: %s, root: %s, url: %s, options: %s', method, this._root, url, options, callbacks);
+    console.log('method: %s, root: %s, url: %s, options: %s', method, this._root, url, options, user_callbacks);
 
-    for(var i = callbacks.length; i--; ) {
-        callbacks[i] = callbacks[i].bind(this);
+    for(var i = user_callbacks.length; i--; ) {
+        user_callbacks[i] = user_callbacks[i].bind(this);
     }
 
-    this._router[method].apply(this._router, [url,
-            this._middleware_extend_response(),
-            this._middleware(options)
-        ].concat(callbacks)
-    );
+    var skipper = function(callback) {
+        return function(req, res, next) {
+            console.log('*skipper*');
+            if(req.skip) {
+                return next();
+            }
+            callback(req, res, next);
+        }
+    };
+
+    var self = this;
+    callbacks = callbacks
+        .concat(before_callbacks)
+        .concat([
+            skipper(this._middleware_extend_response()),
+            skipper(this._middleware(options))
+        ])
+        .concat(user_callbacks);
+
+    this._router[method].apply(this._router, [url].concat(callbacks));
+    //this._router[method](url, function(req, res, next) {
+    //    callbacks.forEach(function(callback) {
+    //        callback(req, res, next);
+    //    })
+    //});
 };
 
 Controller.fn.method = function(methods/*, url, options, callbacks */) {
