@@ -81,6 +81,8 @@ Controller.fn._page_not_found = function(request, response, next) {
 };
 
 Controller.fn._process_config = function(controller_config) {
+    var self = this;
+
     if(!this._is_config(controller_config)) {
         return this._default_config;
     }
@@ -89,12 +91,8 @@ Controller.fn._process_config = function(controller_config) {
         controller_config.root :
         this._default_config.root;
 
-    controller_config.access = this.is_access_options(controller_config.access)?
-        controller_config.access :
-        this._default_config.access;
-
     this._config_processors.forEach(function(processor) {
-        controller_config = processor(controller_config);
+        controller_config = processor.call(self, controller_config);
     });
 
     return controller_config;
@@ -201,21 +199,21 @@ Controller.fn._generate_url = function(method) {
         }
     };
 
-    var self = this;
+    console.log(this._middlewares)
     callbacks = callbacks
         .concat(before_callbacks)
-        .concat([
-            skipper(this._middleware_extend_response()),
-            skipper(this._middleware(options))
-        ])
         .concat(user_callbacks);
 
-    this._router[method].apply(this._router, [url].concat(callbacks));
-    //this._router[method](url, function(req, res, next) {
-    //    callbacks.forEach(function(callback) {
-    //        callback(req, res, next);
-    //    })
-    //});
+    //this._router[method].apply(this._router, [url].concat(callbacks));
+    this._router[method](url, function(request, response, next_route) {
+        //callbacks.forEach(function(callback) {
+        //    callback(req, res, next);
+        //})
+
+        async.each(callbacks, function(callback, next) {
+            callback(request, response, next);
+        });
+    });
 };
 
 Controller.fn.method = function(methods/*, url, options, callbacks */) {

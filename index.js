@@ -1,13 +1,20 @@
 var ifnode = require('./core/application');
 
-ifnode.helper = require('./core/helper');
+ifnode._default_app = null;
+ifnode._apps = {};
 
-ifnode._applications = [];
-module.exports = function(configuration) {
-    // TODO: create possibility of creating many
-    if(!ifnode._applications.length) {
-        ifnode._applications.push(ifnode.make(configuration));
+module.exports = function(arg) {
+    if(!arg) {
+        return ifnode._apps[ifnode._default_app];
     }
 
-    return ifnode._applications[0];
+    if(typeof arg === 'string') {
+        return ifnode._apps[arg];
+    }
+
+    if(!ifnode._default_app) {
+        ifnode._default_app = arg.alias;
+    }
+
+    return ifnode._apps[arg.alias] = ifnode.make(arg);
 };

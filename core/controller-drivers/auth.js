@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 module.exports = function(app, Controller) {
     Controller.fn.roles = {
         all: '*',
@@ -27,18 +29,18 @@ module.exports = function(app, Controller) {
 //  return true;
         return _.isArray(roles);
     };
-    Controller.fn._default_config.access = [Controller.fn._roles.all];
+    Controller.fn._default_config.access = [Controller.fn.roles.all];
     Controller.fn._page_access_denied = function(request, response, next) {
         response.fail('permissionDenied');
     };
 
     Controller.process_config(function(controller_config) {
         if(this.is_access_options(controller_config.access)) {
-            if(!_.contains(controller_config.access, this._roles.admin)) {
-                controller_config.access.push(this._roles.admin);
+            if(!_.contains(controller_config.access, this.roles.admin)) {
+                controller_config.access.push(this.roles.admin);
             }
         } else {
-            controller_config.access = [this._roles.all];
+            controller_config.access = [this.roles.all];
         }
 
         return controller_config;
@@ -47,8 +49,11 @@ module.exports = function(app, Controller) {
         function only_middleware(options) {
             var self = this;
 
-            // TODO: create method skip all handlers
-            self.skip_all();
+            return function(request, response, next) {
+                // TODO: create method skip all handlers
+                //self.skip_all();
+                next();
+            }
         },
         function access_middleware(options) {
             var self = this,

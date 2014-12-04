@@ -155,6 +155,9 @@ Application.fn._initialize_controller = function() {
     if(this.config.application.ws) {
         require('./controller-drivers/ws')(this, Controller);
     }
+    if(this.config.auth) {
+        require('./controller-drivers/auth')(this, Controller);
+    }
 
     this._controller = Controller;
 };
