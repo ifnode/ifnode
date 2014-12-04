@@ -156,20 +156,10 @@ Application.fn._initialize_controller = function() {
     var self = this,
         controller_drivers_folder = path.resolve(this._ifnode_core_folder, 'controller-drivers/'),
         Controller = require('./controller');
-    console.log(controller_drivers_folder );
 
     if(this._config.application && this._config.application.ws) {
         require(path.resolve(controller_drivers_folder, 'ws'))(self, Controller);
     }
-    if(this._config.components && this._config.components.auth) {
-        require(path.resolve(controller_drivers_folder, 'auth'))(self, Controller);
-    }
-    //diread({
-    //    src: controller_drivers_folder,
-    //    level: 1
-    //}).each(function(driver_file_path) {
-    //    require(driver_file_path)(self, Controller);
-    //});
 
     this._controller = Controller;
 };
