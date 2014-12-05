@@ -1,18 +1,34 @@
-var _ = require('underscore');
+var _ = require('underscore'),
 
-var Schema = function(model_config) {
-    if(!(this instanceof Schema)) {
-        return new Schema(model_config);
-    }
+    Schema = function(model_config) {
+        if(!(this instanceof Schema)) {
+            return new Schema(model_config);
+        }
 
-    this._model_config = model_config;
+        this._model_config = model_config;
 
-    this.table = model_config.table;
-    this._columns = model_config.columns || {};
-    this._schema_config = _.extend(this._default_schema_config, model_config.config || {});
-    this.init(model_config);
-};
+        this.table = model_config.table;
+        this._columns = model_config.columns || {};
+        this._schema_config = _.extend(this._default_schema_config, model_config.config || {});
+        this.init(model_config);
+    };
 Schema.fn = Schema.prototype;
+
+Schema.connect_driver = function(db_config) {
+    var mongoose = require('mongoose');
+    mongoose.connect(db_config.url);
+
+    Schema.fn._driver = mongoose;
+}
+Schema.fn.init = function() {
+    this._initialize_schema();
+    this.statics = this._schema.statics = {};
+    this.methods = this._schema.methods = {};
+};
+Schema.fn.compile = function() {
+    this._model = this._driver.model(this.table, this._schema);
+};
+
 Schema.fn._default_schema_config = {
     id: false,
     versionKey: false,
@@ -36,11 +52,6 @@ Schema.fn._initialize_schema = function() {
     //    }
     //});
 };
-Schema.fn.init = function() {
-    this._initialize_schema();
-    this.statics = this._schema.statics = {};
-    this.methods = this._schema.methods = {};
-};
 Schema.fn.get_original_schema = function() {
     return this._schema;
 };
@@ -52,16 +63,6 @@ Schema.fn.create = function() {
 };
 Schema.fn.pre = function() {
     return this._schema.pre.apply(this._schema, arguments);
-};
-
-Schema.connect_driver = function(db_config) {
-    var mongoose = require('mongoose');
-    mongoose.connect(db_config.url);
-
-    Schema.fn._driver = mongoose;
-}
-Schema.fn.compile = function() {
-    this._model = this._driver.model(this.table, this._schema);
 };
 
 module.exports = function(db_config) {

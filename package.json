@@ -35,6 +35,7 @@
         "underscore": "latest",
         "node-uuid": "latest",
 
+        "redis": "latest",
         "knex": "latest",
         "mongoose": "latest",
 

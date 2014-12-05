@@ -197,9 +197,16 @@ Application.fn._initialize_schemas = function() {
 
         self = this,
         db = this._config.db,
-        app_schemas = this._schemas = {};
+        app_schemas = this._schemas = {},
 
-    Object.keys(db).forEach(function(db_connection_name) {
+        db_connections_names = Object.keys(db);
+
+    if(!db_connections_names.length) {
+        return;
+    }
+
+    self._default_creator = db_connections_names[0];
+    db_connections_names.forEach(function(db_connection_name) {
         var db_config = db[db_connection_name];
 
         if(db_config.default) {

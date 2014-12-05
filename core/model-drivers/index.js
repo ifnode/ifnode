@@ -21,7 +21,8 @@ var drivers = {},
     initialize_core_model_drivers = function() {
         return {
             mongoose: require('./mongoose'),
-            knex: require('./knex')
+            knex: require('./knex'),
+            redis: require('./redis')
         };
     },
 
