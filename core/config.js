@@ -43,6 +43,10 @@ var _ = require('underscore'),
                 return protocol + this.host + port;
             },
             generate_url = function(pathname) {
+                if(pathname[0] !== '/') {
+                    pathname = '/' + pathname;
+                }
+
                 return this.origin + pathname;
             },
 

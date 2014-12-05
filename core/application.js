@@ -282,7 +282,7 @@ Application.fn._attach_components = function() {
         component_aliases = component.alias;
 
         if(typeof component.initialize === 'function') {
-            component.initialize();
+            component.initialize(component.config);
         };
 
         self[component.name] = component;
@@ -325,7 +325,7 @@ Application.fn._start_server = function(callback) {
     if(local_config.port) {
         server_params.push(local_config.port);
     }
-    if(local_config.host !== 'localhost') {
+    if(!_.contains(['127.0.0.1', 'localhost'], local_config.host)) {
         server_params.push(local_config.host);
     }
     if(typeof callback === 'function') {
@@ -348,7 +348,7 @@ Application.fn.run = function(callback) {
 
 Application.fn.init = Application.fn.initialize = function(app_config) {
     this._ifnode_core_folder = __dirname;
-    this._project_folder = app_config.project_folder || path.resolve(this._ifnode_core_folder, '../../../');
+    this._project_folder = app_config.project_folder || path.dirname(process.argv[1]);
     this._backend_folder = path.resolve(this._project_folder, 'protected/');
 
     this._init_config(app_config.env || app_config.environment);
