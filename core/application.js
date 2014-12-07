@@ -1,6 +1,7 @@
 var path = require('path'),
     diread = require('diread'),
     _ = require('underscore'),
+    helper = require('./helper'),
 
     Application = function(options) {
         if(!(this instanceof Application)) {
@@ -63,6 +64,8 @@ Application.fn._init_http_server = function() {
 
     return http.Server(this._server);
 };
+
+// TODO: move to file and make configurable
 Application.fn._init_server = function() {
     var path = require('path'),
         fs = require('fs'),
@@ -150,11 +153,23 @@ Application.fn._init_server = function() {
 };
 
 Application.fn._initialize_controller = function() {
-    var Controller = require('./controller');
+    var self = this,
+        controller_drivers_folder = path.resolve(this._ifnode_core_folder, 'controller-drivers/'),
+        Controller = require('./controller');
+    console.log(controller_drivers_folder );
 
-    if(this.config.application.ws) {
-        require('./controller-drivers/ws')(this, Controller);
+    if(this._config.application && this._config.application.ws) {
+        require(path.resolve(controller_drivers_folder, 'ws'))(self, Controller);
     }
+    if(this._config.components && this._config.components.auth) {
+        require(path.resolve(controller_drivers_folder, 'auth'))(self, Controller);
+    }
+    //diread({
+    //    src: controller_drivers_folder,
+    //    level: 1
+    //}).each(function(driver_file_path) {
+    //    require(driver_file_path)(self, Controller);
+    //});
 
     this._controller = Controller;
 };
@@ -199,8 +214,13 @@ Application.fn._initialize_schemas = function() {
         db = this._config.db,
         app_schemas = this._schemas = {},
 
-        db_connections_names = Object.keys(db);
+        db_connections_names;
 
+    if(!db) {
+        return;
+    }
+
+    db_connections_names = Object.keys(db);
     if(!db_connections_names.length) {
         return;
     }
@@ -217,8 +237,6 @@ Application.fn._initialize_schemas = function() {
     });
 };
 Application.fn._initialize_models = function() {
-    var app_models = this._models;
-
     diread({
         src: path.resolve(this._backend_folder, 'models/')
     }).each(function(model_file_path) {
@@ -251,25 +269,12 @@ Application.fn._initialize_component_class = function() {
     this._component_class = require('./component');
 };
 Application.fn._initialize_components = function() {
-    var self = this,
-        core_components_path = path.resolve(this._ifnode_core_folder, 'components/'),
-        custom_components_path = path.resolve(this._backend_folder, 'components/');
+    var core_components_path = path.resolve(this._ifnode_core_folder, 'components/'),
+        custom_components_path = path.resolve(this._backend_folder, 'components/'),
 
-    var cb = function(component_file_path) {
-        var component_data = require(component_file_path);
-
-        if(component_data) {
-            var helper = _.extend(component_data, Application.fn.helper);
-
-            Object.keys(helper).forEach(function(fn) {
-                if(typeof helper[fn] === 'function') {
-                    helper[fn] = helper[fn].bind(helper);
-                }
-            });
-
-            self.helper = helper;
-        }
-    };
+        cb = function(component_file_path) {
+            require(component_file_path);
+        };
 
     diread({ src: core_components_path }).each(cb);
     diread({ src: custom_components_path }).each(cb);
@@ -354,6 +359,9 @@ Application.fn.run = function(callback) {
 };
 
 Application.fn.init = Application.fn.initialize = function(app_config) {
+    this._id = helper.uid();
+    this._alias = app_config.alias;
+
     this._ifnode_core_folder = __dirname;
     this._project_folder = app_config.project_folder || path.dirname(process.argv[1]);
     this._backend_folder = path.resolve(this._project_folder, 'protected/');
@@ -362,12 +370,16 @@ Application.fn.init = Application.fn.initialize = function(app_config) {
     this._init_server();
 };
 Application.fn.load = function(parts) {
-    var load_hash = {
+    var self = this,
+        load_hash = {
             'components': '_init_components',
             'models': '_init_models',
             'controllers': '_init_controllers'
-        },
-        self = this;
+        };
+
+    if(!Array.isArray(parts)) {
+        parts = [parts];
+    }
 
     parts.forEach(function(load_part) {
         self[load_hash[load_part]]();
@@ -381,9 +393,11 @@ Application.fn._define_properties({
     'config': function() { return _.clone(this._config) },
     'server': function() { return this._server },
 
-    'models': function() { return this._models },
+    'models':      function() { return this._models },
     'controllers': function() { return this._controllers },
 
+    'id':    function() { return this._id },
+    'alias': function() { return this._alias },
     'project_folder, projectFolder': function() { return this._project_folder },
     'backend_folder, backendFolder': function() { return this._backend_folder }
 });

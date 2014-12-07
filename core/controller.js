@@ -1,6 +1,7 @@
 var helper = require('./helper'),
 
     _ = require('underscore'),
+    async = require('async'),
     express = require('express');
 
 var Controller = function(config) {
@@ -116,7 +117,7 @@ Controller.middleware([
     function add_special_function(options) {
         var self = this;
 
-        return function(request, response, next) {
+        return function add_special_function(request, response, next) {
             response.page_not_found = response.pageNotFound = function() {
                 self._page_not_found(request, response, next);
             };
@@ -134,7 +135,7 @@ Controller.middleware([
             without_ajax = !options.ajax;
         }
 
-        return function (request, response, next) {
+        return function ajax_middleware(request, response, next) {
             if (!both_request_types) {
                 if (only_ajax && !request.xhr) {
                     return self._page_only_ajax.apply(self, arguments);
@@ -181,11 +182,12 @@ Controller.fn._generate_url = function(method) {
         options = params[1],
         before_callbacks = this._common_options.before || [],
         user_callbacks = params[2],
-        callbacks = [];
+        callbacks = [],
+        i;
 
     console.log('method: %s, root: %s, url: %s, options: %s', method, this._root, url, options, user_callbacks);
 
-    for(var i = user_callbacks.length; i--; ) {
+    for(i = user_callbacks.length; i--; ) {
         user_callbacks[i] = user_callbacks[i].bind(this);
     }
 
@@ -199,7 +201,10 @@ Controller.fn._generate_url = function(method) {
         }
     };
 
-    console.log(this._middlewares)
+    for(i = 0; i < this._middlewares.length; ++i) {
+        callbacks.push(this._middlewares[i].call(this, options));
+    }
+
     callbacks = callbacks
         .concat(before_callbacks)
         .concat(user_callbacks);
@@ -210,7 +215,9 @@ Controller.fn._generate_url = function(method) {
         //    callback(req, res, next);
         //})
 
-        async.each(callbacks, function(callback, next) {
+        console.log(callbacks);
+        async.eachSeries(callbacks, function(callback, next) {
+            console.log(callback);
             callback(request, response, next);
         });
     });
