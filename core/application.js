@@ -160,6 +160,9 @@ Application.fn._initialize_controller = function() {
     if(this._config.application && this._config.application.ws) {
         require(path.resolve(controller_drivers_folder, 'ws'))(self, Controller);
     }
+    if(this._config.components && this._config.components.auth) {
+        require(path.resolve(controller_drivers_folder, 'auth'))(self, Controller);
+    }
 
     this._controller = Controller;
 };
