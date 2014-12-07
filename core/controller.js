@@ -11,14 +11,6 @@ var Controller = function(config) {
 };
 
 Controller.fn = Controller.prototype;
-Controller.fn._roles = {
-    all: '*',
-    guest: '?',
-    authenticated: '@',
-
-    // TODO
-    admin: 'administrator'
-};
 Controller.fn.is_url = function(url) {
     if(_.isUndefined(url)) {
         return false;
@@ -40,29 +32,6 @@ Controller.fn._is_options = Controller.fn._is_config = function(obj) {
 //  return true;
     return helper.is_plain_object(obj);
 };
-Controller.fn.is_access_options = function(roles) {
-//  if(_.isUndefined(roles)) {
-//    return false;
-//  }
-//
-//  if(!_.isArray(roles)) {
-//    throw new Error('Access roles wrong type. Must be array');
-//  }
-//
-//  roles.forEach(function(role) {
-//    if(!_.isString(role)) {
-//      throw new Error('One of access role wrong type: %s. Must be string', JSON.stringify(role));
-//    }
-//
-//    // TODO: need form list of roles
-////    if(!_.contains(this._roles._list, role)) {
-////      throw new Error('Unknow role: %s. Must be one of list: %s', options.access, this._roles._list);
-////    }
-//  });
-//
-//  return true;
-    return _.isArray(roles);
-};
 Controller.fn.is_callback = function(callback) {
 //  if(!_.isFunction(callback)) {
 //    throw new Error('Callback wrong type. Must be only function');
@@ -71,11 +40,33 @@ Controller.fn.is_callback = function(callback) {
 //  return true;
     return _.isFunction(callback);
 };
+
 Controller.fn._default_config = {
     root: '/',
     //ajax: ,
-    access: [Controller.fn._roles.all]
 };
+Controller.fn._config_processors = [];
+Controller.fn._middlewares = [];
+
+Controller.process_config = function(processor) {
+    this.fn._config_processors.push(processor);
+};
+Controller.middleware = function(middlewares) {
+    var self = this;
+
+    if(!Array.isArray(middlewares)) {
+        middlewares = [middlewares];
+    }
+
+    middlewares.forEach(function(middleware) {
+        if(typeof middleware === 'function') {
+            self.fn._middlewares.push(middleware);
+        } else {
+            console.warn('Wrong middleware: ', middleware);
+        }
+    });
+};
+
 Controller.fn._page_only_ajax = function(request, response, next) {
     response.fail('ajaxRequestOnly');
 //  response.send(400, 'only ajax request');
@@ -84,15 +75,14 @@ Controller.fn._page_without_ajax = function(request, response, next) {
     response.fail('ajaxRequestDenied');
 //  response.send(400, 'without ajax request');
 };
-Controller.fn._page_access_denied = function(request, response, next) {
-    response.fail('permissionDenied');
-};
 Controller.fn._page_not_found = function(request, response, next) {
     response.fail('notFound');
 //  response.fail('pageNotFound');
 };
 
 Controller.fn._process_config = function(controller_config) {
+    var self = this;
+
     if(!this._is_config(controller_config)) {
         return this._default_config;
     }
@@ -101,18 +91,10 @@ Controller.fn._process_config = function(controller_config) {
         controller_config.root :
         this._default_config.root;
 
-    controller_config.access = this.is_access_options(controller_config.access)?
-        controller_config.access :
-        this._default_config.access;
+    this._config_processors.forEach(function(processor) {
+        controller_config = processor.call(self, controller_config);
+    });
 
-    if(this.is_access_options(controller_config.access)) {
-        if(!_.contains(controller_config.access, this._roles.admin)) {
-            controller_config.access.push(this._roles.admin);
-        }
-    } else {
-        controller_config.access = [this._roles.all];
-    }
-    
     return controller_config;
 };
 
@@ -123,68 +105,49 @@ Controller.fn.init = function(config) {
     this.id = helper.uid();
     this.name = this._config.name || this.id;
     this._root = this._config.root;
+
+    // TODO
     this._common_options = _.pick(this._config, ['ajax', 'access']);
 };
 
 // TODO: make method who init all custom middleware
-Controller.fn._middleware_extend_response = function(options) {
-    var self = this;
-    
-    return function(request, response, next) {
-        response.page_not_found = response.pageNotFound = function() {
-            self._page_not_found(request, response, next);
+
+Controller.middleware([
+    function add_special_function(options) {
+        var self = this;
+
+        return function(request, response, next) {
+            response.page_not_found = response.pageNotFound = function() {
+                self._page_not_found(request, response, next);
+            };
+            next();
         };
-        next();
-    };
-};
+    },
+    function ajax_middleware(options) {
+        var self = this,
+            both_request_types = true,
+            only_ajax, without_ajax;
 
-Controller.fn._middleware = function(options) {
-    var self = this,
-        roles = self._roles,
-        both_request_types = true,
-        only_ajax, without_ajax,
-        access;
-
-    if(_.isBoolean(options.ajax)) {
-        both_request_types = false;
-        only_ajax = options.ajax;
-        without_ajax = !options.ajax;
-    }
-
-    if(this.is_access_options(options.access)) {
-        access = options.access;
-    } else {
-        access = [roles.admin];
-    }
-
-    return function(request, response, next) {
-        if(!both_request_types) {
-            if(only_ajax && !request.xhr) {
-                return self._page_only_ajax.apply(self, arguments);
-            }
-            if(without_ajax && request.xhr) {
-                return self._page_without_ajax.apply(self, arguments);
-            }
+        if (_.isBoolean(options.ajax)) {
+            both_request_types = false;
+            only_ajax = options.ajax;
+            without_ajax = !options.ajax;
         }
 
-        if(!_.contains(access, roles.all)) {
-            var is_authenticated = request.isAuthenticated();
-            //console.log('access: %s, auth: %s', access, is_authenticated);
-
-            if(is_authenticated) {
-                var userType = request.user.userType;
-                if(!(_.contains(access, roles.authenticated) || _.contains(access, userType))) {
-                    return self._page_access_denied.apply(self, arguments);
+        return function (request, response, next) {
+            if (!both_request_types) {
+                if (only_ajax && !request.xhr) {
+                    return self._page_only_ajax.apply(self, arguments);
                 }
-            } else if(!_.contains(access, roles.guest)) {
-                return self._page_access_denied.apply(self, arguments);
-                //return self._page_not_found.apply(self, arguments);
+                if (without_ajax && request.xhr) {
+                    return self._page_without_ajax.apply(self, arguments);
+                }
             }
-        }
 
-        next();
-    };
-};
+            next();
+        }
+    }
+]);
 
 Controller.fn._regulize_route_params = function(args) {
     var url, options, callbacks;
@@ -236,21 +199,21 @@ Controller.fn._generate_url = function(method) {
         }
     };
 
-    var self = this;
+    console.log(this._middlewares)
     callbacks = callbacks
         .concat(before_callbacks)
-        .concat([
-            skipper(this._middleware_extend_response()),
-            skipper(this._middleware(options))
-        ])
         .concat(user_callbacks);
 
-    this._router[method].apply(this._router, [url].concat(callbacks));
-    //this._router[method](url, function(req, res, next) {
-    //    callbacks.forEach(function(callback) {
-    //        callback(req, res, next);
-    //    })
-    //});
+    //this._router[method].apply(this._router, [url].concat(callbacks));
+    this._router[method](url, function(request, response, next_route) {
+        //callbacks.forEach(function(callback) {
+        //    callback(req, res, next);
+        //})
+
+        async.each(callbacks, function(callback, next) {
+            callback(request, response, next);
+        });
+    });
 };
 
 Controller.fn.method = function(methods/*, url, options, callbacks */) {
@@ -304,10 +267,6 @@ Controller.fn.use = function(callbacks) {
 Controller.fn.before = function(callbacks) {
     callbacks = helper.to_array(arguments);
     this._common_options.through = callbacks;
-};
-Controller.fn.access_denied = Controller.fn.accessDenied = function(callback) {
-    this._page_access_denied = callback;
-    return this;
 };
 
 Controller.fn.__defineGetter__('root', function() { return this._root; });
