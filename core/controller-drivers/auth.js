@@ -49,7 +49,7 @@ module.exports = function(app, Controller) {
         function only_middleware(options) {
             var self = this;
 
-            return function(request, response, next) {
+            return function only_middleware(request, response, next) {
                 // TODO: create method skip all handlers
                 //self.skip_all();
                 next();
@@ -60,7 +60,7 @@ module.exports = function(app, Controller) {
                 roles = self.roles,
                 access;
 
-            return function(request, response, next) {
+            return function access_middleware(request, response, next) {
                 if(self.is_access_options(options.access)) {
                     access = options.access;
                 }
@@ -79,6 +79,8 @@ module.exports = function(app, Controller) {
                         //return self._page_not_found.apply(self, arguments);
                     }
                 }
+
+                next();
             };
         }
     ]);

@@ -17,7 +17,7 @@
     "author": "ilfroloff <ilfroloff@gmail.com> (https://twitter.com/ilfroloff)",
     "license": "MIT",
     "dependencies": {
-        "diread": "git://github.com/ilfroloff/node-directory-reader.git",
+        "diread": "latest",
         "express": "4.9.7",
         "express-method-override": "0.0.3",
         "express-session": "1.8.2",
@@ -32,6 +32,7 @@
         "jade": "latest",
         "hjs": "latest",
 
+        "async": "latest",
         "underscore": "latest",
         "node-uuid": "latest",
 

@@ -4,12 +4,10 @@ var _ = require('underscore'),
     default_config = {
         site: {
             local: {
-                host: 'localhost',
-                ssl: false
+                port: 8080
             },
             global: {
-                host: 'localhost',
-                ssl: false
+                port: 8080
 
                 // TODO: support of https
                 //ssl: {
@@ -21,11 +19,6 @@ var _ = require('underscore'),
         application: {
             session: {
                 secret: 'it\'s secret'
-            }
-        },
-        components: {
-            emailer: {
-                disabled: true
             }
         }
     },
