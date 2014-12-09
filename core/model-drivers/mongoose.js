@@ -9,7 +9,8 @@ var _ = require('underscore'),
 
         this.table = model_config.table;
         this._columns = model_config.columns || {};
-        this._schema_config = _.extend(this._default_schema_config, model_config.config || {});
+        this._schema_config = _.defaults(model_config.config || {}, this._default_schema_config);
+        //this._schema_config = _.extend(this._default_schema_config, model_config.config || {});
         this.init(model_config);
     };
 Schema.fn = Schema.prototype;
