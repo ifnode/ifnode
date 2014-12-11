@@ -1,6 +1,6 @@
 var helper = require('./helper'),
 
-    _ = require('underscore'),
+    _ = require('lodash'),
     async = require('async'),
     express = require('express');
 
@@ -107,8 +107,12 @@ Controller.fn.init = function(config) {
     this.name = this._config.name || this.id;
     this._root = this._config.root;
 
-    // TODO
-    this._common_options = _.pick(this._config, ['ajax', 'access']);
+    this._common_options = _.omit(this._config, [
+        'name',
+        'root'
+    ]);
+
+    console.log(this._common_options);
 };
 
 // TODO: make method who init all custom middleware
@@ -183,25 +187,15 @@ Controller.fn._generate_url = function(method) {
         before_callbacks = this._common_options.before || [],
         user_callbacks = params[2],
         callbacks = [],
-        i;
+        i, len;
 
     console.log('method: %s, root: %s, url: %s, options: %s', method, this._root, url, options, user_callbacks);
 
-    for(i = user_callbacks.length; i--; ) {
+    for(i = 0, len = user_callbacks.length; i < len; ++i) {
         user_callbacks[i] = user_callbacks[i].bind(this);
     }
 
-    var skipper = function(callback) {
-        return function(req, res, next) {
-            console.log('*skipper*');
-            if(req.skip) {
-                return next();
-            }
-            callback(req, res, next);
-        }
-    };
-
-    for(i = 0; i < this._middlewares.length; ++i) {
+    for(i = 0, len = this._middlewares.length; i < len; ++i) {
         callbacks.push(this._middlewares[i].call(this, options));
     }
 
@@ -209,16 +203,9 @@ Controller.fn._generate_url = function(method) {
         .concat(before_callbacks)
         .concat(user_callbacks);
 
-    //this._router[method].apply(this._router, [url].concat(callbacks));
     this._router[method](url, function(request, response, next_route) {
-        //callbacks.forEach(function(callback) {
-        //    callback(req, res, next);
-        //})
-
-        console.log(callbacks);
-        async.eachSeries(callbacks, function(callback, next) {
-            console.log(callback);
-            callback(request, response, next);
+        async.eachSeries(callbacks, function(callback, next_handler) {
+            callback(request, response, next_handler, next_route);
         });
     });
 };

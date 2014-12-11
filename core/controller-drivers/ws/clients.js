@@ -1,4 +1,4 @@
-var _ = require('underscore'),
+var _ = require('lodash'),
 
     Clients = function(options) {
         this._options = options || {};

@@ -1,6 +1,8 @@
-var drivers = {},
+var _ = require('lodash'),
+    diread = require('diread'),
+
+    drivers = {},
     initialize = function(options) {
-        var _ = require('underscore');
 
         drivers = _.extend(
             initialize_core_model_drivers(),
@@ -8,8 +10,7 @@ var drivers = {},
         );
     },
     initialize_user_drivers = function(options) {
-        var diread = require('diread'),
-            user_drivers_dir = options.user_model_drivers_folder,
+        var user_drivers_dir = options.user_model_drivers_folder,
             user_drivers = {};
 
         diread({ src: user_drivers_dir }).each(function(driver_path, file_name) {
@@ -22,7 +23,8 @@ var drivers = {},
         return {
             mongoose: require('./mongoose'),
             knex: require('./knex'),
-            redis: require('./redis')
+            redis: require('./redis'),
+            virtual: require('./virtual')
         };
     },
 

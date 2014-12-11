@@ -1,6 +1,6 @@
 var path = require('path'),
     diread = require('diread'),
-    _ = require('underscore'),
+    _ = require('lodash'),
     helper = require('./helper'),
 
     Application = function(options) {
@@ -71,8 +71,8 @@ Application.fn._init_server = function() {
         fs = require('fs'),
 
         express = require('express'),
-        method_override = require('express-method-override'),
-        multiparty = require('connect-multiparty'),
+        //method_override = require('express-method-override'),
+        multiparty = require('connect-multiparty'), // upload
         body_parser = require('body-parser'),
         cookie_parser = require('cookie-parser'),
         session = require('express-session'),
@@ -98,34 +98,37 @@ Application.fn._init_server = function() {
     if(typeof app_config.favicon === 'string') {
         app.use(serve_favicon(app_config.favicon));
     }
+
     app.use(body_parser.urlencoded({ extended: true }));
     app.use(body_parser.json());
-    app.use(method_override());
+    //app.use(method_override());
     app.use(multiparty());
     app.use(cookie_parser());
     app.use(rest());
 
-    if(session_config.store) {
-        (function() {
-            var store_db = config.by_path(session_config.store),
-                store;
+    if(app_config.session) {
+        if(session_config.store) {
+            (function() {
+                var store_db = config.by_path(session_config.store),
+                    store;
 
-            if(!store_db) {
-                console.warn('Cannot find database config. Check please');
-                return;
-            }
+                if(!store_db) {
+                    console.warn('Cannot find database config. Check please');
+                    return;
+                }
 
-            if(store_db.type === 'mongoose') {
-                store = require('connect-mongo')(session);
-                session_config.store = new store({
-                    db: store_db.config.database,
-                    port: store_db.config.port
-                });
-            }
-            // TODO: add more db types for session stores
-        }());
+                if(store_db.type === 'mongoose') {
+                    store = require('connect-mongo')(session);
+                    session_config.store = new store({
+                        db: store_db.config.database,
+                        port: store_db.config.port
+                    });
+                }
+                // TODO: add more db types for session stores
+            }());
+        }
+        app.use(session(app_config.session));
     }
-    app.use(session(app_config.session));
 
     if(Array.isArray(app_static_files)) {
         app_static_files.forEach(function(file_path) {
@@ -138,14 +141,6 @@ Application.fn._init_server = function() {
     if(app_config.debug === true) {
         // TODO: check logger module (check node-bunyan)
         //app.use(logger('dev'));
-    }
-
-    if(config.auth) {
-        // TODO: auth how component
-        auth = require('./middleware/auth')(this);
-        app.use(auth.initialize());
-        app.use(auth.session());
-        this.auth = auth;
     }
 
     this._server = app;
@@ -240,8 +235,7 @@ Application.fn._compile_models = function() {
     var app_models = this._models;
 
     Object.keys(app_models).forEach(function(model_id) {
-        app_models[model_id].compile();
-        app_models[model_id] = app_models[model_id]._model;
+        app_models[model_id] = app_models[model_id].compile();
     });
 };
 Application.fn._init_models = function() {
@@ -250,8 +244,20 @@ Application.fn._init_models = function() {
     this._initialize_models();
     this._compile_models();
 };
-Application.fn.Model = function(model_config, creator_name) {
-    var schema = this._schemas[creator_name || this._default_creator](model_config);
+Application.fn.Model = function(model_config, options) {
+    var creator_name;
+
+    if(!options) {
+        creator_name = this._default_creator;
+    } else if(typeof options === 'string') {
+        creator_name = options;
+    } else if(helper.is_plain_object(options)) {
+        creator_name = options.type;
+    } else {
+        throw new Error('Bad model options: ', typeof options);
+    }
+
+    var schema = this._schemas[creator_name](model_config);
 
     this._models[schema.table] = schema;
 

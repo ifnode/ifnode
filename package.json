@@ -33,7 +33,7 @@
         "hjs": "latest",
 
         "async": "latest",
-        "underscore": "latest",
+        "lodash": "latest",
         "node-uuid": "latest",
 
         "redis": "latest",

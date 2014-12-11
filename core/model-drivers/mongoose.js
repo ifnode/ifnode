@@ -1,4 +1,4 @@
-var _ = require('underscore'),
+var _ = require('lodash'),
 
     Schema = function(model_config) {
         if(!(this instanceof Schema)) {
@@ -28,6 +28,8 @@ Schema.fn.init = function() {
 };
 Schema.fn.compile = function() {
     this._model = this._driver.model(this.table, this._schema);
+
+    return this._model;
 };
 
 Schema.fn._default_schema_config = {

@@ -21,13 +21,15 @@ Schema.connect_driver = function(db_config) {
     Schema.fn._driver = redis.createClient.apply(redis, redis_params);
 };
 Schema.fn.compile = function() {
-    this._model = this._driver;
+    var model = this._driver;
 
     for(var i in this.statics) {
         if(typeof this.statics[i] === 'function') {
-            this._model[i] = this.statics[i].bind(this._driver);
+            model[i] = this.statics[i].bind(this._driver);
         }
     }
+
+    return model;
 };
 
 module.exports = function(db_config) {

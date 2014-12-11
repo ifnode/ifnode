@@ -19,7 +19,7 @@ Schema.fn.init = function() {
     }
 };
 Schema.fn.compile = function() {
-    this._model = this;
+    return this;
 };
 
 module.exports = function(db_config) {

@@ -1,11 +1,12 @@
 var app = require('ifnode')(),
+    uuid = require('node-uuid'),
     helper = app.Component({ name: 'helper' });
 
 helper.methods({
     uid: function(options) {
         options = options || {};
 
-        return require('node-uuid').v4(options);
+        return uuid.v4(options);
     },
 
     is_plain_object: function(v) {

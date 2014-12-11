@@ -1,4 +1,4 @@
-var _ = require('underscore'),
+var _ = require('lodash'),
     helper = require('./helper');
 
 var Component = function(options) {
@@ -31,6 +31,10 @@ Component.fn.methods = function(methods_list) {
     Object.keys(methods_list).forEach(function(method_name) {
         self[method_name] = methods_list[method_name].bind(self);
     });
+};
+
+Component.fn.public = Component.fn.pb = function(name, fn) {
+
 };
 
 module.exports = Component;
