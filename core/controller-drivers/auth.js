@@ -68,10 +68,11 @@ module.exports = function(app, Controller) {
         function access_middleware(options) {
             var self = this,
                 roles = self.roles,
-                access = options.access,
-                page_access_denied = self._page_access_denied;
+                access = options.access;
 
             return function access_middleware(request, response, next) {
+                var page_access_denied = self._page_access_denied;
+
                 if(!_.contains(access, roles.all)) {
                     var is_authenticated = request.isAuthenticated();
                     console.log('controller: %s, access: %s, auth: %s', self.name, access, is_authenticated);
