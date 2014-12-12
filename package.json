@@ -1,6 +1,6 @@
 {
     "name": "ifnode",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "Node.js MVC Framework",
     "main": "index.js",
     "scripts": {
@@ -30,7 +30,6 @@
         "connect-mongo": "latest",
 
         "jade": "latest",
-        "hjs": "latest",
 
         "async": "latest",
         "lodash": "latest",
@@ -38,13 +37,7 @@
 
         "redis": "latest",
         "knex": "latest",
-        "mongoose": "latest",
-
-        "passport": "latest",
-        "passport-local": "latest",
-        "passport-facebook": "latest",
-        "passport-google-oauth": "latest",
-        "passport-twitter": "latest"
+        "mongoose": "latest"
     },
     "devDependencies": {
         "mocha": "latest"
