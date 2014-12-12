@@ -17,7 +17,7 @@ module.exports = function(app, Controller) {
 
     Controller.fn._default_config.access = [Controller.fn.roles.all];
     Controller.fn._page_access_denied = function(request, response) {
-        response.send(403);
+        response.send(401, 'Unauthorized user');
     };
 
     Controller.process_config(function(controller_config) {
@@ -55,7 +55,7 @@ module.exports = function(app, Controller) {
 
                 if(is_authenticated) {
                     if(!_.contains(only_options, roles.authenticated)) {
-                        console.log(self.name, only_options, roles.authenticated)
+                        console.log(self.name, only_options, roles.authenticated, request.originalUrl);
                         return next_route();
                     }
                 } else if(!_.contains(only_options, roles.guest)) {
@@ -74,7 +74,7 @@ module.exports = function(app, Controller) {
             return function access_middleware(request, response, next) {
                 if(!_.contains(access, roles.all)) {
                     var is_authenticated = request.isAuthenticated();
-                    console.log('access: %s, auth: %s', access, is_authenticated);
+                    console.log('controller: %s, access: %s, auth: %s', self.name, access, is_authenticated);
 
                     if(is_authenticated) {
                         // TODO: add possibity for set own user roles

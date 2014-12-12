@@ -69,16 +69,13 @@ Controller.middleware = function(middlewares) {
 };
 
 Controller.fn._page_only_ajax = function(request, response, next) {
-    response.fail('ajaxRequestOnly');
-//  response.send(400, 'only ajax request');
+    response.send(400, 'Only AJAX');
 };
 Controller.fn._page_without_ajax = function(request, response, next) {
-    response.fail('ajaxRequestDenied');
-//  response.send(400, 'without ajax request');
+    response.send(400, 'AJAX is denied');
 };
 Controller.fn._page_not_found = function(request, response, next) {
-    response.fail('notFound');
-//  response.fail('pageNotFound');
+    response.send(404, 'Page not Found');
 };
 
 Controller.fn._process_config = function(controller_config) {
