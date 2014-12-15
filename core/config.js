@@ -5,9 +5,11 @@ var helper = require('./helper'),
     default_config = {
         site: {
             local: {
+                host: 'localhost',
                 port: 8080
             },
             global: {
+                host: 'localhost',
                 port: 8080
 
                 // TODO: support of https
@@ -36,13 +38,29 @@ var helper = require('./helper'),
     },
     initialize_site_config = function() {
         var set_default = function(site_config, default_config) {
-                site_config = site_config?
-                    _.defaults(site_config, default_config) :
-                    _.clone(default_config);
-            };
+            if(!site_config.host) {
+                site_config.host = default_config.host;
+            }
+            if(_.contains(['127.0.0.1', 'localhost'], site_config.host) &&
+                !site_config.port
+            ) {
+                site_config.port = default_config.port;
+            }
+        };
 
-        set_default(helper.location_init(config.site.local), default_config.site.local);
-        set_default(helper.location_init(config.site.global), default_config.site.global);
+        if(!config.site) {
+            config.site = _.clone(default_config.site);
+            return;
+        }
+
+        if(!config.site.local) {
+            config.site.local = _.clone(default_config.site.local);
+        } else {
+            set_default(config.site.local, default_config.site.local);
+        }
+
+        helper.location_init(config.site.local);
+        helper.location_init(config.site.global);
     },
     initialize_session_config = function() {
         var session_config = config.application.session,
