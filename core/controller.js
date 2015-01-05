@@ -104,12 +104,11 @@ Controller.fn.init = function(config) {
     this.name = this._config.name || this.id;
     this._root = this._config.root;
 
+    this._actions = {};
     this._common_options = _.omit(this._config, [
         'name',
         'root'
     ]);
-
-    console.log(this._common_options);
 };
 
 // TODO: make method who init all custom middleware
@@ -201,7 +200,18 @@ Controller.fn._generate_url = function(method) {
         .concat(user_callbacks);
 
     this._router[method](url, function(request, response, next_route) {
-        async.eachSeries(callbacks, function(callback, next_handler) {
+        async.eachSeries(callbacks, function(callback, next_callback) {
+            var next_handler = function(options) {
+                var is_error = options instanceof Error,
+                    is_plain_object = helper.is_plain_object(options);
+
+                if(is_error) {
+                    return next_route(options);
+                }
+
+                next_callback();
+            };
+
             callback(request, response, next_handler, next_route);
         });
     });
@@ -258,6 +268,18 @@ Controller.fn.use = function(callbacks) {
 Controller.fn.before = function(callbacks) {
     callbacks = helper.to_array(arguments);
     this._common_options.through = callbacks;
+};
+
+Controller.fn.action = function(action_name, handler) {
+    if(typeof handler === 'function') {
+        if(action_name in this._actions) {
+            console.warn('Action %s already exist', handler);
+        } else {
+            this._actions[action_name] = this[action_name] = handler.bind(this);
+        }
+    }
+
+    return this._actions[action_name];
 };
 
 Controller.fn.__defineGetter__('root', function() { return this._root; });
