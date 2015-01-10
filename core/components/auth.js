@@ -6,28 +6,20 @@ var app = require('ifnode')(),
         name: 'auth'
     });
 
-auth._passport_strategy_alias = [
-    'Strategy',
-    'OAuth2Strategy'
-];
 auth._init_strategy = function(name, config, process) {
     var module_name = 'passport-' + name,
         module = require(module_name),
         strategy,
-        aliases = this._passport_strategy_alias;
 
-    aliases.some(function(alias) {
-        if(alias in module) {
-            strategy = module[alias];
-            return true;
-        }
-    });
+        default_passport_strategy = 'Strategy',
+        custom_passport_strategy = config.passport_strategy || config.passportStrategy;
+
+    strategy = module[custom_passport_strategy || default_passport_strategy];
 
     if(!strategy) {
         throw new Error('Cannot get module Strategy instance');
     }
 
-    console.log(config)
     this._passport.use(new strategy(config, process));
 };
 
