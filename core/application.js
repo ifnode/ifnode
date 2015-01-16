@@ -232,34 +232,57 @@ Application.fn._initialize_models = function() {
     });
 };
 Application.fn._compile_models = function() {
-    var app_models = this._models;
+    var model_prototypes = this._model_prototypes,
+        app_models = this._models,
 
-    Object.keys(app_models).forEach(function(model_id) {
-        app_models[model_id] = app_models[model_id].compile();
-    });
+        compile;
+
+    compile = function(model_id) {
+        var model_prototype = model_prototypes[model_id],
+            compiled_model = model_prototype.__schema.compile(),
+            options = model_prototype.options;
+
+        app_models[model_id] = compiled_model;
+
+        if(options.alias) {
+            helper.to_array(options.alias).forEach(function(alias) {
+                if(alias in app_models) {
+                    throw new Error('Alias {' + alias + '} already busy');
+                }
+
+                app_models[alias] = compiled_model;
+            });
+        }
+    };
+
+    Object.keys(model_prototypes).forEach(compile);
+    delete this.__model_prototypes;
 };
 Application.fn._init_models = function() {
+    this._model_prototypes = {};
+
     this._models = {};
     this._initialize_schemas();
     this._initialize_models();
     this._compile_models();
 };
 Application.fn.Model = function(model_config, options) {
-    var creator_name;
-
-    if(!options) {
-        creator_name = this._default_creator;
-    } else if(typeof options === 'string') {
-        creator_name = options;
-    } else if(helper.is_plain_object(options)) {
-        creator_name = options.type;
+    if(typeof options !== 'undefined') {
+        if(helper.is_plain_object(options)) {
+            options.type = options.type || this._default_creator;
+        } else {
+            options = { type: options };
+        }
     } else {
-        throw new Error('Bad model options: ', typeof options);
+        options = { type: this._default_creator };
     }
 
-    var schema = this._schemas[creator_name](model_config);
+    var schema = this._schemas[options.type](model_config);
 
-    this._models[schema.table] = schema;
+    this._model_prototypes[schema.table] = {
+        __schema: schema,
+        options: options
+    };
 
     return schema;
 };
