@@ -1,21 +1,16 @@
 var _ = require('lodash');
 
-var attach_auth_to_app = function(app) {
-    var app_server = app.server,
-        auth = app.auth;
-
-    auth.attach(app_server);
-};
-
 module.exports = function(app, Controller) {
-    Controller.fn.roles = {
-        all: '*',
-        guest: '?',
-        authenticated: '@'
-    };
-    Controller.fn.default_role = Controller.fn.roles.all;
+    var auth = app.auth.attach(app.server),
+        user_role_field = auth.user_role_field,
+        default_roles = auth.default_roles,
 
-    Controller.fn._default_config.access = [Controller.fn.roles.all];
+        auth_middleware;
+
+    Controller.fn.roles = auth.roles;
+    Controller.fn.default_role = default_roles.all;
+
+    Controller.fn._default_config.access = [default_roles.all];
     Controller.fn._page_access_denied = function(request, response) {
         response.send(401, 'Unauthorized user');
     };
@@ -39,6 +34,35 @@ module.exports = function(app, Controller) {
 
         return controller_config;
     });
+
+    auth_middleware = function(self, request, options, can_callback, cannot_callback) {
+        var is_authenticated = request.isAuthenticated(),
+            user_role;
+
+        if(_.contains(options, self.default_role)) {
+            return can_callback();
+        }
+
+        if(is_authenticated) {
+            user_role = request.user[user_role_field];
+
+            if(typeof user_role === 'function') {
+                user_role = user_role();
+            }
+
+            if(
+                !_.contains(options, default_roles.authenticated) &&
+                !_.contains(options, user_role)
+            ) {
+                return cannot_callback();
+            }
+        } else if(!_.contains(options, default_roles.guest)) {
+            return cannot_callback();
+        }
+
+        can_callback();
+    };
+
     Controller.middleware([
         function only_middleware(options) {
             var self = this,
@@ -46,49 +70,26 @@ module.exports = function(app, Controller) {
                 only_options = options.only;
 
             return function only_middleware(request, response, next_handler, next_route) {
-                var is_authenticated = request.isAuthenticated(),
-                    user_role;
-
-                if(_.contains(only_options, self.default_role)) {
-                    return next_handler();
-                }
-
-                if(is_authenticated) {
-                    if(!_.contains(only_options, roles.authenticated)) {
-                        console.log(self.name, only_options, roles.authenticated, request.originalUrl);
-                        return next_route();
-                    }
-                } else if(!_.contains(only_options, roles.guest)) {
-                    return next_route();
-                }
-
-                next_handler();
+                auth_middleware(self, request, only_options,
+                    next_handler,
+                    next_route
+                );
             }
         },
         function access_middleware(options) {
             var self = this,
                 roles = self.roles,
-                access = options.access;
+                access_options = options.access;
 
             return function access_middleware(request, response, next) {
-                var page_access_denied = self._page_access_denied;
+                var args = app.helper.to_array(arguments);
 
-                if(!_.contains(access, roles.all)) {
-                    var is_authenticated = request.isAuthenticated();
-                    console.log('controller: %s, access: %s, auth: %s', self.name, access, is_authenticated);
-
-                    if(is_authenticated) {
-                        // TODO: add possibity for set own user roles
-                        var userType = request.user.userType;
-                        if(!(_.contains(access, roles.authenticated) || _.contains(access, userType))) {
-                            return page_access_denied.apply(self, arguments);
-                        }
-                    } else if(!_.contains(access, roles.guest)) {
-                        return page_access_denied.apply(self, arguments);
+                auth_middleware(self, request, access_options,
+                    next,
+                    function() {
+                        self._page_access_denied.apply(self, args);
                     }
-                }
-
-                next();
+                );
             };
         }
     ]);
@@ -97,6 +98,4 @@ module.exports = function(app, Controller) {
         this._page_access_denied = callback;
         return this;
     };
-
-    attach_auth_to_app(app);
 };
