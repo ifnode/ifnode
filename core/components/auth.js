@@ -30,6 +30,7 @@ auth._initialize = function(config) {
         webuser = this._webuser_model = app.models.webuser,
         webuser_strategies = webuser.strategy/* || _.omit(webuser, ['serialize', 'deserialize'])*/,
         auth_roles = this.roles,
+        webuser_get_role = webuser.get_role || webuser.getRole,
 
         supported_strategies = config,
         supported_strategies_names = Object.keys(supported_strategies),
@@ -64,6 +65,10 @@ auth._initialize = function(config) {
     } else {
         initialize_passport();
     }
+
+    if(typeof webuser_get_role === 'function') {
+        this.get_role = webuser_get_role.bind(webuser);
+    }
 };
 
 auth.initialize = function() {
@@ -77,6 +82,7 @@ auth.initialize = function() {
 auth.authenticate = function(strategy, options, cb) {
     return this._passport.authenticate(strategy, options, cb);
 };
+
 auth.attach = function(server) {
     this._initialize(this.config);
     server.use(this._passport.initialize(this._passport));
