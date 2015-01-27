@@ -1,40 +1,67 @@
 var helper = require('./helper'),
+    path = require('path'),
     _ = require('lodash'),
 
+    set_defaults = function(params) {
+        var obj = params.obj[0],
+            prop = params.obj[1],
+            defaults = params.defaults;
+
+        obj[prop] = obj[prop]?
+            _.defaults(obj[prop], defaults) :
+            _.clone(defaults);
+    },
+
     config,
-    default_config = {
-        site: {
-            local: {
-                host: 'localhost',
-                port: 8080
+    default_config,
+
+    initialize_default_config = function(backend_folder) {
+        default_config = {
+            site: {
+                local: {
+                    host: 'localhost',
+                        port: 8080
+                },
+                global: {
+                    host: 'localhost',
+                        port: 8080
+
+                    // TODO: support of https
+                    //ssl: {
+                    //    key: 'path/to/file',
+                    //    cert: ''path/to/file
+                    //}
+                }
             },
-            global: {
-                host: 'localhost',
-                port: 8080
+            application: {
+                session: {
+                    secret: 'it\'s secret'
+                },
 
-                // TODO: support of https
-                //ssl: {
-                //    key: 'path/to/file',
-                //    cert: ''path/to/file
-                //}
-            }
-        },
-        application: {
-            session: {
-                secret: 'it\'s secret'
-            }
-        },
+                folders: {
+                    components: path.resolve(backend_folder, 'components/'),
+                        views: path.resolve(backend_folder, 'views/'),
+                        controllers: path.resolve(backend_folder, 'controllers/'),
+                        models: path.resolve(backend_folder, 'models/')
+                }
+            },
 
-        db: {
-            virtual: {
-                type: 'virtual'
+            db: {
+                virtual: {
+                    type: 'virtual'
+                }
             }
-        }
+        };
     },
 
     initialize_properties_config = function() {
         config.application = config.application || {};
         config.components = config.components || {};
+
+        set_defaults({
+            obj: [config.application, 'folders'],
+            defaults: default_config.application.folders
+        });
     },
     initialize_site_config = function() {
         var set_default = function(site_config, default_config) {
@@ -104,6 +131,7 @@ var helper = require('./helper'),
             return;
         }
 
+        initialize_default_config(options.backend_folder);
         config = require(options.config_path);
 
         initialize_properties_config();

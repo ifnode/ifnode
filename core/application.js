@@ -54,7 +54,7 @@ Application.fn._init_config = function(environment) {
     }
 
     this._config = require('./config')({
-        app_path: this._project_folder,
+        backend_folder: this._backend_folder,
         config_path: config_path
     });
 };
@@ -88,12 +88,13 @@ Application.fn._init_server = function() {
 
         project_folder = this._project_folder,
         backend_folder = this._backend_folder,
+        views_folder = app_config.folders.views,
 
         rest = require('./middleware/rest'),
         auth;
 
     app.set('view engine', app_config.view_engine || 'jade');
-    app.set('views', path.resolve(backend_folder, 'views/'));
+    app.set('views', path.resolve(project_folder, views_folder));
 
     if(typeof app_config.favicon === 'string') {
         app.use(serve_favicon(app_config.favicon));
@@ -162,8 +163,10 @@ Application.fn._initialize_controller = function() {
     this._controller = Controller;
 };
 Application.fn._initialize_controllers = function() {
+    var controllers_folder = this.config.application.folders.controllers;
+
     diread({
-        src: path.resolve(this._backend_folder, 'controllers/')
+        src: path.resolve(this._project_folder, controllers_folder)
     }).each(function(controller_file_path) {
         require(controller_file_path);
     });
@@ -225,8 +228,10 @@ Application.fn._initialize_schemas = function() {
     });
 };
 Application.fn._initialize_models = function() {
+    var models_folder = this.config.application.folders.models;
+
     diread({
-        src: path.resolve(this._backend_folder, 'models/')
+        src: path.resolve(this._project_folder, models_folder)
     }).each(function(model_file_path) {
         require(model_file_path);
     });
@@ -291,8 +296,10 @@ Application.fn._initialize_component_class = function() {
     this._component_class = require('./component');
 };
 Application.fn._initialize_components = function() {
-    var core_components_path = path.resolve(this._ifnode_core_folder, 'components/'),
-        custom_components_path = path.resolve(this._backend_folder, 'components/'),
+    var custom_components_folder = this.config.application.folders.components,
+
+        core_components_path = path.resolve(this._ifnode_core_folder, 'components/'),
+        custom_components_path = path.resolve(this._project_folder, custom_components_folder),
 
         cb = function(component_file_path) {
             require(component_file_path);

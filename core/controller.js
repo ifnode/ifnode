@@ -82,7 +82,7 @@ Controller.fn._process_config = function(controller_config) {
     var self = this;
 
     if(!this._is_config(controller_config)) {
-        return this._default_config;
+        controller_config = this._default_config;
     }
 
     controller_config.root = this.is_url(controller_config.root) ?
