@@ -65,26 +65,123 @@ Application.fn._init_http_server = function() {
     return http.Server(this._server);
 };
 
+Application.fn._initialize_middlware = function(middleware_configs, app) {
+    var config = this._config,
+        app_config = config.application,
+        project_folder = this._project_folder,
+
+        ifnode_middleware = {
+            'body': function(config) {
+                var body_parser = require('body-parser');
+
+                Object.keys(config).forEach(function(method) {
+                    app.use(body_parser[method](config[method]));
+                });
+            },
+            'session': function(session_config) {
+                var session = require('express-session');
+
+                if(session_config.store) {
+                    (function() {
+                        var store_db = config.by_path(session_config.store),
+                            store;
+
+                        if(!store_db) {
+                            console.warn('Cannot find database config. Check please');
+                            return;
+                        }
+
+                        if(store_db.type === 'mongoose') {
+                            store = require('connect-mongo')(session);
+                            session_config.store = new store({
+                                db: store_db.config.database,
+                                port: store_db.config.port
+                            });
+                        }
+                        // TODO: add more db types for session stores
+                    }());
+                }
+                app.use(session(session_config));
+            },
+            'statics': function(app_static_files) {
+                var serve_static = require('serve-static'),
+
+                    init = function(static_file_config) {
+                        if(typeof static_file_config === 'string') {
+                            by_string(static_file_config);
+                        } else if(_.isPlainObject(static_file_config)) {
+                            by_object(static_file_config);
+                        }
+                    },
+                    by_string = function(static_file_config) {
+                        app.use(serve_static(path.resolve(project_folder, static_file_config)));
+                    },
+                    by_object = function(static_file_config) {
+                        static_file_config = _.pairs(static_file_config)[0];
+
+                        app.use(serve_static(static_file_config[0], static_file_config[1]))
+                    };
+
+                if(Array.isArray(app_static_files)) {
+                    app_static_files.forEach(init);
+                } else {
+                    init(app_static_files);
+                }
+            }
+        },
+
+        init_by_empty_config = function(name) {
+            app.use(require(name)());
+        },
+        init_by_object_config = function(name, config) {
+            app.use(require(name)(config));
+        },
+        init_by_array_config = function(name, config) {
+            var module = require(name);
+
+            app.use(module.apply(module, config));
+        },
+        init_by_function = function(name, fn) {
+            fn(app, require('express'));
+        };
+
+    Object.keys(middleware_configs).forEach(function(middleware_name) {
+        var middleware_config = middleware_configs[middleware_name];
+
+        if(middleware_name in ifnode_middleware) {
+            ifnode_middleware[middleware_name](middleware_config);
+        } else {
+            if(typeof middleware_config === 'function') {
+                init_by_function(middleware_name, middleware_config);
+            } else if(Array.isArray(middleware_config)) {
+                if(!middleware_config.length) {
+                    return init_by_empty_config(middleware_name);
+                }
+
+                init_by_array_config(middleware_name, middleware_config);
+            } else if(_.isPlainObject(middleware_config)) {
+                if(!Object.keys(middleware_config).length) {
+                    return init_by_empty_config(middleware_name);
+                }
+
+                init_by_object_config(middleware_name, middleware_config);
+            }
+        }
+    });
+};
+
 // TODO: move to file and make configurable
 Application.fn._init_server = function() {
     var path = require('path'),
         fs = require('fs'),
 
         express = require('express'),
-        //method_override = require('express-method-override'),
-        multiparty = require('connect-multiparty'), // upload
-        body_parser = require('body-parser'),
-        cookie_parser = require('cookie-parser'),
-        session = require('express-session'),
-        serve_favicon = require('serve-favicon'),
-        serve_static = require('serve-static'),
-        //logger = require('morgan'),
 
         app = express(),
         config = this._config,
         app_config = config.application,
-        session_config = app_config.session,
-        app_static_files = app_config.statics,
+
+        middleware_configs = app_config.middleware,
 
         project_folder = this._project_folder,
         backend_folder = this._backend_folder,
@@ -93,56 +190,74 @@ Application.fn._init_server = function() {
         rest = require('./middleware/rest'),
         auth;
 
+    if(middleware_configs) {
+        this._initialize_middlware(middleware_configs, app);
+    } else {
+        // TODO: support previous versions of ifnode
+
+        var multiparty = require('connect-multiparty'), // upload
+            body_parser = require('body-parser'),
+            cookie_parser = require('cookie-parser'),
+            session = require('express-session'),
+            serve_favicon = require('serve-favicon'),
+            serve_static = require('serve-static'),
+
+            body_parser_config = app_config.body || app_config.bodyParser,
+            cookie_parser_config = app_config.cookie_parser || app_config.cookieParser,
+            multiparty_config = app_config.multiparty,
+            session_config = app_config.session,
+            app_static_files = app_config.statics;
+
+        if(typeof app_config.favicon === 'string') {
+            app.use(serve_favicon(app_config.favicon));
+        }
+
+        app.use(body_parser.urlencoded({ extended: true }));
+        app.use(body_parser.json());
+        app.use(multiparty());
+        app.use(cookie_parser());
+
+        if(app_config.session) {
+            if(session_config.store) {
+                (function() {
+                    var store_db = config.by_path(session_config.store),
+                        store;
+
+                    if(!store_db) {
+                        console.warn('Cannot find database config. Check please');
+                        return;
+                    }
+
+                    if(store_db.type === 'mongoose') {
+                        store = require('connect-mongo')(session);
+                        session_config.store = new store({
+                            db: store_db.config.database,
+                            port: store_db.config.port
+                        });
+                    }
+                    // TODO: add more db types for session stores
+                }());
+            }
+            app.use(session(app_config.session));
+        }
+
+        if(Array.isArray(app_static_files)) {
+            app_static_files.forEach(function(file_path) {
+                app.use(serve_static(path.resolve(project_folder, file_path)));
+            });
+        } else if(typeof app_static_files === 'string') {
+            app.use(serve_static(path.resolve(project_folder, app_static_files)));
+        }
+
+        if(app_config.debug === true) {
+            // TODO: check logger module (check node-bunyan)
+            //app.use(logger('dev'));
+        }
+    }
+
     app.set('view engine', app_config.view_engine || 'jade');
     app.set('views', path.resolve(project_folder, views_folder));
-
-    if(typeof app_config.favicon === 'string') {
-        app.use(serve_favicon(app_config.favicon));
-    }
-
-    app.use(body_parser.urlencoded({ extended: true }));
-    app.use(body_parser.json());
-    //app.use(method_override());
-    app.use(multiparty());
-    app.use(cookie_parser());
     app.use(rest());
-
-    if(app_config.session) {
-        if(session_config.store) {
-            (function() {
-                var store_db = config.by_path(session_config.store),
-                    store;
-
-                if(!store_db) {
-                    console.warn('Cannot find database config. Check please');
-                    return;
-                }
-
-                if(store_db.type === 'mongoose') {
-                    store = require('connect-mongo')(session);
-                    session_config.store = new store({
-                        db: store_db.config.database,
-                        port: store_db.config.port
-                    });
-                }
-                // TODO: add more db types for session stores
-            }());
-        }
-        app.use(session(app_config.session));
-    }
-
-    if(Array.isArray(app_static_files)) {
-        app_static_files.forEach(function(file_path) {
-            app.use(serve_static(path.resolve(project_folder, file_path)));
-        });
-    } else if(typeof app_static_files === 'string') {
-        app.use(serve_static(path.resolve(project_folder, app_static_files)));
-    }
-
-    if(app_config.debug === true) {
-        // TODO: check logger module (check node-bunyan)
-        //app.use(logger('dev'));
-    }
 
     this._server = app;
     this._http_server = this._init_http_server();
