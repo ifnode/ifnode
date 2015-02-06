@@ -83,6 +83,16 @@ module.exports = function(app, Controller) {
         can_callback();
     };
 
+    Controller.populate(function() {
+        var self = this;
+
+        return function(request, response, next, next_router) {
+            response.access_denied = response.accessDenied = function() {
+                self._page_access_denied.call(self, request, response);
+            };
+            next();
+        };
+    });
     Controller.middleware([
         function only_middleware(options) {
             var self = this,

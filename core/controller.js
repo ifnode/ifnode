@@ -47,25 +47,32 @@ Controller.fn._default_config = {
     //ajax: ,
 };
 Controller.fn._config_processors = [];
+Controller.fn._populates = [];
 Controller.fn._middlewares = [];
 
 Controller.process_config = function(processor) {
     this.fn._config_processors.push(processor);
 };
-Controller.middleware = function(middlewares) {
-    var self = this;
 
-    if(!Array.isArray(middlewares)) {
-        middlewares = [middlewares];
+var add_fn = function(list, fns) {
+    if(!Array.isArray(fns)) {
+        fns = [fns];
     }
 
-    middlewares.forEach(function(middleware) {
-        if(typeof middleware === 'function') {
-            self.fn._middlewares.push(middleware);
+    fns.forEach(function(fn) {
+        if(typeof fn === 'function') {
+            list.push(fn);
         } else {
-            console.warn('Wrong middleware: ', middleware);
+            console.warn('Not a function: ', fn);
         }
     });
+};
+
+Controller.populate = function(fns) {
+    add_fn(Controller.fn._populates, fns);
+};
+Controller.middleware = function(fns) {
+    add_fn(Controller.fn._middlewares, fns);
 };
 
 Controller.fn._page_only_ajax = function(request, response, next) {
@@ -112,7 +119,6 @@ Controller.fn.init = function(config) {
 };
 
 // TODO: make method who init all custom middleware
-
 Controller.middleware([
     function add_special_function(options) {
         var self = this;
@@ -183,7 +189,8 @@ Controller.fn._generate_url = function(method) {
         before_callbacks = this._common_options.before || [],
         user_callbacks = params[2],
         callbacks = [],
-        i, len;
+
+        tmp, i, len;
 
     console.log('method: %s, root: %s, url: %s, options: %s', method, this._root, url, options, user_callbacks);
 
@@ -191,6 +198,9 @@ Controller.fn._generate_url = function(method) {
         user_callbacks[i] = user_callbacks[i].bind(this);
     }
 
+    for(i = 0, len = this._populates.length; i < len; ++i) {
+        callbacks.push(this._populates[i].call(this));
+    }
     for(i = 0, len = this._middlewares.length; i < len; ++i) {
         callbacks.push(this._middlewares[i].call(this, options));
     }
