@@ -1,6 +1,6 @@
 {
     "name": "ifnode",
-    "version": "0.1.13",
+    "version": "1.0.0",
     "description": "Node.js MVC Framework",
     "main": "index.js",
     "scripts": {
@@ -18,17 +18,11 @@
     "license": "MIT",
     "dependencies": {
         "diread": "latest",
-        "express": "4.9.7",
-
-        "jade": "latest",
-
         "async": "latest",
         "lodash": "latest",
         "node-uuid": "latest",
 
-        "redis": "latest",
-        "knex": "latest",
-        "mongoose": "latest"
+        "express": "latest"
     },
     "devDependencies": {
         "mocha": "latest"

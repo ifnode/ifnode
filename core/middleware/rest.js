@@ -102,5 +102,5 @@ REST = function(request, response, next) {
 };
 
 module.exports = function() {
-    return REST
+    return REST;
 };
