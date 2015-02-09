@@ -1,25 +1,4 @@
 - Controller:
-
--- опция only
-var c = app.Controller();
-
-c.get('/login', { only: '?' }, function(req, res, next) {
-    console.log('login page')
-    next()
-});
-c.get('/', function(req, res, next) {
-    console.log('main page')
-});
-
-# ://localhost/login
-незалогиненый юзер:
-login page
-main page
-
-залогиненый юзер:
-main page
-
-
 -- проброс данных параметров в root контроллера
 var insight_controller = app.Controller({ root: '/api/insight/:id' });
 
@@ -59,29 +38,9 @@ insight_controller
     .del('/:element_id', function() {})
     .method(['put', 'patch'], '/:element_id', function() {});
 
--- Model:
 
--- виртуальные модели (модель не связана с базой данных)
-var virtual_model = app.Model({}, 'virtual');
 
 -- Global
-
--- опция components в конфиге приложения
-module.exports = {
-    components: {
-        emailer: {
-            alias: ['e', 'mail'],
-            config: {
-
-            }
-        }
-    }
-}
-...
-var app = require('ifnode')();
-app.e === app.mail === app.emailer
-
-
 -- опции models/controllers для системных настроек (порядок загрузки, алиасы, тип коннектора и пр.)
 module.exports = {
     models: {
@@ -99,20 +58,7 @@ module.exports = {
     }
 }
 
-<<<<<<< HEAD
 
--- policies:
--- кастомные роли юзеров для доступа к роутам контроллера
-
-
--- policies:
--- кастомные роли юзеров для доступа к роутам контроллера
-
-
--- понятие extensions
+-- Extensions
 Добавление готовых нодджс модулей в ифнод или своих кастомных. Экстеншены либо не привязаны к ифноду, либо получают
 из какой-то конфиг
-=======
--- Policies:
--- кастомные роли юзеров для доступа к роутам контроллера
->>>>>>> fc55b20c61b63efd511367d25ab754ef711099a8
