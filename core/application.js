@@ -2,7 +2,40 @@ var fs = require('fs'),
     path = require('path'),
     diread = require('diread'),
     _ = require('lodash'),
+    express = require('express'),
+
     helper = require('./helper'),
+    define_properties = function(Application, properties) {
+        var prototype_new_properties = {};
+
+        Object.keys(properties).forEach(function(property_name) {
+            var default_properties = {
+                    //configurable: false,
+                    enumerable: true,
+                    //value: undefined,
+                    //writable: false
+                    //get: undefined,
+                    //set: undefined
+                },
+                names = property_name.split(/\s*,\s*/),
+
+                incoming_settings = properties[property_name],
+                property_settings = {};
+
+            if(typeof incoming_settings === 'function') {
+                incoming_settings = { get: incoming_settings };
+            }
+
+            property_settings = _.defaults(incoming_settings, default_properties);
+
+            names.forEach(function(name) {
+                prototype_new_properties[name] = property_settings;
+            });
+        });
+
+        Object.defineProperties(Application.fn, prototype_new_properties);
+        Object.freeze(Application.fn);
+    },
 
     Application = function(options) {
         if(!(this instanceof Application)) {
@@ -15,37 +48,6 @@ Application.make = function(configuration) {
     return new Application(configuration);
 };
 Application.fn = Application.prototype;
-Application.fn._define_properties = function(properties) {
-    var prototype_new_properties = {};
-
-    Object.keys(properties).forEach(function(property_name) {
-        var default_properties = {
-                //configurable: false,
-                enumerable: true,
-                //value: undefined,
-                //writable: false
-                //get: undefined,
-                //set: undefined
-            },
-            names = property_name.split(/\s*,\s*/),
-
-            incoming_settings = properties[property_name],
-            property_settings = {};
-
-        if(typeof incoming_settings === 'function') {
-            incoming_settings = { get: incoming_settings };
-        }
-
-        property_settings = _.defaults(incoming_settings, default_properties);
-
-        names.forEach(function(name) {
-            prototype_new_properties[name] = property_settings;
-        });
-    });
-
-    Object.defineProperties(Application.fn, prototype_new_properties);
-    Object.freeze(Application.fn);
-};
 
 Application.fn._init_config = function(environment) {
     var config_path;
@@ -143,7 +145,7 @@ Application.fn._initialize_middlware = function(middleware_configs, app) {
             app.use(module.apply(module, config));
         },
         init_by_function = function(name, fn) {
-            fn(app, require('express'));
+            fn(app, express);
         };
 
     Object.keys(middleware_configs).forEach(function(middleware_name) {
@@ -173,12 +175,7 @@ Application.fn._initialize_middlware = function(middleware_configs, app) {
 
 // TODO: move to file and make configurable
 Application.fn._init_server = function() {
-    var path = require('path'),
-        fs = require('fs'),
-
-        express = require('express'),
-
-        app = express(),
+    var app = express(),
         config = this._config,
         app_config = config.application,
 
@@ -316,23 +313,13 @@ Application.fn._initialize_controllers = function() {
 };
 Application.fn._compile_controllers = function() {
     var app_controllers = this._controllers,
-        app_controllers_ids = Object.keys(app_controllers),
-        app_server = this._server,
+        app_server = this._server;
 
-        last_controller;
-
-    if(!app_controllers_ids.length) {
-        return;
-    }
-
-    last_controller = app_controllers[_.last(app_controllers_ids)];
-    app_controllers_ids.forEach(function(controller_id) {
-        var controller = app_controllers[controller_id];
+    Object.keys(app_controllers).forEach(function(controller_id) {
+        var controller = app_controllers[controller_id]
 
         app_server.use(controller.root, controller.router);
     });
-
-    app_server.use(last_controller.error_handler.bind(app_server));
 };
 Application.fn._init_controllers = function() {
     this._controllers = {};
@@ -569,23 +556,64 @@ Application.fn.load = function(parts) {
             'components': '_init_components',
             'models': '_init_models',
             'controllers': '_init_controllers'
+        },
+        load_module = {
+            'components': ['component'],
+            'models': ['schema'],
+            'controllers': ['controller']
+        },
+
+        list_of_modules = this._modules,
+        init_modules = function(type) {
+            var modules = helper.to_array(list_of_modules),
+
+                load_module = {
+                    'schema': require('./model_schema'),
+                    'component': require('./component'),
+                    'controller': require('./controller')
+                },
+
+                args = load_module[type];
+
+            modules.forEach(function(module) {
+                var result;
+
+                if(!(type in module)) {
+                    return;
+                }
+
+                switch(type) {
+                    case 'schema':
+                        result = args();
+
+                        module[type](self, result);
+                        self.attach_schema(result);
+                        break;
+                    case 'component':
+                        result = module[type](self, args);
+                        self.attach_component(result);
+                        break;
+                    default:
+                        console.log(module[type](self, args));
+                }
+            });
         };
 
-    if(!Array.isArray(parts)) {
-        parts = [parts];
-    }
-
-    parts.forEach(function(load_part) {
+    helper.to_array(parts).forEach(function(load_part) {
+        load_module[load_part].forEach(init_modules);
         self[load_hash[load_part]]();
     });
 
     return this;
 };
 
-require('./extension')(Application);
+require('./application/extension')(Application);
+require('./application/model')(Application);
+require('./application/component')(Application);
+require('./application/controller')(Application);
 
 // TODO: think how make properties not editable
-Application.fn._define_properties({
+define_properties(Application, {
     'config': function() { return _.clone(this._config) },
     'server': function() { return this._server },
 

@@ -13,6 +13,8 @@ Component.fn.init = function(options) {
     this._id = helper.uid();
     this.name = options.name;
 
+    options.config = options.config || {};
+
     this.alias = options.config.alias || [];
     this.disabled = options.config.disabled || false;
 
