@@ -1,4 +1,5 @@
 var helper = require('./helper'),
+    log = require('./extensions/log'),
 
     _ = require('lodash'),
     async = require('async'),
@@ -190,9 +191,13 @@ Controller.fn._generate_url = function(method) {
         user_callbacks = params[2],
         callbacks = [],
 
-        tmp, i, len;
+        i, len;
 
-    console.log('method: %s, root: %s, url: %s, options: %s', method, this._root, url, options, user_callbacks);
+    log.console('%-7s Access: %-7s Only: %-7s %s',
+        method.toUpperCase(),
+        options.access,
+        options.only,
+        (this._root + url).replace(/\/+/g, '/'));
 
     for(i = 0, len = user_callbacks.length; i < len; ++i) {
         user_callbacks[i] = user_callbacks[i].bind(this);

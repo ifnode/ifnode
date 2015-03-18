@@ -17,6 +17,7 @@
     "author": "ilfroloff <ilfroloff@gmail.com> (https://twitter.com/ilfroloff)",
     "license": "MIT",
     "dependencies": {
+        "sprintf": "latest",
         "diread": "latest",
         "express": "4.9.7",
 

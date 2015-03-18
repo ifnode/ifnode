@@ -39,10 +39,11 @@ var helper = require('./helper'),
                 },
 
                 folders: {
+                    extensions: path.resolve(backend_folder, 'extensions/'),
                     components: path.resolve(backend_folder, 'components/'),
-                        views: path.resolve(backend_folder, 'views/'),
-                        controllers: path.resolve(backend_folder, 'controllers/'),
-                        models: path.resolve(backend_folder, 'models/')
+                    views: path.resolve(backend_folder, 'views/'),
+                    controllers: path.resolve(backend_folder, 'controllers/'),
+                    models: path.resolve(backend_folder, 'models/')
                 }
             },
 

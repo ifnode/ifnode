@@ -495,6 +495,7 @@ Application.fn._start_server = function(callback) {
 
 Application.fn.run = function(callback) {
     this.load([
+        'extensions',
         'components',
         'models',
         'controllers'
@@ -516,6 +517,7 @@ Application.fn.init = Application.fn.initialize = function(app_config) {
 Application.fn.load = function(parts) {
     var self = this,
         load_hash = {
+            'extensions': '_initialize_extensions',
             'components': '_init_components',
             'models': '_init_models',
             'controllers': '_init_controllers'
@@ -531,6 +533,8 @@ Application.fn.load = function(parts) {
 
     return this;
 };
+
+require('./extension')(Application);
 
 // TODO: think how make properties not editable
 Application.fn._define_properties({
