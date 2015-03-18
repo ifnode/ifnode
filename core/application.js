@@ -184,80 +184,18 @@ Application.fn._init_server = function() {
         middleware_configs = app_config.middleware,
 
         project_folder = this._project_folder,
-        backend_folder = this._backend_folder,
         views_folder = app_config.folders.views,
 
-        rest = require('./middleware/rest'),
-        auth;
+        rest = require('./middleware/rest');
+
+    app.use(rest());
 
     if(middleware_configs) {
         this._initialize_middlware(middleware_configs, app);
-    } else {
-        // TODO: support previous versions of ifnode
-
-        var multiparty = require('connect-multiparty'), // upload
-            body_parser = require('body-parser'),
-            cookie_parser = require('cookie-parser'),
-            session = require('express-session'),
-            serve_favicon = require('serve-favicon'),
-            serve_static = require('serve-static'),
-
-            body_parser_config = app_config.body || app_config.bodyParser,
-            cookie_parser_config = app_config.cookie_parser || app_config.cookieParser,
-            multiparty_config = app_config.multiparty,
-            session_config = app_config.session,
-            app_static_files = app_config.statics;
-
-        if(typeof app_config.favicon === 'string') {
-            app.use(serve_favicon(app_config.favicon));
-        }
-
-        app.use(body_parser.urlencoded({ extended: true }));
-        app.use(body_parser.json());
-        app.use(multiparty());
-        app.use(cookie_parser());
-
-        if(app_config.session) {
-            if(session_config.store) {
-                (function() {
-                    var store_db = config.by_path(session_config.store),
-                        store;
-
-                    if(!store_db) {
-                        console.warn('Cannot find database config. Check please');
-                        return;
-                    }
-
-                    if(store_db.type === 'mongoose') {
-                        store = require('connect-mongo')(session);
-                        session_config.store = new store({
-                            db: store_db.config.database,
-                            port: store_db.config.port
-                        });
-                    }
-                    // TODO: add more db types for session stores
-                }());
-            }
-            app.use(session(app_config.session));
-        }
-
-        if(Array.isArray(app_static_files)) {
-            app_static_files.forEach(function(file_path) {
-                app.use(serve_static(path.resolve(project_folder, file_path)));
-            });
-        } else if(typeof app_static_files === 'string') {
-            app.use(serve_static(path.resolve(project_folder, app_static_files)));
-        }
-
-        if(app_config.debug === true) {
-            // TODO: check logger module (check node-bunyan)
-            //app.use(logger('dev'));
-        }
     }
 
     app.set('view engine', app_config.view_engine || 'jade');
     app.set('views', path.resolve(project_folder, views_folder));
-    app.use(rest());
 
     this._server = app;
     this._http_server = this._init_http_server();
@@ -288,13 +226,23 @@ Application.fn._initialize_controllers = function() {
 };
 Application.fn._compile_controllers = function() {
     var app_controllers = this._controllers,
-        app_server = this._server;
+        app_controllers_ids = Object.keys(app_controllers),
+        app_server = this._server,
 
-    Object.keys(app_controllers).forEach(function(controller_id) {
-        var controller = app_controllers[controller_id]
+        last_controller;
+
+    if(!app_controllers_ids.length) {
+        return;
+    }
+
+    last_controller = app_controllers[_.last(app_controllers_ids)];
+    app_controllers_ids.forEach(function(controller_id) {
+        var controller = app_controllers[controller_id];
 
         app_server.use(controller.root, controller.router);
     });
+
+    app_server.use(last_controller.error_handler.bind(app_server));
 };
 Application.fn._init_controllers = function() {
     this._controllers = {};

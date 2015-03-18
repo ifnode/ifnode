@@ -267,6 +267,25 @@ Controller.fn.method = function(methods/*, url, options, callbacks */) {
     });
 });
 
+Controller.fn.error_handler = function(err, request, response, next) {
+    log.console('[ifnode] [controller] Default error handler');
+    next(err);
+};
+Controller.fn.error = function(custom_error_handler) {
+    var self = this,
+        handler = typeof custom_error_handler === 'function'?
+            custom_error_handler :
+            this.error_handler;
+
+    this.error_handler = function(err, request, response, next) {
+        handler.apply(self, arguments);
+    };
+
+    this._router.use(this.error_handler.bind(this));
+
+    return this;
+};
+
 Controller.fn.end = function() {
     this.use(this._page_not_found.bind(this));
     return this;
