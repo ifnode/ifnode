@@ -51,6 +51,9 @@ Controller.fn._config_processors = [];
 Controller.fn._populates = [];
 Controller.fn._middlewares = [];
 
+Controller.redefine_default_config = function(config) {
+    _.extend(Controller.fn._default_config, config);
+};
 Controller.process_config = function(processor) {
     this.fn._config_processors.push(processor);
 };

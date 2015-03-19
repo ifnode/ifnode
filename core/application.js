@@ -216,11 +216,71 @@ Application.fn._initialize_controller = function() {
     this._controller = Controller;
 };
 Application.fn._initialize_controllers = function() {
+    var Controller = this._controller;
     var controllers_folder = this.config.application.folders.controllers;
+    var read_controllers = function(main_folder, callback) {
+        var fs = require('fs'),
+            path = require('path'),
 
-    diread({
-        src: path.resolve(this._project_folder, controllers_folder)
-    }).each(function(controller_file_path) {
+            regularize = function(directory_path, list) {
+                var is_directory = function(file_name) {
+                        var file_path = path.join(directory_path, file_name);
+
+                        return fs.statSync(file_path).isDirectory();
+                    },
+                    regularized = {
+                        directories: [],
+                        files: []
+                    };
+
+                list.forEach(function(file_name) {
+                    if(is_directory(file_name)) {
+                        regularized.directories.push(file_name);
+                    } else {
+                        regularized.files.push(file_name);
+                    }
+                });
+
+                return regularized;
+            },
+
+            read_directory = function(dir_path) {
+                var files = fs.readdirSync(dir_path),
+                    types = regularize(dir_path, files);
+
+                types.directories.forEach(function(directory_name) {
+                    read_directory(path.join(dir_path, directory_name));
+                });
+
+                types.files.forEach(function(file_name) {
+                    var full_file_path = path.join(dir_path, file_name),
+                        relavite_path = full_file_path.replace(main_folder, '');
+
+                    callback(full_file_path, relavite_path);
+                });
+            };
+
+        try {
+            read_directory(main_folder);
+        } catch(err) {
+        }
+    };
+
+    read_controllers(path.resolve(this._project_folder, controllers_folder), function(controller_file_path, relative_path) {
+        var root = relative_path.split('.')[0].replace('~', ''),
+            name = path.basename(root),
+
+            config = {};
+
+        if(name !== '') {
+            config.name = name;
+        }
+        if(root !== '') {
+            config.root = root;
+        }
+
+        Controller.redefine_default_config(config);
+
         require(controller_file_path);
     });
 };
