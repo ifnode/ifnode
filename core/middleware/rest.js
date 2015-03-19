@@ -1,5 +1,18 @@
 var _ = require('lodash'),
 
+    intersection = function() {
+        var args = [].slice.call(arguments),
+            intersected = [];
+
+        args[0].forEach(function(name) {
+            if(name in args[1]) {
+                intersected.push(name);
+            }
+        });
+
+        return intersected;
+    },
+
     request_populate = function(request) {
         if(request.method === 'GET') {
             request.data = request.query;
@@ -55,52 +68,55 @@ var _ = require('lodash'),
                 resp: data
             });
         };
-    },
+    };
 
-    REST;
+var populate = function(options, next) {
+    var populated_object = options.populated_object,
+        rewrited = intersection(options.list, populated_object),
+        error = null;
 
-REST = function(request, response, next) {
-    var intersection = function() {
-            var args = [].slice.call(arguments),
-                intersected = [];
-
-            args[0].forEach(function(name) {
-                if(name in args[1]) {
-                    intersected.push(name);
-                }
-            });
-
-            return intersected;
-        },
-
-        request_populate_list = [
-            'data'
-        ],
-        rewrited_request_keys = intersection(request_populate_list, request),
-
-        response_populate_list = [
-            'ok',
-            'fail',
-            'err', 'error',
-
-            'forbidden',
-            'not_found', 'notFound'
-        ],
-        rewrited_response_keys = intersection(response_populate_list, response);
-
-    if(!rewrited_request_keys.length && !rewrited_response_keys.length) {
-        request_populate(request);
-        response_populate(response);
+    if(!rewrited.length) {
+        options.populate_function(populated_object);
     } else {
-        throw _.template('Some module rewrite response. Request: <%= req_keys %>. Response: <%= res_keys %>')({
-            req_keys: rewrited_request_keys,
-            res_keys: rewrited_response_keys
-        });
+        error = new Error(_.template('Some module rewrite response. <%= type %>: <%= keys %>.')({
+            type: options.type,
+            keys: rewrited
+        }));
     }
 
-    next();
+    next(error);
 };
 
-module.exports = function() {
-    return REST
+var middleware = function(callback) {
+    return function(options) {
+        return callback;
+    };
+};
+
+module.exports = {
+    request: middleware(function(request, response, next) {
+        populate({
+            type: 'Request',
+            populated_object: request,
+            list: [
+                'data'
+            ],
+            populate_function: request_populate
+        }, next);
+    }),
+    response: middleware(function(request, response, next) {
+        populate({
+            type: 'Response',
+            populated_object: response,
+            list: [
+                'ok',
+                'fail',
+                'err', 'error',
+
+                'forbidden',
+                'not_found', 'notFound'
+            ],
+            populate_function: response_populate
+        }, next);
+    })
 };

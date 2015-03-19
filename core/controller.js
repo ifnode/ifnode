@@ -44,16 +44,13 @@ Controller.fn.is_callback = function(callback) {
 };
 
 Controller.fn._default_config = {
-    root: '/',
+    root: '/'
     //ajax: ,
 };
 Controller.fn._config_processors = [];
 Controller.fn._populates = [];
 Controller.fn._middlewares = [];
 
-Controller.redefine_default_config = function(config) {
-    _.extend(Controller.fn._default_config, config);
-};
 Controller.process_config = function(processor) {
     this.fn._config_processors.push(processor);
 };
@@ -298,9 +295,6 @@ Controller.fn.use = function(callbacks) {
     this._router.use.apply(this._router, callbacks);
     return this;
 };
-
-//Controller.fn.to = function(controller) {
-//};
 
 Controller.fn.before = function(callbacks) {
     callbacks = helper.to_array(arguments);

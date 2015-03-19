@@ -1,4 +1,5 @@
-var path = require('path'),
+var fs = require('fs'),
+    path = require('path'),
     diread = require('diread'),
     _ = require('lodash'),
     helper = require('./helper'),
@@ -188,10 +189,10 @@ Application.fn._init_server = function() {
 
         rest = require('./middleware/rest');
 
-    app.use(rest());
-
+    app.use(rest.response());
     if(middleware_configs) {
         this._initialize_middlware(middleware_configs, app);
+        app.use(rest.request());
     }
 
     app.set('view engine', app_config.view_engine || 'jade');
@@ -216,73 +217,101 @@ Application.fn._initialize_controller = function() {
     this._controller = Controller;
 };
 Application.fn._initialize_controllers = function() {
-    var Controller = this._controller;
-    var controllers_folder = this.config.application.folders.controllers;
-    var read_controllers = function(main_folder, callback) {
-        var fs = require('fs'),
-            path = require('path'),
+    var self = this,
 
-            regularize = function(directory_path, list) {
-                var is_directory = function(file_name) {
-                        var file_path = path.join(directory_path, file_name);
+        controllers_folder = this.config.application.folders.controllers,
+        controllers_full_path = path.resolve(this._project_folder, controllers_folder),
+        first_loaded_file = '!',
+        last_loaded_file = '~',
 
-                        return fs.statSync(file_path).isDirectory();
-                    },
-                    regularized = {
-                        directories: [],
-                        files: []
-                    };
+        without_extension = function(path) {
+            return path.split('.')[0];
+        },
+        read_controllers = function(main_folder, callback) {
+            var regularize = function(directory_path, list) {
+                    var is_directory = function(file_name) {
+                            var file_path = path.join(directory_path, file_name);
 
-                list.forEach(function(file_name) {
-                    if(is_directory(file_name)) {
-                        regularized.directories.push(file_name);
-                    } else {
-                        regularized.files.push(file_name);
-                    }
-                });
+                            return fs.statSync(file_path).isDirectory();
+                        },
+                        regularized = {
+                            start: false,
+                            directories: [],
+                            files: [],
+                            end: false
+                        };
 
-                return regularized;
-            },
+                    list.forEach(function(file_name) {
+                        if(is_directory(file_name)) {
+                            regularized.directories.push(file_name);
+                        } else if(first_loaded_file === without_extension(path.basename(file_name))) {
+                            regularized.start = file_name;
+                        } else if(last_loaded_file === without_extension(path.basename(file_name))) {
+                            regularized.end = file_name;
+                        } else {
+                            regularized.files.push(file_name);
+                        }
+                    });
 
-            read_directory = function(dir_path) {
-                var files = fs.readdirSync(dir_path),
-                    types = regularize(dir_path, files);
+                    return regularized;
+                },
 
-                types.directories.forEach(function(directory_name) {
-                    read_directory(path.join(dir_path, directory_name));
-                });
-
-                types.files.forEach(function(file_name) {
-                    var full_file_path = path.join(dir_path, file_name),
-                        relavite_path = full_file_path.replace(main_folder, '');
+                read_file = function(full_file_path) {
+                    var relavite_path = full_file_path.replace(main_folder, '');
 
                     callback(full_file_path, relavite_path);
-                });
-            };
+                },
 
-        try {
+                read_directory = function(dir_path) {
+                    var files = fs.readdirSync(dir_path),
+                        read_parts = regularize(dir_path, files);
+
+                    if(read_parts.start) {
+                        read_file(path.join(dir_path, read_parts.start));
+                    }
+
+                    read_parts.directories.forEach(function(directory_name) {
+                        read_directory(path.join(dir_path, directory_name));
+                    });
+
+                    read_parts.files.forEach(function(file_name) {
+                        read_file(path.join(dir_path, file_name));
+                    });
+
+                    if(read_parts.end) {
+                        read_file(path.join(dir_path, read_parts.end));
+                    }
+                };
+
             read_directory(main_folder);
-        } catch(err) {
-        }
-    };
+        };
 
-    read_controllers(path.resolve(this._project_folder, controllers_folder), function(controller_file_path, relative_path) {
-        var root = relative_path.split('.')[0].replace('~', ''),
-            name = path.basename(root),
+    this._autoformed_controller_config = {};
 
-            config = {};
+    if(fs.existsSync(controllers_full_path)) {
+        read_controllers(controllers_full_path, function(controller_file_path, relative_path) {
+            var root = without_extension(relative_path)
+                    .replace(first_loaded_file, '')
+                    .replace(last_loaded_file, ''),
+                name = path.basename(root),
 
-        if(name !== '') {
-            config.name = name;
-        }
-        if(root !== '') {
-            config.root = root;
-        }
+                config = {};
 
-        Controller.redefine_default_config(config);
+            if(name !== '') {
+                config.name = name;
+            }
+            if(root !== '') {
+                if(root[root.length - 1] !== '/') {
+                    root += '/';
+                }
+                config.root = root;
+            }
 
-        require(controller_file_path);
-    });
+            self._autoformed_controller_config = config;
+
+            require(controller_file_path);
+        });
+    }
 };
 Application.fn._compile_controllers = function() {
     var app_controllers = this._controllers,
@@ -311,7 +340,17 @@ Application.fn._init_controllers = function() {
     this._compile_controllers();
 };
 Application.fn.Controller = function(controller_config) {
-    var controller = this._controller(controller_config);
+    if(!_.isPlainObject(controller_config)) {
+        controller_config = {}
+    }
+
+    var autoformed_controller_config = this._autoformed_controller_config,
+        config = _.defaults(controller_config, autoformed_controller_config),
+        controller = this._controller(config);
+
+    if(controller.name in this._controllers) {
+        throw new Error('[ifnode] [controller] Controller with name "' + controller.name + '" already set.');
+    }
 
     this._controllers[controller.name] = controller;
 
