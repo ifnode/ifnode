@@ -292,7 +292,8 @@ Application.fn._initialize_controllers = function() {
         read_controllers(controllers_full_path, function(controller_file_path, relative_path) {
             var root = without_extension(relative_path)
                     .replace(first_loaded_file, '')
-                    .replace(last_loaded_file, ''),
+                    .replace(last_loaded_file, '')
+                    .replace(/\\/g, '/'),
                 name = path.basename(root),
 
                 config = {};
