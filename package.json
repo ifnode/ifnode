@@ -17,19 +17,19 @@
     "author": "ilfroloff <ilfroloff@gmail.com> (https://twitter.com/ilfroloff)",
     "license": "MIT",
     "dependencies": {
-        "sprintf": "latest",
-        "diread": "latest",
-        "express": "4.9.7",
+        "sprintf": "0.1.5",
+        "diread": "0.0.3",
+        "express": "4.12.3",
 
-        "jade": "latest",
+        "jade": "1.9.2",
 
-        "async": "latest",
-        "lodash": "latest",
-        "node-uuid": "latest",
+        "async": "0.9.0",
+        "lodash": "3.5.0",
+        "node-uuid": "1.4.3",
 
-        "redis": "latest",
-        "knex": "latest",
-        "mongoose": "latest"
+        "redis": "0.12.1",
+        "knex": "0.7.6",
+        "mongoose": "3.8.25"
     },
     "devDependencies": {
         "mocha": "latest"
