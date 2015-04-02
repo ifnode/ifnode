@@ -1,7 +1,7 @@
-var fs = require('fs'),
-    path = require('path'),
-    diread = require('diread'),
+var path = require('path'),
     _ = require('lodash'),
+    express = require('express'),
+
     helper = require('./helper'),
 
     Application = function(options) {
@@ -66,7 +66,7 @@ Application.fn._init_http_server = function() {
     return http.Server(this._server);
 };
 
-Application.fn._initialize_middlware = function(middleware_configs, app) {
+Application.fn._initialize_middleware = function(middleware_configs, app) {
     var config = this._config,
         app_config = config.application,
         project_folder = this._project_folder,
@@ -173,12 +173,7 @@ Application.fn._initialize_middlware = function(middleware_configs, app) {
 
 // TODO: move to file and make configurable
 Application.fn._init_server = function() {
-    var path = require('path'),
-        fs = require('fs'),
-
-        express = require('express'),
-
-        app = express(),
+    var app = express(),
         config = this._config,
         app_config = config.application,
 
@@ -191,7 +186,7 @@ Application.fn._init_server = function() {
 
     app.use(rest.response());
     if(middleware_configs) {
-        this._initialize_middlware(middleware_configs, app);
+        this._initialize_middleware(middleware_configs, app);
         app.use(rest.request());
     }
 
@@ -200,325 +195,6 @@ Application.fn._init_server = function() {
 
     this._server = app;
     this._http_server = this._init_http_server();
-};
-
-Application.fn._initialize_controller = function() {
-    var self = this,
-        controller_drivers_folder = path.resolve(this._ifnode_core_folder, 'controller-drivers/'),
-        Controller = require('./controller');
-
-    if(this._config.application && this._config.application.ws) {
-        require(path.resolve(controller_drivers_folder, 'ws'))(self, Controller);
-    }
-    if(this._config.components && this._config.components.auth) {
-        require(path.resolve(controller_drivers_folder, 'auth'))(self, Controller);
-    }
-
-    this._controller = Controller;
-};
-Application.fn._initialize_controllers = function() {
-    var self = this,
-
-        controllers_folder = this.config.application.folders.controllers,
-        controllers_full_path = path.resolve(this._project_folder, controllers_folder),
-        first_loaded_file = '!',
-        last_loaded_file = '~',
-
-        without_extension = function(path) {
-            return path.split('.')[0];
-        },
-        read_controllers = function(main_folder, callback) {
-            var regularize = function(directory_path, list) {
-                    var is_directory = function(file_name) {
-                            var file_path = path.join(directory_path, file_name);
-
-                            return fs.statSync(file_path).isDirectory();
-                        },
-                        regularized = {
-                            start: false,
-                            directories: [],
-                            files: [],
-                            end: false
-                        };
-
-                    list.forEach(function(file_name) {
-                        if(is_directory(file_name)) {
-                            regularized.directories.push(file_name);
-                        } else if(first_loaded_file === without_extension(path.basename(file_name))) {
-                            regularized.start = file_name;
-                        } else if(last_loaded_file === without_extension(path.basename(file_name))) {
-                            regularized.end = file_name;
-                        } else {
-                            regularized.files.push(file_name);
-                        }
-                    });
-
-                    return regularized;
-                },
-
-                read_file = function(full_file_path) {
-                    var relavite_path = full_file_path.replace(main_folder, '');
-
-                    callback(full_file_path, relavite_path);
-                },
-
-                read_directory = function(dir_path) {
-                    var files = fs.readdirSync(dir_path),
-                        read_parts = regularize(dir_path, files);
-
-                    if(read_parts.start) {
-                        read_file(path.join(dir_path, read_parts.start));
-                    }
-
-                    read_parts.directories.forEach(function(directory_name) {
-                        read_directory(path.join(dir_path, directory_name));
-                    });
-
-                    read_parts.files.forEach(function(file_name) {
-                        read_file(path.join(dir_path, file_name));
-                    });
-
-                    if(read_parts.end) {
-                        read_file(path.join(dir_path, read_parts.end));
-                    }
-                };
-
-            read_directory(main_folder);
-        };
-
-    this._autoformed_controller_config = {};
-
-    if(fs.existsSync(controllers_full_path)) {
-        read_controllers(controllers_full_path, function(controller_file_path, relative_path) {
-            var root = without_extension(relative_path)
-                    .replace(first_loaded_file, '')
-                    .replace(last_loaded_file, '')
-                    .replace(/\\/g, '/'),
-                name = path.basename(root),
-
-                config = {};
-
-            if(name !== '') {
-                config.name = name;
-            }
-            if(root !== '') {
-                if(root[root.length - 1] !== '/') {
-                    root += '/';
-                }
-                config.root = root;
-            }
-
-            self._autoformed_controller_config = config;
-
-            require(controller_file_path);
-        });
-    }
-};
-Application.fn._compile_controllers = function() {
-    var app_controllers = this._controllers,
-        app_controllers_ids = Object.keys(app_controllers),
-        app_server = this._server,
-
-        last_controller;
-
-    if(!app_controllers_ids.length) {
-        return;
-    }
-
-    last_controller = app_controllers[_.last(app_controllers_ids)];
-    app_controllers_ids.forEach(function(controller_id) {
-        var controller = app_controllers[controller_id];
-
-        app_server.use(controller.root, controller.router);
-    });
-
-    app_server.use(last_controller.error_handler.bind(app_server));
-};
-Application.fn._init_controllers = function() {
-    this._controllers = {};
-    this._initialize_controller();
-    this._initialize_controllers();
-    this._compile_controllers();
-};
-Application.fn.Controller = function(controller_config) {
-    if(!_.isPlainObject(controller_config)) {
-        controller_config = {}
-    }
-
-    var autoformed_controller_config = this._autoformed_controller_config,
-        config = _.defaults(controller_config, autoformed_controller_config),
-        controller = this._controller(config);
-
-    if(controller.name in this._controllers) {
-        throw new Error('[ifnode] [controller] Controller with name "' + controller.name + '" already set.');
-    }
-
-    this._controllers[controller.name] = controller;
-
-    return controller;
-};
-
-Application.fn._initialize_schemas = function() {
-    var path = require('path'),
-        model_drivers = require('./model-drivers')({
-            user_model_drivers_folder: path.resolve(this._backend_folder, 'components/connections')
-        }),
-
-        self = this,
-        db = this._config.db,
-        app_schemas = this._schemas = {},
-
-        db_connections_names;
-
-    if(!db) {
-        return;
-    }
-
-    db_connections_names = Object.keys(db);
-    if(!db_connections_names.length) {
-        return;
-    }
-
-    self._default_creator = db_connections_names[0];
-    db_connections_names.forEach(function(db_connection_name) {
-        var db_config = db[db_connection_name];
-
-        if(db_config.default) {
-            self._default_creator = db_connection_name;
-        }
-
-        app_schemas[db_connection_name] = model_drivers(db_config);
-    });
-};
-Application.fn._initialize_models = function() {
-    var models_folder = this.config.application.folders.models;
-
-    diread({
-        src: path.resolve(this._project_folder, models_folder)
-    }).each(function(model_file_path) {
-        require(model_file_path);
-    });
-};
-Application.fn._compile_models = function() {
-    var model_prototypes = this._model_prototypes,
-        app_models = this._models,
-
-        compile;
-
-    compile = function(model_id) {
-        var model_prototype = model_prototypes[model_id],
-            compiled_model = model_prototype.__schema.compile(),
-            options = model_prototype.options;
-
-        app_models[model_id] = compiled_model;
-
-        if(options.alias) {
-            helper.to_array(options.alias).forEach(function(alias) {
-                if(alias in app_models) {
-                    throw new Error('Alias {' + alias + '} already busy');
-                }
-
-                app_models[alias] = compiled_model;
-            });
-        }
-    };
-
-    Object.keys(model_prototypes).forEach(compile);
-    delete this.__model_prototypes;
-};
-Application.fn._init_models = function() {
-    this._model_prototypes = {};
-
-    this._models = {};
-    this._initialize_schemas();
-    this._initialize_models();
-    this._compile_models();
-};
-Application.fn.Model = function(model_config, options) {
-    if(typeof options !== 'undefined') {
-        if(helper.is_plain_object(options)) {
-            options.type = options.type || this._default_creator;
-        } else {
-            options = { type: options };
-        }
-    } else {
-        options = { type: this._default_creator };
-    }
-
-    var schema = this._schemas[options.type](model_config);
-
-    this._model_prototypes[schema.table] = {
-        __schema: schema,
-        options: options
-    };
-
-    return schema;
-};
-
-Application.fn._initialize_component_class = function() {
-    this._component_class = require('./component');
-};
-Application.fn._initialize_components = function() {
-    var custom_components_folder = this.config.application.folders.components,
-
-        core_components_path = path.resolve(this._ifnode_core_folder, 'components/'),
-        custom_components_path = path.resolve(this._project_folder, custom_components_folder),
-
-        cb = function(component_file_path) {
-            require(component_file_path);
-        };
-
-    diread({ src: core_components_path }).each(cb);
-    diread({ src: custom_components_path }).each(cb);
-};
-Application.fn._attach_components = function() {
-    var self = this,
-        app_components = self._components;
-
-    Object.keys(app_components).forEach(function(component_key) {
-        var component = app_components[component_key],
-            component_aliases;
-
-        if(component.disabled) {
-            return;
-        }
-
-        component_aliases = component.alias;
-
-        if(typeof component.initialize === 'function') {
-            component.initialize(component.config);
-        };
-
-        self[component.name] = component;
-
-        component_aliases.forEach(function(alias) {
-            if(alias in self) {
-                throw new Error('Alias %s already busy in app', alias);
-            }
-
-            self[alias] = component;
-        });
-    });
-};
-
-// TODO: think about helper and write components initialize
-Application.fn._init_components = function() {
-    this._components = {};
-    this._initialize_component_class();
-    this._initialize_components();
-    this._attach_components();
-};
-Application.fn.Component = function(component_options) {
-    var component = this._components[component_options.name];
-
-    if(component) {
-        return component;
-    }
-
-    component_options.config = this._config.components[component_options.name] || {};
-    component = this._component_class(component_options);
-
-    return this._components[component.name] = component;
 };
 
 Application.fn._start_server = function(callback) {
@@ -542,12 +218,7 @@ Application.fn._start_server = function(callback) {
 };
 
 Application.fn.run = function(callback) {
-    this.load([
-        'extensions',
-        'components',
-        'models',
-        'controllers'
-    ]);
+    this.load();
     this._start_server(callback);
 };
 
@@ -562,27 +233,91 @@ Application.fn.init = Application.fn.initialize = function(app_config) {
     this._init_config(app_config.env || app_config.environment);
     this._init_server();
 };
-Application.fn.load = function(parts) {
+Application.fn.load = function() {
     var self = this,
         load_hash = {
-            'extensions': '_initialize_extensions',
             'components': '_init_components',
             'models': '_init_models',
             'controllers': '_init_controllers'
+        },
+        load_module = {
+            'components': ['component'],
+            'models': ['schema'],
+            'controllers': ['controller']
+        },
+
+        list_of_modules,
+        init_modules = function(type) {
+            var load_module = {
+                    'schema': require('./model_schema'),
+                    'component': self.Component.bind(self),
+                    'controller': require('./controller')
+                },
+
+                args = load_module[type];
+
+            list_of_modules.forEach(function(module) {
+                var result;
+
+                if(!(type in module)) {
+                    return;
+                }
+
+                switch(type) {
+                    case 'schema':
+                        result = args();
+
+                        module[type](self, result);
+                        self.attach_schema(result);
+                        break;
+                    case 'component':
+                    case 'controller':
+                        module[type](self, args);
+                        break;
+                    default:
+                        console.warn('[ifnode] [module] Unknown module type: ' + type);
+                }
+            });
+        },
+
+        require_module = function(module_name) {
+            var module;
+
+            try {
+                module = require(module_name);
+            } catch(e) {
+                module = self.ext(module_name);
+            }
+
+            return module;
         };
 
-    if(!Array.isArray(parts)) {
-        parts = [parts];
-    }
+    this._initialize_extensions();
 
-    parts.forEach(function(load_part) {
+    list_of_modules = this._modules = this._modules.map(function(module) {
+        console.log(module);
+        return typeof module === 'string'? require_module(module) : module;
+    });
+
+    [
+        'components',
+        'models',
+        'controllers'
+    ].forEach(function(load_part) {
+        load_module[load_part].forEach(init_modules);
         self[load_hash[load_part]]();
     });
 
     return this;
 };
+Application.fn.register = function(list_of_modules) {
+    this._modules = helper.to_array(list_of_modules);
+};
 
-require('./extension')(Application);
+require('./application/extensions')(Application);
+require('./application/components')(Application);
+require('./application/models')(Application);
+require('./application/controllers')(Application);
 
 // TODO: think how make properties not editable
 Application.fn._define_properties({

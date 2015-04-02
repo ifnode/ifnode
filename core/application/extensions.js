@@ -41,6 +41,6 @@ module.exports = function(Application) {
             return require(this._extensions[name]);
         }
 
-        console.warn('[ifnode] [extensions] Cannot find extension with name "' + name + '"');
+        throw new Error('[ifnode] [extensions] Cannot find extension with name "' + name + '"');
     };
 };

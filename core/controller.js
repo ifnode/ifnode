@@ -3,7 +3,21 @@ var helper = require('./helper'),
 
     _ = require('lodash'),
     async = require('async'),
-    express = require('express');
+    express = require('express'),
+
+    add_fn = function(list, fns) {
+        if(!Array.isArray(fns)) {
+            fns = [fns];
+        }
+
+        fns.forEach(function(fn) {
+            if(typeof fn === 'function') {
+                list.push(fn);
+            } else {
+                console.warn('Not a function: ', fn);
+            }
+        });
+    };
 
 var Controller = function(config) {
     if(!(this instanceof Controller)) {
@@ -13,35 +27,6 @@ var Controller = function(config) {
 };
 
 Controller.fn = Controller.prototype;
-Controller.fn.is_url = function(url) {
-    if(_.isUndefined(url)) {
-        return false;
-    }
-    if(!_.isString(url)) {
-        throw new Error('Url wrong type. Must be string');
-    }
-    return true;
-};
-Controller.fn._is_options = Controller.fn._is_config = function(obj) {
-//  if(_.isUndefined(obj)) {
-//    return false;
-//  }
-//
-//  if(!helper.is_plain_object(obj)) {
-//    throw new Error('Access option wrong type. Must be object');
-//  }
-//
-//  return true;
-    return helper.is_plain_object(obj);
-};
-Controller.fn.is_callback = function(callback) {
-//  if(!_.isFunction(callback)) {
-//    throw new Error('Callback wrong type. Must be only function');
-//  }
-//
-//  return true;
-    return _.isFunction(callback);
-};
 
 Controller.fn._default_config = {
     root: '/'
@@ -53,20 +38,6 @@ Controller.fn._middlewares = [];
 
 Controller.process_config = function(processor) {
     this.fn._config_processors.push(processor);
-};
-
-var add_fn = function(list, fns) {
-    if(!Array.isArray(fns)) {
-        fns = [fns];
-    }
-
-    fns.forEach(function(fn) {
-        if(typeof fn === 'function') {
-            list.push(fn);
-        } else {
-            console.warn('Not a function: ', fn);
-        }
-    });
 };
 
 Controller.populate = function(fns) {
@@ -89,11 +60,11 @@ Controller.fn._page_not_found = function(request, response, next) {
 Controller.fn._process_config = function(controller_config) {
     var self = this;
 
-    if(!this._is_config(controller_config)) {
+    if(!_.isPlainObject(controller_config)) {
         controller_config = this._default_config;
     }
 
-    controller_config.root = this.is_url(controller_config.root) ?
+    controller_config.root = _.isString(controller_config.root) ?
         controller_config.root :
         this._default_config.root;
 
@@ -160,17 +131,17 @@ Controller.middleware([
 Controller.fn._regulize_route_params = function(args) {
     var url, options, callbacks;
 
-    if(this.is_callback(args[0])) {
+    if(_.isFunction(args[0])) {
         url = '/';
         options = _.clone(this._common_options);
         callbacks = args;
-    } else if(this._is_options(args[0])) {
+    } else if(_.isPlainObject(args[0])) {
         url = '/';
         options = _.extend(_.clone(this._common_options), args[0]);
         callbacks = args.slice(1);
     } else {
         url = args[0];
-        if(this._is_options(args[1])) {
+        if(_.isPlainObject(args[1])) {
             options = _.extend(_.clone(this._common_options), args[1]);
             callbacks = args.slice(2);
         } else {
@@ -217,8 +188,7 @@ Controller.fn._generate_url = function(method) {
     this._router[method](url, function(request, response, next_route) {
         async.eachSeries(callbacks, function(callback, next_callback) {
             var next_handler = function(options) {
-                var is_error = options instanceof Error,
-                    is_plain_object = helper.is_plain_object(options);
+                var is_error = options instanceof Error;
 
                 if(is_error) {
                     return next_route(options);
@@ -294,11 +264,6 @@ Controller.fn.use = function(callbacks) {
     callbacks = helper.to_array(arguments);
     this._router.use.apply(this._router, callbacks);
     return this;
-};
-
-Controller.fn.before = function(callbacks) {
-    callbacks = helper.to_array(arguments);
-    this._common_options.through = callbacks;
 };
 
 Controller.fn.action = function(action_name, handler) {
