@@ -15,15 +15,12 @@ module.exports = function(Application) {
     Application.fn._components = {};
     Application.fn._initialize_components = function() {
         var custom_components_folder = this.config.application.folders.components,
-
-            core_components_path = path.resolve(this._ifnode_core_folder, 'components/'),
             custom_components_path = path.resolve(this._project_folder, custom_components_folder),
 
             cb = function(component_file_path) {
                 require(component_file_path);
             };
 
-        diread({ src: core_components_path }).each(cb);
         diread({ src: custom_components_path }).each(cb);
     };
     Application.fn._attach_components = function() {

@@ -1,6 +1,6 @@
-var helper = require('./helper'),
-    path = require('path'),
+var path = require('path'),
     _ = require('lodash'),
+    helper = require('./helper'),
 
     set_defaults = function(params) {
         var obj = params.obj[0],
@@ -18,38 +18,26 @@ var helper = require('./helper'),
     initialize_default_config = function(backend_folder) {
         default_config = {
             site: {
+                //ssl: {
+                //    key: '',
+                //    cert: ''
+                //},
                 local: {
                     host: 'localhost',
                         port: 8080
                 },
                 global: {
                     host: 'localhost',
-                        port: 8080
-
-                    // TODO: support of https
-                    //ssl: {
-                    //    key: 'path/to/file',
-                    //    cert: ''path/to/file
-                    //}
+                    port: 8080
                 }
             },
             application: {
-                session: {
-                    secret: 'it\'s secret'
-                },
-
                 folders: {
                     extensions: path.resolve(backend_folder, 'extensions/'),
                     components: path.resolve(backend_folder, 'components/'),
                     views: path.resolve(backend_folder, 'views/'),
                     controllers: path.resolve(backend_folder, 'controllers/'),
                     models: path.resolve(backend_folder, 'models/')
-                }
-            },
-
-            db: {
-                virtual: {
-                    type: 'virtual'
                 }
             }
         };
@@ -64,7 +52,7 @@ var helper = require('./helper'),
             defaults: default_config.application.folders
         });
     },
-    initialize_site_config = function() {
+    initialize_site_config = function(project_folder) {
         var set_default = function(site_config, default_config) {
             if(!site_config.host) {
                 site_config.host = default_config.host;
@@ -81,14 +69,23 @@ var helper = require('./helper'),
             return;
         }
 
+        if(config.site.ssl) {
+            config.site.ssl.key = path.resolve(project_folder, config.site.ssl.key);
+            config.site.ssl.cert = path.resolve(project_folder, config.site.ssl.cert);
+        }
+
         if(!config.site.local) {
             config.site.local = _.clone(default_config.site.local);
         } else {
             set_default(config.site.local, default_config.site.local);
         }
 
-        helper.location_init(config.site.local);
-        helper.location_init(config.site.global);
+        if(!config.site.global) {
+            config.site.global = _.clone(config.site.local);
+        }
+
+        helper.location_init(config.site.local, !!config.site.ssl);
+        helper.location_init(config.site.global, !!config.site.ssl);
     },
     initialize_session_config = function() {
         var session_config = config.application.session,
@@ -127,19 +124,21 @@ var helper = require('./helper'),
     },
 
     initialize_config = function(options) {
+        initialize_default_config(options.backend_folder);
+
         if(!options.config_path) {
-            config = default_config;
-            return;
+            return config = default_config;
         }
 
-        initialize_default_config(options.backend_folder);
         config = require(options.config_path);
 
         initialize_properties_config();
-        initialize_site_config();
+        initialize_site_config(options.project_folder);
         initialize_session_config();
         initialize_db_config();
         initialize_config_helpers();
+
+        helper.deep_freeze(config);
     };
 
 module.exports = function(options) {

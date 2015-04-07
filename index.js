@@ -1,22 +1,22 @@
-var ifnode = require('./core/application');
+var Application = require('./core/application');
 
-ifnode._default_app_key = null;
-ifnode._apps = {};
+Application._default_app_key = null;
+Application._apps = {};
 
 module.exports = function(options) {
     if(!options) {
-        return ifnode._apps[ifnode._default_app_key];
+        return Application._apps[Application._default_app_key];
     }
     if(typeof options === 'string') {
-        return ifnode._apps[options];
+        return Application._apps[options];
     }
 
-    var app = ifnode.make(options),
+    var app = Application(options),
         key = app.alias || app.id;
 
-    if(!ifnode._default_app_key) {
-        ifnode._default_app_key = key;
+    if(!Application._default_app_key) {
+        Application._default_app_key = key;
     }
 
-    return ifnode._apps[key] = app;
+    return Application._apps[key] = app;
 };

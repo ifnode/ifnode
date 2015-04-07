@@ -278,7 +278,9 @@ Controller.fn.action = function(action_name, handler) {
     return this._actions[action_name];
 };
 
-Controller.fn.__defineGetter__('root', function() { return this._root; });
-Controller.fn.__defineGetter__('router', function() { return this._router; });
+helper.define_properties(Controller.fn, {
+    'root': function() { return this._root },
+    'router': function() { return this._router }
+});
 
 module.exports = Controller;

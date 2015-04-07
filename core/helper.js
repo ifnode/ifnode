@@ -1,4 +1,5 @@
-var uuid = require('node-uuid');
+var _ = require('lodash'),
+    uuid = require('node-uuid');
 
 module.exports = {
     uid: function(options) {
@@ -24,9 +25,9 @@ module.exports = {
         return [obj];
     },
 
-    location_init: function(site_config) {
+    location_init: function(site_config, ssl) {
         var origin_getter = function() {
-                var protocol = this.ssl? 'https://' : 'http://',
+                var protocol = ssl? 'https://' : 'http://',
                     port = this.port? ':' + this.port : '',
                     host = this.host? this.host : 'localhost';
 
@@ -46,5 +47,57 @@ module.exports = {
         });
 
         return site_config;
+    },
+
+    deep_freeze: function(object) {
+        var key,
+            property;
+
+        Object.freeze(object);
+
+        for (key in object) {
+            property = object[key];
+            if (!object.hasOwnProperty(key) || !(typeof property === 'object') || Object.isFrozen(property)) {
+                continue;
+            }
+
+            this.deep_freeze(property);
+        }
+
+        return object;
+    },
+
+    define_properties: function(object, properties) {
+        var prototype_new_properties = {};
+
+        Object.keys(properties).forEach(function(property_name) {
+            var default_properties = {
+                    //configurable: false,
+                    enumerable: true,
+                    //value: undefined,
+                    //writable: false
+                    //get: undefined,
+                    //set: undefined
+                },
+                names = property_name.split(/\s*,\s*/),
+
+                incoming_settings = properties[property_name],
+                property_settings = {};
+
+            if(typeof incoming_settings === 'function') {
+                incoming_settings = { get: incoming_settings };
+            }
+
+            property_settings = _.defaults(incoming_settings, default_properties);
+
+            names.forEach(function(name) {
+                prototype_new_properties[name] = property_settings;
+            });
+        });
+
+        Object.defineProperties(object, prototype_new_properties);
+        Object.freeze(object);
+
+        return object;
     }
 };

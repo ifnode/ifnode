@@ -41,15 +41,13 @@ var _ = require('lodash'),
                 resp: data
             });
         };
-        response.fail = function(key) {
-            send({ resp: {
-                status: 'fail',
-                data: key
-            } });
+        response.fail = function() {
+            send({
+                code: 400,
+                resp: 'Bad Request'
+            });
         };
-        response.err = response.error = function(err) {
-            console.log(err);
-
+        response.err = response.error = function() {
             send({
                 code: 500,
                 resp: 'Server Internal Error'
@@ -68,30 +66,30 @@ var _ = require('lodash'),
                 resp: data
             });
         };
+    },
+
+    populate = function(options, next) {
+        var populated_object = options.populated_object,
+            rewrited = intersection(options.list, populated_object),
+            error = null;
+
+        if(!rewrited.length) {
+            options.populate_function(populated_object);
+        } else {
+            error = new Error(_.template('Some module rewrite response. <%= type %>: <%= keys %>.')({
+                type: options.type,
+                keys: rewrited
+            }));
+        }
+
+        next(error);
+    },
+
+    middleware = function(callback) {
+        return function(options) {
+            return callback;
+        };
     };
-
-var populate = function(options, next) {
-    var populated_object = options.populated_object,
-        rewrited = intersection(options.list, populated_object),
-        error = null;
-
-    if(!rewrited.length) {
-        options.populate_function(populated_object);
-    } else {
-        error = new Error(_.template('Some module rewrite response. <%= type %>: <%= keys %>.')({
-            type: options.type,
-            keys: rewrited
-        }));
-    }
-
-    next(error);
-};
-
-var middleware = function(callback) {
-    return function(options) {
-        return callback;
-    };
-};
 
 module.exports = {
     request: middleware(function(request, response, next) {
