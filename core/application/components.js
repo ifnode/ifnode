@@ -1,17 +1,10 @@
 var path = require('path'),
     diread = require('diread'),
 
+    log = require('./../extensions/log'),
     Component = require('./../component');
 
 module.exports = function(Application) {
-    var add_to = function(name, component, error_message) {
-        if(name in this) {
-            throw new Error(error_message);
-        }
-
-        return this[name] = component;
-    };
-
     Application.fn._components = {};
     Application.fn._initialize_components = function() {
         var custom_components_folder = this.config.application.folders.components,
@@ -44,9 +37,11 @@ module.exports = function(Application) {
             self[component.name] = component;
 
             component_aliases.forEach(function(alias) {
-                add_to.call(self, alias, component,
-                    '[ifnode] [components] Alias already busy in application instance: ' + alias
-                );
+                if(alias in self) {
+                    log.error('components', 'Alias [' + alias + '] already busy in application instance.');
+                }
+
+                self[alias] = component;
             });
         });
     };

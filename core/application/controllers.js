@@ -2,7 +2,7 @@ var fs = require('fs'),
     path = require('path'),
     _ = require('lodash'),
 
-    helper = require('./../helper'),
+    log = require('./../extensions/log'),
     Controller = require('./../controller');
 
 module.exports = function(Application) {
@@ -122,7 +122,13 @@ module.exports = function(Application) {
             app_server.use(controller.root, controller.router);
         });
 
-        app_server.use(last_controller.error_handler.bind(app_server));
+        app_server.use(function(err, request, response, next) {
+            if(typeof last_controller.error_handler !== 'function') {
+                log.error('controllers', err);
+            }
+
+            last_controller.error_handler.apply(last_controller, arguments);
+        });
     };
     Application.fn._init_controllers = function() {
         this._controllers = {};
@@ -140,7 +146,7 @@ module.exports = function(Application) {
             controller = Controller(config);
 
         if(controller.name in this._controllers) {
-            throw new Error('[ifnode] [controller] Controller with name "' + controller.name + '" already set.');
+            log.error('controllers', 'Controller with name [' + controller.name + '] already set.');
         }
 
         this._controllers[controller.name] = controller;

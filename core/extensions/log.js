@@ -1,8 +1,8 @@
 var sprintf = require('sprintf').sprintf,
 
-    log = {};
+    log;
 
-log.console = function(args) {
+log = function(args) {
     args = [].slice.call(arguments);
 
     console.log(sprintf.apply(null, args));
@@ -10,12 +10,17 @@ log.console = function(args) {
     return this;
 };
 
-log.file = function(filepath, args) {
-    args = [].slice.call(arguments, 1);
+log.error = function(name, message) {
+    var template = '[ifnode] [%s] %s',
+        error;
 
-    sprintf.apply(null, args);
+    if(message instanceof Error) {
+        error = message;
+    } else {
+        error = new Error(sprintf(template, name, message));
+    }
 
-    return this;
+    throw error;
 };
 
 module.exports = log;

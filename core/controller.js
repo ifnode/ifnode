@@ -1,3 +1,5 @@
+'use strict';
+
 var helper = require('./helper'),
     log = require('./extensions/log'),
 
@@ -164,7 +166,7 @@ Controller.fn._generate_url = function(method) {
 
         i, len;
 
-    log.console('%-7s Access: %-7s Only: %-7s %s',
+    log('%-7s Access: %-7s Only: %-7s %s',
         method.toUpperCase(),
         options.access,
         options.only,
@@ -237,24 +239,17 @@ Controller.fn.method = function(methods/*, url, options, callbacks */) {
     });
 });
 
-Controller.fn.error_handler = function(err, request, response, next) {
-    log.console('[ifnode] [controller] Default error handler');
-    next(err);
-};
 Controller.fn.error = function(custom_error_handler) {
-    var self = this,
-        handler = typeof custom_error_handler === 'function'?
-            custom_error_handler :
-            this.error_handler;
+    var self = this;
 
-    this.error_handler = function(err, request, response, next) {
-        handler.apply(self, arguments);
-    };
-
-    this._router.use(this.error_handler.bind(this));
+    this.error_handler = custom_error_handler;
+    this.use(function(err, request, response, next) {
+        custom_error_handler.apply(self, arguments);
+    });
 
     return this;
 };
+
 
 Controller.fn.end = function() {
     this.use(this._page_not_found.bind(this));

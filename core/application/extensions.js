@@ -1,21 +1,14 @@
 var fs = require('fs'),
     path = require('path'),
-    _ = require('lodash');
+    _ = require('lodash'),
+
+    log = require('./../extensions/log');
 
 module.exports = function(Application) {
     Application.fn._initialize_extensions = function() {
-        var custom_folder = this.config.application.folders.extensions,
-
-            core_path = path.resolve(this._ifnode_core_folder, 'extensions/'),
-            custom_path = path.resolve(this._project_folder, custom_folder),
-
-            read = function(extension_folder, for_check) {
+        var read = function(extension_folder) {
                 var to_name = function(filename) {
                     var extension_name = filename.split('.')[0];
-
-                    if(_.contains(for_check, extension_name)) {
-                        console.warn('[ifnode] [extensions] Redefine core extension "' + extension_name + '"');
-                    }
 
                     return [extension_name, path.resolve(extension_folder, filename)];
                 };
@@ -27,20 +20,18 @@ module.exports = function(Application) {
                 }
             },
 
-            core_extensions,
-            custom_extensions;
+            custom_folder = this.config.application.folders.extensions,
+            custom_full_path = path.resolve(this._project_folder, custom_folder),
+            custom_extensions = read(custom_full_path);
 
-        core_extensions = read(core_path, []);
-        custom_extensions = read(custom_path, _.map(core_extensions, function(item) { return item[0] }));
-
-        this._extensions = _.object(core_extensions.concat(custom_extensions));
+        this._extensions = _.object(custom_extensions);
     };
 
     Application.fn.extension = Application.fn.ext = Application.fn.require = function(name) {
-        if(name in this._extensions) {
-            return require(this._extensions[name]);
+        if(!(name in this._extensions)) {
+            log.error('extensions', 'Cannot find extension with name [' + name + '].');
         }
 
-        throw new Error('[ifnode] [extensions] Cannot find extension with name "' + name + '"');
+        return require(this._extensions[name]);
     };
 };

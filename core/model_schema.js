@@ -4,7 +4,7 @@ var SchemaFactory = function() {
             return new Schema(model_config);
         }
 
-        (this.init || this.initialize).call(this, model_config);
+        (this.init || this.initialize || this.constructor).call(this, model_config);
     };
 
     Schema.fn = Schema.prototype;

@@ -33,8 +33,4 @@ Component.fn.methods = function(methods_list) {
     });
 };
 
-Component.fn.public = Component.fn.pb = function(name, fn) {
-
-};
-
 module.exports = Component;

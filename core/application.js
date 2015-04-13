@@ -146,8 +146,6 @@ Application.fn.load = function() {
                     case 'controller':
                         module[type](self, args);
                         break;
-                    default:
-                        console.warn('[ifnode] [module] Unknown module type: ' + type);
                 }
             });
         },
@@ -193,6 +191,7 @@ helper.define_properties(Application.fn, {
     'config': function() { return this._config },
     'server': function() { return this._server },
 
+    'components':  function() { return this._components },
     'models':      function() { return this._models },
     'controllers': function() { return this._controllers },
 
