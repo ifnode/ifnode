@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path'),
     diread = require('diread'),
 
@@ -5,7 +7,6 @@ var path = require('path'),
     Component = require('./../component');
 
 module.exports = function(Application) {
-    Application.fn._components = {};
     Application.fn._initialize_components = function() {
         var custom_components_folder = this.config.application.folders.components,
             custom_components_path = path.resolve(this._project_folder, custom_components_folder),
@@ -47,6 +48,7 @@ module.exports = function(Application) {
     };
 
     Application.fn._init_components = function() {
+        this._components = {};
         this._initialize_components();
         this._attach_components();
     };

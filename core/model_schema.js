@@ -1,3 +1,5 @@
+'use strict';
+
 var SchemaFactory = function() {
     var Schema = function(model_config) {
         if(!(this instanceof Schema)) {

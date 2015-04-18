@@ -105,9 +105,9 @@ module.exports = function(Application) {
         }
     };
     Application.fn._compile_controllers = function() {
-        var app_controllers = this._controllers,
+        var app = this._listener,
+            app_controllers = this._controllers,
             app_controllers_ids = Object.keys(app_controllers),
-            app_server = this._server,
 
             last_controller;
 
@@ -119,10 +119,10 @@ module.exports = function(Application) {
         app_controllers_ids.forEach(function(controller_id) {
             var controller = app_controllers[controller_id];
 
-            app_server.use(controller.root, controller.router);
+            app.use(controller.root, controller.router);
         });
 
-        app_server.use(function(err, request, response, next) {
+        app.use(function(err, request, response, next) {
             if(typeof last_controller.error_handler !== 'function') {
                 log.error('controllers', err);
             }

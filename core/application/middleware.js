@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path'),
     _ = require('lodash'),
     express = require('express');

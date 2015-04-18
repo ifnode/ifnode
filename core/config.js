@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path'),
     _ = require('lodash'),
     helper = require('./helper'),
@@ -12,11 +14,8 @@ var path = require('path'),
             _.clone(defaults);
     },
 
-    config,
-    default_config,
-
     initialize_default_config = function(backend_folder) {
-        default_config = {
+        return {
             site: {
                 //ssl: {
                 //    key: '',
@@ -43,16 +42,25 @@ var path = require('path'),
         };
     },
 
-    initialize_properties_config = function() {
+    initialize_properties_config = function(config, default_config, project_folder) {
         config.application = config.application || {};
         config.components = config.components || {};
+
+        if(config.application.folders) {
+            Object.keys(config.application.folders).forEach(function(type) {
+                var short_path = config.application.folders[type],
+                    full_path = path.resolve(project_folder, short_path);
+
+                config.application.folders[type] = full_path;
+            });
+        }
 
         set_defaults({
             obj: [config.application, 'folders'],
             defaults: default_config.application.folders
         });
     },
-    initialize_site_config = function(project_folder) {
+    initialize_site_config = function(config, default_config, project_folder) {
         var set_default = function(site_config, default_config) {
             if(!site_config.host) {
                 site_config.host = default_config.host;
@@ -87,7 +95,7 @@ var path = require('path'),
         helper.location_init(config.site.local, !!config.site.ssl);
         helper.location_init(config.site.global, !!config.site.ssl);
     },
-    initialize_session_config = function() {
+    initialize_session_config = function(config, default_config) {
         var session_config = config.application.session,
             default_session_config = default_config.application.session;
 
@@ -95,7 +103,7 @@ var path = require('path'),
             session_config.secret = default_session_config.secret;
         }
     },
-    initialize_db_config = function() {
+    initialize_db_config = function(config, default_config) {
         var db_config = config.db;
 
         if(!db_config) {
@@ -104,7 +112,7 @@ var path = require('path'),
             _.extend(config.db, default_config.db);
         }
     },
-    initialize_config_helpers = function() {
+    initialize_config_helpers = function(config, default_config) {
         config.by_path = function(path) {
             var parts = path.split('.'),
                 tmp = this,
@@ -124,27 +132,24 @@ var path = require('path'),
     },
 
     initialize_config = function(options) {
-        initialize_default_config(options.backend_folder);
+        var config,
+            default_config = initialize_default_config(options.backend_folder);
 
         if(!options.config_path) {
-            return config = default_config;
+            return helper.deep_freeze(default_config);
         }
 
         config = require(options.config_path);
 
-        initialize_properties_config();
-        initialize_site_config(options.project_folder);
-        initialize_session_config();
-        initialize_db_config();
-        initialize_config_helpers();
+        initialize_properties_config(config, default_config, options.project_folder);
+        initialize_site_config(config, default_config, options.project_folder);
+        initialize_session_config(config, default_config);
+        initialize_db_config(config, default_config);
+        initialize_config_helpers(config, default_config);
 
-        helper.deep_freeze(config);
+        return helper.deep_freeze(config);
     };
 
 module.exports = function(options) {
-    if(!config) {
-        initialize_config(options);
-    }
-
-    return config;
+    return initialize_config(options);
 };

@@ -1,14 +1,33 @@
+'use strict';
+
 var fs = require('fs'),
     path = require('path'),
     _ = require('lodash'),
     express = require('express'),
     helper = require('./helper'),
+    log = require('./extensions/log'),
 
     Application = function(options) {
         if(!(this instanceof Application)) {
             return new Application(options || {});
         }
-        this.initialize(options || {});
+
+        _initialize.call(this, options || {});
+    },
+
+    _initialize = function(app_config) {
+        this._id = helper.uid();
+        this._alias = app_config.alias;
+
+        this._ifnode_core_folder = __dirname;
+        this._project_folder = app_config.project_folder || path.dirname(process.argv[1]);
+        this._backend_folder = path.resolve(this._project_folder, 'protected/');
+
+        _initialize_config.call(this, app_config.env || app_config.environment);
+        _initialize_listener.call(this);
+        _initialize_server.call(this);
+
+        return this;
     },
 
     _initialize_config = function(environment) {
@@ -24,25 +43,7 @@ var fs = require('fs'),
             config_path: config_path
         });
     },
-    _initialize_http_server = function() {
-        var server,
-            credentials = this._config.site.ssl;
-
-        if(credentials) {
-            server = require('https');
-            credentials = {
-                key: fs.readFileSync(credentials.key, 'utf8'),
-                cert: fs.readFileSync(credentials.cert, 'utf8')
-            };
-
-            return server.createServer(credentials, this._server);
-        } else {
-            server = require('http');
-
-            return server.createServer(this._server);
-        }
-    },
-    _initialize_server = function() {
+    _initialize_listener = function() {
         var app = express(),
             config = this._config,
             app_config = config.application,
@@ -63,8 +64,24 @@ var fs = require('fs'),
         app.set('view engine', app_config.view_engine || 'jade');
         app.set('views', path.resolve(project_folder, views_folder));
 
-        this._server = app;
-        this._http_server = _initialize_http_server.call(this);
+        this._listener = app;
+    },
+    _initialize_server = function() {
+        var server,
+            credentials = this._config.site.ssl;
+
+        if(credentials) {
+            credentials = {
+                key: fs.readFileSync(credentials.key, 'utf8'),
+                cert: fs.readFileSync(credentials.cert, 'utf8')
+            };
+
+            server = require('https').createServer(credentials, this._listener);
+        } else {
+            server = require('http').createServer(this._listener);
+        }
+
+        this._server = server;
     },
     _start_server = function(callback) {
         var app_instance = this,
@@ -83,7 +100,10 @@ var fs = require('fs'),
             });
         }
 
-        this._http_server.listen.apply(this._http_server, server_params);
+        this._server.listen.apply(this._server, server_params);
+    },
+    _stop_server = function(callback) {
+        this._server.close.call(this._server, callback);
     };
 
 Application.fn = Application.prototype;
@@ -94,18 +114,23 @@ require('./application/components')(Application);
 require('./application/models')(Application);
 require('./application/controllers')(Application);
 
-Application.fn.initialize = function(app_config) {
-    this._id = helper.uid();
-    this._alias = app_config.alias;
 
-    this._ifnode_core_folder = __dirname;
-    this._project_folder = app_config.project_folder || path.dirname(process.argv[1]);
-    this._backend_folder = path.resolve(this._project_folder, 'protected/');
+Application.fn.register = function(module) {
+    var type_of = typeof module;
 
-    _initialize_config.call(this, app_config.env || app_config.environment);
-    _initialize_server.call(this);
+    if(
+        type_of === 'string' ||
+        Array.isArray(module) ||
+        (type_of !== 'undefined' && type_of !== 'number')
+    ) {
+        this._modules = helper.to_array(module);
+
+        return this;
+    }
+
+    log.error('plugins', 'Wrong plugin type');
 };
-Application.fn.load = function() {
+Application.fn.load = function(list_of_load) {
     var self = this,
         load_hash = {
             'components': '_init_components',
@@ -162,34 +187,35 @@ Application.fn.load = function() {
             return module;
         };
 
-    this._initialize_extensions();
+    list_of_load = list_of_load? helper.to_array(list_of_load) : [
+        'components',
+        'models',
+        'controllers'
+    ];
 
     list_of_modules = this._modules = Array.isArray(this._modules)? this._modules.map(function(module) {
         return typeof module === 'string'? require_module(module) : module;
     }) : [];
 
-    [
-        'components',
-        'models',
-        'controllers'
-    ].forEach(function(load_part) {
-            load_module[load_part].forEach(init_modules);
-            self[load_hash[load_part]]();
-        });
+    list_of_load.forEach(function(load_part) {
+        load_module[load_part].forEach(init_modules);
+        self[load_hash[load_part]]();
+    });
 
     return this;
-};
-Application.fn.register = function(list_of_modules) {
-    this._modules = helper.to_array(list_of_modules);
 };
 Application.fn.run = function(callback) {
     this.load();
     _start_server.call(this, callback);
 };
+Application.fn.down = function(callback) {
+    _stop_server.call(this, callback);
+};
 
 helper.define_properties(Application.fn, {
     'config': function() { return this._config },
     'server': function() { return this._server },
+    'listener': function() { return this._listener },
 
     'components':  function() { return this._components },
     'models':      function() { return this._models },

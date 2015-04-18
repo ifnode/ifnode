@@ -1,5 +1,6 @@
-var sprintf = require('sprintf').sprintf,
+'use strict';
 
+var sprintf = require('sprintf').sprintf,
     log;
 
 log = function(args) {

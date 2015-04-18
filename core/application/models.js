@@ -1,10 +1,11 @@
+'use strict';
+
 var path = require('path'),
     diread = require('diread'),
 
     helper = require('./../helper');
 
 module.exports = function(Application) {
-    Application.fn._schemas_drivers = {};
     Application.fn._initialize_schemas = function() {
         var self = this,
             db = this._config.db,
@@ -31,9 +32,8 @@ module.exports = function(Application) {
                 self._default_creator = db_connection_name;
             }
 
-
             if(schema_driver.driver) {
-                schema_driver.driver(db_config);
+                schema_driver.driver(db_config.config);
             }
             schemas[db_connection_name] = schema_driver;
         });
@@ -85,20 +85,22 @@ module.exports = function(Application) {
     };
 
     Application.fn.attach_schema = function(Schema) {
+        if(!this._schemas_drivers) {
+            this._schemas_drivers = {};
+        }
+
         this._schemas_drivers[Schema.type] = Schema;
     };
     Application.fn.Model = function(model_config, options) {
-        if(typeof options !== 'undefined') {
-            if(helper.is_plain_object(options)) {
-                options.type = options.type || this._default_creator;
-            } else {
-                options = { type: options };
-            }
+        if(typeof options === 'string') {
+            options = { db: options }
+        } else if(helper.is_plain_object(options)) {
+            options.db = options.db || this._default_creator;
         } else {
-            options = { type: this._default_creator };
+            options = { db: this._default_creator };
         }
 
-        var schema = this._schemas[options.type](model_config);
+        var schema = this._schemas[options.db](model_config);
 
         this._model_prototypes[schema.table] = {
             __schema: schema,

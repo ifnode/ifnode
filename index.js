@@ -1,10 +1,13 @@
-var Application = require('./core/application');
+var package_json = require('./package.json'),
+    Application = require('./core/application'),
+
+    ifnode;
 
 Application._default_app_key = null;
 Application._apps = {};
 
-module.exports = function(options) {
-    if(!options) {
+ifnode = function(options) {
+    if(Application._default_app_key && !options) {
         return Application._apps[Application._default_app_key];
     }
     if(typeof options === 'string') {
@@ -20,3 +23,9 @@ module.exports = function(options) {
 
     return Application._apps[key] = app;
 };
+
+Object.defineProperty(ifnode, 'VERSION', {
+    value: package_json.version
+});
+
+module.exports = ifnode;
