@@ -2,6 +2,7 @@
 
 var ifnode = require('../../'),
     app = ifnode({
+        alias: 'cntllrs',
         project_folder: __dirname
     });
 

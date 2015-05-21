@@ -5,4 +5,4 @@ var ifnode = require('../../'),
         project_folder: __dirname
     });
 
-return app;
+module.exports = app;

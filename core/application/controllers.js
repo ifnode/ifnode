@@ -1,26 +1,37 @@
-var fs = require('fs'),
+'use strict';
+
+var debug = require('debug')('ifnode:controllers'),
+    fs = require('fs'),
     path = require('path'),
     _ = require('lodash'),
 
+    helper = require('./../helper'),
     log = require('./../extensions/log'),
     Controller = require('./../controller');
 
 module.exports = function(Application) {
-    Application.fn._initialize_controllers = function() {
-        var self = this,
+    var autoformed_controller_config;
 
-            controllers_folder = this.config.application.folders.controllers,
+    Application.fn._initialize_controllers = function() {
+        var controllers_folder = this.config.application.folders.controllers,
             controllers_full_path = path.resolve(this._project_folder, controllers_folder),
             first_loaded_file = '!',
             last_loaded_file = '~',
 
+            cut_start_slash = function(str) {
+                if(str[0] === '/') {
+                    str = str.substring(1);
+                }
+
+                return str;
+            },
             without_extension = function(path) {
                 return path.split('.')[0];
             },
             read_controllers = function(main_folder, callback) {
                 var regularize = function(directory_path, list) {
                         var is_directory = function(file_name) {
-                                var file_path = path.join(directory_path, file_name);
+                                var file_path = path.resolve(directory_path, file_name);
 
                                 return fs.statSync(file_path).isDirectory();
                             },
@@ -57,34 +68,33 @@ module.exports = function(Application) {
                             read_parts = regularize(dir_path, files);
 
                         if(read_parts.start) {
-                            read_file(path.join(dir_path, read_parts.start));
+                            read_file(path.resolve(dir_path, read_parts.start));
                         }
 
                         read_parts.directories.forEach(function(directory_name) {
-                            read_directory(path.join(dir_path, directory_name));
+                            read_directory(path.resolve(dir_path, directory_name));
                         });
 
                         read_parts.files.forEach(function(file_name) {
-                            read_file(path.join(dir_path, file_name));
+                            read_file(path.resolve(dir_path, file_name));
                         });
 
                         if(read_parts.end) {
-                            read_file(path.join(dir_path, read_parts.end));
+                            read_file(path.resolve(dir_path, read_parts.end));
                         }
                     };
 
                 read_directory(main_folder);
             };
 
-        this._autoformed_controller_config = {};
-
         if(fs.existsSync(controllers_full_path)) {
             read_controllers(controllers_full_path, function(controller_file_path, relative_path) {
-                var root = without_extension(relative_path)
+                var path_without_extension = without_extension(relative_path),
+                    root = path_without_extension
                         .replace(first_loaded_file, '')
                         .replace(last_loaded_file, '')
                         .replace(/\\/g, '/'),
-                    name = path.basename(root),
+                    name = cut_start_slash(path_without_extension),
 
                     config = {};
 
@@ -92,13 +102,10 @@ module.exports = function(Application) {
                     config.name = name;
                 }
                 if(root !== '') {
-                    if(root[root.length - 1] !== '/') {
-                        root += '/';
-                    }
-                    config.root = root;
+                    config.root = helper.add_end_slash(root);
                 }
 
-                self._autoformed_controller_config = config;
+                autoformed_controller_config = config;
 
                 require(controller_file_path);
             });
@@ -141,10 +148,10 @@ module.exports = function(Application) {
             controller_config = {}
         }
 
-        var autoformed_controller_config = this._autoformed_controller_config,
-            config = _.defaults(controller_config, autoformed_controller_config),
+        var config = _.defaults(controller_config, autoformed_controller_config),
             controller = Controller(config);
 
+        debug(controller.name);
         if(controller.name in this._controllers) {
             log.error('controllers', 'Controller with name [' + controller.name + '] already set.');
         }

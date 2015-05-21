@@ -1,6 +1,7 @@
 'use strict';
 
-var helper = require('./helper'),
+var debug = require('debug')('ifnode:controller'),
+    helper = require('./helper'),
     log = require('./extensions/log'),
 
     _ = require('lodash'),
@@ -13,11 +14,11 @@ var helper = require('./helper'),
         }
 
         fns.forEach(function(fn) {
-            if(typeof fn === 'function') {
-                list.push(fn);
-            } else {
-                console.warn('Not a function: ', fn);
+            if(typeof fn !== 'function') {
+                log.error('controllers', 'Not a function')
             }
+
+            list.push(fn);
         });
     };
 
@@ -25,23 +26,18 @@ var Controller = function(config) {
     if(!(this instanceof Controller)) {
         return new Controller(config);
     }
-    this.init(config);
+    this.initialize(config);
 };
 
 Controller.fn = Controller.prototype;
 
-Controller.fn._default_config = {
-    root: '/'
-    //ajax: ,
-};
 Controller.fn._config_processors = [];
 Controller.fn._populates = [];
 Controller.fn._middlewares = [];
 
 Controller.process_config = function(processor) {
-    this.fn._config_processors.push(processor);
+    add_fn(Controller.fn._config_processors, processor);
 };
-
 Controller.populate = function(fns) {
     add_fn(Controller.fn._populates, fns);
 };
@@ -49,26 +45,12 @@ Controller.middleware = function(fns) {
     add_fn(Controller.fn._middlewares, fns);
 };
 
-Controller.fn._page_only_ajax = function(request, response, next) {
-    response.status(400).send('Only AJAX');
-};
-Controller.fn._page_without_ajax = function(request, response, next) {
-    response.status(400).send('AJAX is denied');
-};
-Controller.fn._page_not_found = function(request, response, next) {
-    response.status(404).send('Page not Found');
-};
-
 Controller.fn._process_config = function(controller_config) {
     var self = this;
 
     if(!_.isPlainObject(controller_config)) {
-        controller_config = this._default_config;
+        controller_config = {};
     }
-
-    controller_config.root = _.isString(controller_config.root) ?
-        controller_config.root :
-        this._default_config.root;
 
     this._config_processors.forEach(function(processor) {
         controller_config = processor.call(self, controller_config);
@@ -77,13 +59,13 @@ Controller.fn._process_config = function(controller_config) {
     return controller_config;
 };
 
-Controller.fn.init = function(config) {
-    this._config = this._process_config(config);
-    this._router = express.Router();
+Controller.fn.initialize = function(controller_config) {
+    this._config = this._process_config(controller_config);
+    this._router = express.Router(this._config.router);
 
     this.id = helper.uid();
-    this.name = this._config.name || this.id;
-    this._root = this._config.root;
+    this.name = this._config.name;
+    this._root = helper.add_end_slash(this._config.root);
 
     this._actions = {};
     this._common_options = _.omit(this._config, [
@@ -94,22 +76,12 @@ Controller.fn.init = function(config) {
 
 // TODO: make method who init all custom middleware
 Controller.middleware([
-    function add_special_function(options) {
-        var self = this;
-
-        return function add_special_function(request, response, next) {
-            response.page_not_found = response.pageNotFound = function() {
-                self._page_not_found(request, response, next);
-            };
-            next();
-        };
-    },
     function ajax_middleware(options) {
         var self = this,
             both_request_types = true,
             only_ajax, without_ajax;
 
-        if (_.isBoolean(options.ajax)) {
+        if (typeof options.ajax === 'boolean') {
             both_request_types = false;
             only_ajax = options.ajax;
             without_ajax = !options.ajax;
@@ -118,10 +90,10 @@ Controller.middleware([
         return function ajax_middleware(request, response, next) {
             if (!both_request_types) {
                 if (only_ajax && !request.xhr) {
-                    return self._page_only_ajax.apply(self, arguments);
+                    return response.bad_request('Only AJAX request');
                 }
                 if (without_ajax && request.xhr) {
-                    return self._page_without_ajax.apply(self, arguments);
+                    return response.bad_request('AJAX request is denied');
                 }
             }
 
@@ -166,11 +138,14 @@ Controller.fn._generate_url = function(method) {
 
         i, len;
 
-    log('%-7s Access: %-7s Only: %-7s %s',
-        method.toUpperCase(),
-        options.access,
-        options.only,
-        (this._root + url).replace(/\/+/g, '/'));
+    debug(
+        log.form('%-7s Access: %-7s Only: %-7s %s',
+            method.toUpperCase(),
+            options.access,
+            options.only,
+            (this._root + url).replace(/\/+/g, '/')
+        )
+    );
 
     for(i = 0, len = user_callbacks.length; i < len; ++i) {
         user_callbacks[i] = user_callbacks[i].bind(this);
@@ -204,6 +179,17 @@ Controller.fn._generate_url = function(method) {
     });
 };
 
+Controller.fn.param = function(name, expression) {
+    if(typeof name !== 'string') {
+        log.error('controllers', 'Param name must be String');
+    }
+    if(typeof expression !== 'function') {
+        log.error('controllers', 'Param name must be Function');
+    }
+
+    this._router.param.call(this._router, name, expression);
+};
+
 Controller.fn.method = function(methods/*, url, options, callbacks */) {
     var self = this,
         args = helper.to_array(arguments, 1);
@@ -229,8 +215,7 @@ Controller.fn.method = function(methods/*, url, options, callbacks */) {
     var to_array = helper.to_array,
         make_sugar = function(method) {
             return function() {
-                this.method.apply(this, [method].concat(to_array(arguments)));
-                return this;
+                return this.method.apply(this, [method].concat(to_array(arguments)));
             };
         };
 
@@ -238,6 +223,23 @@ Controller.fn.method = function(methods/*, url, options, callbacks */) {
         Controller.fn[alias] = make_sugar(data.method);
     });
 });
+
+//Controller.fn.route = function(route, options) {
+//    var self = this,
+//        route_arguments = this._regulize_route_params(helper.to_array(arguments, 0));
+//
+//    var route_methods = {
+//        'get': function(/* callbacks */) {
+//            var _args = [].push.apply(route_arguments.slice(0, 2), helper.to_array(arguments));
+//
+//            self.get.apply(self, _args);
+//
+//            return route_methods;
+//        }
+//    };
+//
+//    return route_methods;
+//};
 
 Controller.fn.error = function(custom_error_handler) {
     var self = this;
@@ -249,15 +251,14 @@ Controller.fn.error = function(custom_error_handler) {
 
     return this;
 };
-
-
 Controller.fn.end = function() {
-    this.use(this._page_not_found.bind(this));
+    this.use(function(request, response) {
+        response.not_found();
+    });
     return this;
 };
-Controller.fn.use = function(callbacks) {
-    callbacks = helper.to_array(arguments);
-    this._router.use.apply(this._router, callbacks);
+Controller.fn.use = function(routes, callbacks) {
+    this._router.use.apply(this._router, arguments);
     return this;
 };
 

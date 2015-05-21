@@ -4,11 +4,14 @@ var sprintf = require('sprintf').sprintf,
     log;
 
 log = function(args) {
+    console.log(this.form.apply(this, arguments));
+    return this;
+};
+
+log.form = function(args) {
     args = [].slice.call(arguments);
 
-    console.log(sprintf.apply(null, args));
-
-    return this;
+    return sprintf.apply(null, args);
 };
 
 log.error = function(name, message) {

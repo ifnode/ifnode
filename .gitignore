@@ -3,4 +3,4 @@
 *.sublime-workspace
 **/*.DS_store
 
-node_modules/
+/node_modules

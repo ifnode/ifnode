@@ -49,9 +49,7 @@ describe('Application', function() {
 
     describe('app.register(name: String|module: Module|list_of_names: Array)', function() {
         it('not should empty', function() {
-            var app = ifnode({
-                alias: Math.random()
-            });
+            var app = ifnode();
 
             (function() {
                 app.register();
@@ -60,8 +58,7 @@ describe('Application', function() {
 
         it('load by extension name', function(done) {
             var app = ifnode({
-                project_folder: path.resolve(__dirname, '../examples/plugins'),
-                alias: Math.random()
+                project_folder: path.resolve(__dirname, '../examples/plugins')
             });
 
             app.register('ifnode-plugins-internal');
@@ -70,8 +67,7 @@ describe('Application', function() {
 
         it('load by module', function(done) {
             var app = ifnode({
-                    project_folder: path.resolve(__dirname, '../examples/plugins'),
-                    alias: Math.random()
+                    project_folder: path.resolve(__dirname, '../examples/plugins')
                 }),
                 ifnode_plugin_external = require(path.resolve(__dirname, '../examples/plugins/node_modules/ifnode-plugins-external'));
 
@@ -81,8 +77,7 @@ describe('Application', function() {
 
         it('load by array', function(done) {
             var app = ifnode({
-                    project_folder: path.resolve(__dirname, '../examples/plugins'),
-                    alias: Math.random()
+                    project_folder: path.resolve(__dirname, '../examples/plugins')
                 }),
                 ifnode_plugin_external = require(path.resolve(__dirname, '../examples/plugins/node_modules/ifnode-plugins-external'));
 
@@ -93,52 +88,19 @@ describe('Application', function() {
             done();
         });
     });
-    describe('app.load([name: String|list: Array])', function() {
-        it('empty', function() {
-            var app = ifnode({
-                alias: Math.random()
-            });
+    describe('app.load()', function() {
+        var app = ifnode();
 
-            app.load();
+        app.load();
 
-            app.components.should.be.an.Object;
-            app.models.should.be.an.Object;
-            app.controllers.should.be.an.Object;
-        });
-
-        it('load by name', function() {
-            var app = ifnode({
-                alias: Math.random()
-            });
-
-            app.load('models');
-
-            should.not.exists(app.components);
-            app.models.should.be.an.Object;
-            should.not.exists(app.controllers);
-        });
-
-        it('load by array', function() {
-            var app = ifnode({
-                alias: Math.random()
-            });
-
-            app.load([
-                'models',
-                'controllers'
-            ]);
-
-            should.not.exists(app.components);
-            app.models.should.be.an.Object;
-            app.controllers.should.be.an.Object;
-        });
+        app.components.should.be.an.Object;
+        app.models.should.be.an.Object;
+        app.controllers.should.be.an.Object;
     });
 
     describe('app.run([callback: Function])', function() {
         it('without callback', function(done) {
-            var app = ifnode({
-                alias: Math.random()
-            });
+            var app = ifnode();
 
             app.run();
             app.down();
@@ -146,9 +108,7 @@ describe('Application', function() {
         });
 
         it('with callback', function(done) {
-            var app = ifnode({
-                alias: Math.random()
-            });
+            var app = ifnode();
 
             app.run(function(config) {
                 this.should.be.equal(app);
@@ -162,9 +122,7 @@ describe('Application', function() {
 
     describe('app.down([callback: Function]', function() {
         it('without callback', function(done) {
-            var app = ifnode({
-                alias: Math.random()
-            });
+            var app = ifnode();
 
             app.run(function() {
                 app.down();
@@ -173,9 +131,7 @@ describe('Application', function() {
         });
 
         it('with callback', function(done) {
-            var app = ifnode({
-                alias: Math.random()
-            });
+            var app = ifnode();
 
             app.run(function() {
                 app.down(function() {
@@ -183,5 +139,26 @@ describe('Application', function() {
                 });
             });
         });
+    });
+
+    describe('app constants', function() {
+        var app = ifnode();
+
+        app.load();
+
+        app.config.should.be.an.Object;
+        app.server.should.be.an.Object;
+        app.listener.should.be.a.Function;
+
+        app.components.should.be.an.Object;
+        app.models.should.be.an.Object;
+        app.controllers.should.be.an.Object;
+
+        app.id.should.be.a.String;
+        app.alias.should.be.a.String;
+        app.project_folder.should.be.a.String;
+        app.projectFolder.should.be.a.String;
+        app.backend_folder.should.be.a.String;
+        app.backendFolder.should.be.a.String;
     });
 });

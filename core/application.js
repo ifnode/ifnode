@@ -16,8 +16,12 @@ var fs = require('fs'),
     },
 
     _initialize = function(app_config) {
+        if(app_config.alias && typeof app_config.alias !== 'string') {
+            log.error('application', 'Alias must be String');
+        }
+
         this._id = helper.uid();
-        this._alias = app_config.alias;
+        this._alias = app_config.alias || this._id;
 
         this._ifnode_core_folder = __dirname;
         this._project_folder = app_config.project_folder || path.dirname(process.argv[1]);
@@ -63,6 +67,7 @@ var fs = require('fs'),
 
         app.set('view engine', app_config.view_engine || 'jade');
         app.set('views', path.resolve(project_folder, views_folder));
+        app.set('x-powered-by', false);
 
         this._listener = app;
     },
@@ -130,7 +135,7 @@ Application.fn.register = function(module) {
 
     log.error('plugins', 'Wrong plugin type');
 };
-Application.fn.load = function(list_of_load) {
+Application.fn.load = function() {
     var self = this,
         load_hash = {
             'components': '_init_components',
@@ -187,25 +192,25 @@ Application.fn.load = function(list_of_load) {
             return module;
         };
 
-    list_of_load = list_of_load? helper.to_array(list_of_load) : [
-        'components',
-        'models',
-        'controllers'
-    ];
-
     list_of_modules = this._modules = Array.isArray(this._modules)? this._modules.map(function(module) {
         return typeof module === 'string'? require_module(module) : module;
     }) : [];
 
-    list_of_load.forEach(function(load_part) {
+    [
+        'models',
+        'components',
+        'controllers'
+    ].forEach(function(load_part) {
         load_module[load_part].forEach(init_modules);
         self[load_hash[load_part]]();
     });
 
+    this._is_loaded = true;
+
     return this;
 };
 Application.fn.run = function(callback) {
-    this.load();
+    !this._is_loaded && this.load();
     _start_server.call(this, callback);
 };
 Application.fn.down = function(callback) {

@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('lodash'),
 
     intersection = function() {
@@ -28,43 +30,33 @@ var _ = require('lodash'),
         }
     },
     response_populate = function(response) {
-        var send = function(options) {
-            if(options.code) {
-                response.status(options.code);
+        var send = function(code, data) {
+            if(!data) {
+                response.sendStatus(code);
+            } else {
+                response.status(code).send(data);
             }
-
-            response.send(options.resp);
         };
 
         response.ok = function(data) {
-            send({
-                resp: data
-            });
+            send(200, data);
         };
-        response.fail = function() {
-            send({
-                code: 400,
-                resp: 'Bad Request'
-            });
+        response.fail = function(data) {
+            send(400, data || 'Bad Request');
         };
-        response.err = response.error = function() {
-            send({
-                code: 500,
-                resp: 'Server Internal Error'
-            });
+        response.err = response.error = function(data) {
+            send(500, data || 'Server Internal Error');
         };
 
+        response.bad_request = response.badRequest = response.fail;
+        response.unauthorized = function(data) {
+            send(401, data);
+        };
         response.forbidden = function(data) {
-            send({
-                code: 403,
-                resp: data
-            });
+            send(403, data);
         };
         response.not_found = response.notFound = function(data) {
-            send({
-                code: 404,
-                resp: data
-            });
+            send(404, data);
         };
     },
 
@@ -111,6 +103,8 @@ module.exports = {
                 'fail',
                 'err', 'error',
 
+                'bad_request', 'badRequest',
+                'unauthorized',
                 'forbidden',
                 'not_found', 'notFound'
             ],

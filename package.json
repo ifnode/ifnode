@@ -22,9 +22,12 @@
     "diread": "latest",
     "async": "0.x.x",
     "lodash": "3.x.x",
-    "node-uuid": "1.x.x"
+    "node-uuid": "1.x.x",
+
+    "debug": "latest"
   },
   "devDependencies": {
+    "supertest": "1.x.x",
     "mocha": "2.x.x",
     "should": "6.x.x"
   }

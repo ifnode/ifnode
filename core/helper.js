@@ -51,6 +51,14 @@ module.exports = {
         return site_config;
     },
 
+    add_end_slash: function(str) {
+        if(str[str.length - 1] !== '/') {
+            str += '/';
+        }
+
+        return str;
+    },
+
     deep_freeze: function(object) {
         var key,
             property;
