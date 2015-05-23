@@ -29,10 +29,10 @@ module.exports = function(Application) {
                         by_string = function(static_file_config) {
                             app.use(serve_static(path.resolve(project_folder, static_file_config)));
                         },
-                        by_object = function(static_file_config) {
-                            static_file_config = _.pairs(static_file_config)[0];
-
-                            app.use(serve_static(static_file_config[0], static_file_config[1]))
+                        by_object = function(static_file_configs) {
+                            _.pairs(static_file_configs).forEach(function(static_file_config) {
+                                app.use(serve_static(static_file_config[0], static_file_config[1]))
+                            });
                         };
 
                     if(Array.isArray(app_static_files)) {

@@ -151,7 +151,6 @@ module.exports = function(Application) {
         var config = _.defaults(controller_config, autoformed_controller_config),
             controller = Controller(config);
 
-        debug(controller.name);
         if(controller.name in this._controllers) {
             log.error('controllers', 'Controller with name [' + controller.name + '] already set.');
         }

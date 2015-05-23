@@ -3,7 +3,8 @@
 var path = require('path'),
     diread = require('diread'),
 
-    helper = require('./../helper');
+    helper = require('./../helper'),
+    log = require('./../extensions/log');
 
 module.exports = function(Application) {
     Application.fn._initialize_schemas = function() {
@@ -26,7 +27,7 @@ module.exports = function(Application) {
         self._default_creator = db_connections_names[0];
         db_connections_names.forEach(function(db_connection_name) {
             var db_config = db[db_connection_name],
-                schema_driver = schemas_drivers[db_config.type];
+                schema_driver = schemas_drivers[db_config.schema];
 
             if(db_config.default) {
                 self._default_creator = db_connection_name;
@@ -39,10 +40,8 @@ module.exports = function(Application) {
         });
     };
     Application.fn._initialize_models = function() {
-        var models_folder = this.config.application.folders.models;
-
         diread({
-            src: path.resolve(this._project_folder, models_folder)
+            src: this.config.application.folders.models
         }).each(function(model_file_path) {
             require(model_file_path);
         });
@@ -63,7 +62,7 @@ module.exports = function(Application) {
             if(options.alias) {
                 helper.to_array(options.alias).forEach(function(alias) {
                     if(alias in app_models) {
-                        throw new Error('Alias {' + alias + '} already busy');
+                        log.error('models', 'Alias [' + alias + '] already busy.');
                     }
 
                     app_models[alias] = compiled_model;
@@ -89,18 +88,18 @@ module.exports = function(Application) {
             this._schemas_drivers = {};
         }
 
-        this._schemas_drivers[Schema.type] = Schema;
+        this._schemas_drivers[Schema.schema] = Schema;
     };
     Application.fn.Model = function(model_config, options) {
         if(typeof options === 'string') {
-            options = { db: options }
+            options = { schema: options }
         } else if(helper.is_plain_object(options)) {
-            options.db = options.db || this._default_creator;
+            options.schema = options.schema || this._default_creator;
         } else {
-            options = { db: this._default_creator };
+            options = { schema: this._default_creator };
         }
 
-        var schema = this._schemas[options.db](model_config);
+        var schema = this._schemas[options.schema](model_config);
 
         this._model_prototypes[schema.table] = {
             __schema: schema,

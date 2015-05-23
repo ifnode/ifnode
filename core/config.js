@@ -14,27 +14,40 @@ var path = require('path'),
             _.clone(defaults);
     },
 
-    initialize_default_config = function(backend_folder) {
+    initialize_default_config = function(options) {
+        var backend_folder = options.backend_folder,
+            env = options.environment || 'local',
+
+            view_path = path.resolve(backend_folder, 'views/');
+
         return {
+            environment: env,
             site: {
                 //ssl: {
                 //    key: '',
                 //    cert: ''
+                //
+                //    pfx: ''
                 //},
                 local: {
                     host: 'localhost',
-                        port: 8080
+                    port: 8080
                 },
                 global: {
-                    host: 'localhost',
-                    port: 8080
+                    host: 'localhost'
                 }
             },
             application: {
+                express: {
+                    'env': env,
+                    'views': view_path,
+                    'view engine': 'jade',
+                    'x-powered-by': false
+                },
                 folders: {
                     extensions: path.resolve(backend_folder, 'extensions/'),
                     components: path.resolve(backend_folder, 'components/'),
-                    views: path.resolve(backend_folder, 'views/'),
+                    views: view_path,
                     controllers: path.resolve(backend_folder, 'controllers/'),
                     models: path.resolve(backend_folder, 'models/')
                 }
@@ -53,11 +66,19 @@ var path = require('path'),
 
                 config.application.folders[type] = full_path;
             });
+        } else {
+            config.application.folders = {};
         }
+
 
         set_defaults({
             obj: [config.application, 'folders'],
             defaults: default_config.application.folders
+        });
+
+        set_defaults({
+            obj: [config.application, 'express'],
+            defaults: default_config.application.express
         });
     },
     initialize_site_config = function(config, default_config, project_folder) {
@@ -78,8 +99,12 @@ var path = require('path'),
         }
 
         if(config.site.ssl) {
-            config.site.ssl.key = path.resolve(project_folder, config.site.ssl.key);
-            config.site.ssl.cert = path.resolve(project_folder, config.site.ssl.cert);
+            if(config.site.ssl.pfx) {
+                config.site.ssl.pfx = path.resolve(project_folder, config.site.ssl.pfx);
+            } else {
+                config.site.ssl.key = path.resolve(project_folder, config.site.ssl.key);
+                config.site.ssl.cert = path.resolve(project_folder, config.site.ssl.cert);
+            }
         }
 
         if(!config.site.local) {
@@ -133,7 +158,7 @@ var path = require('path'),
 
     initialize_config = function(options) {
         var config,
-            default_config = initialize_default_config(options.backend_folder);
+            default_config = initialize_default_config(options);
 
         if(!options.config_path) {
             return helper.deep_freeze(default_config);

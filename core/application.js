@@ -1,6 +1,7 @@
 'use strict';
 
-var fs = require('fs'),
+var debug = require('debug')('ifnode:application'),
+    fs = require('fs'),
     path = require('path'),
     _ = require('lodash'),
     express = require('express'),
@@ -20,10 +21,9 @@ var fs = require('fs'),
             log.error('application', 'Alias must be String');
         }
 
-        this._id = helper.uid();
-        this._alias = app_config.alias || this._id;
+        this.id = helper.uid();
+        this.alias = app_config.alias || this.id;
 
-        this._ifnode_core_folder = __dirname;
         this._project_folder = app_config.project_folder || path.dirname(process.argv[1]);
         this._backend_folder = path.resolve(this._project_folder, 'protected/');
 
@@ -42,6 +42,7 @@ var fs = require('fs'),
         }
 
         this._config = require('./config')({
+            environment: environment,
             project_folder: this._project_folder,
             backend_folder: this._backend_folder,
             config_path: config_path
@@ -53,9 +54,7 @@ var fs = require('fs'),
             app_config = config.application,
 
             middleware_configs = app_config.middleware,
-
-            project_folder = this._project_folder,
-            views_folder = app_config.folders.views,
+            express_configs = app_config.express,
 
             rest = require('./middleware/rest');
 
@@ -65,9 +64,9 @@ var fs = require('fs'),
             app.use(rest.request());
         }
 
-        app.set('view engine', app_config.view_engine || 'jade');
-        app.set('views', path.resolve(project_folder, views_folder));
-        app.set('x-powered-by', false);
+        Object.keys(express_configs).forEach(function(express_option) {
+            app.set(express_option, express_configs[express_option]);
+        });
 
         this._listener = app;
     },
@@ -76,10 +75,18 @@ var fs = require('fs'),
             credentials = this._config.site.ssl;
 
         if(credentials) {
-            credentials = {
-                key: fs.readFileSync(credentials.key, 'utf8'),
-                cert: fs.readFileSync(credentials.cert, 'utf8')
-            };
+            if(credentials.pfx) {
+                credentials = {
+                    pfx: fs.readFileSync(credentials.pfx, 'utf8')
+                };
+            } else if(credentials.key && credentials.cert) {
+                credentials = {
+                    key: fs.readFileSync(credentials.key, 'utf8'),
+                    cert: fs.readFileSync(credentials.cert, 'utf8')
+                };
+            } else {
+                log.error('application', 'Wrong https credentials');
+            }
 
             server = require('https').createServer(credentials, this._listener);
         } else {
@@ -218,18 +225,16 @@ Application.fn.down = function(callback) {
 };
 
 helper.define_properties(Application.fn, {
+    'project_folder, projectFolder': function() { return this._project_folder },
+    'backend_folder, backendFolder': function() { return this._backend_folder },
+
     'config': function() { return this._config },
     'server': function() { return this._server },
     'listener': function() { return this._listener },
 
     'components':  function() { return this._components },
     'models':      function() { return this._models },
-    'controllers': function() { return this._controllers },
-
-    'id':    function() { return this._id },
-    'alias': function() { return this._alias },
-    'project_folder, projectFolder': function() { return this._project_folder },
-    'backend_folder, backendFolder': function() { return this._backend_folder }
+    'controllers': function() { return this._controllers }
 });
 
 module.exports = Application;
