@@ -14,7 +14,15 @@ module.exports = {
         return Object.prototype.toString.call(v) === '[object Object]';
     },
 
+    without_extension: function(path) {
+        return path.split('.')[0];
+    },
+
     to_array: function(obj, at) {
+        if(!obj) {
+            return [];
+        }
+
         at = typeof at === 'number'? at : 0;
 
         if(Object.prototype.toString.call(obj) === '[object Arguments]') {

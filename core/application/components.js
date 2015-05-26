@@ -1,43 +1,44 @@
 'use strict';
 
-var path = require('path'),
+var debug = require('debug')('ifnode:components'),
+    path = require('path'),
     diread = require('diread'),
+    _ = require('lodash'),
 
+    helper = require('./../helper'),
     log = require('./../extensions/log'),
     Component = require('./../component');
 
 module.exports = function(Application) {
-    Application.fn._initialize_components = function() {
-        var custom_components_folder = this.config.application.folders.components,
-            custom_components_path = path.resolve(this._project_folder, custom_components_folder),
+    var autoformed_config;
 
-            cb = function(component_file_path) {
-                require(component_file_path);
+    Application.fn._initialize_components = function() {
+        diread({
+            src: this.config.application.folders.components
+        }).each(function(component_file_path) {
+            var basename = path.basename(component_file_path);
+
+            autoformed_config = {
+                name: helper.without_extension(basename)
             };
 
-        diread({ src: custom_components_path }).each(cb);
+            require(component_file_path);
+        });
     };
     Application.fn._attach_components = function() {
         var self = this,
             app_components = self._components;
 
-        Object.keys(app_components).forEach(function(component_key) {
-            var component = app_components[component_key],
-                component_aliases;
+        Object.keys(app_components).forEach(function(unique_name) {
+            var component = app_components[unique_name],
+                aliases = helper.to_array(component.alias);
 
-            if(component.disabled) {
-                return;
-            }
-
-            component_aliases = component.alias;
-
-            if(typeof component.initialize === 'function') {
+            if(component.initialize) {
                 component.initialize(component.config);
             }
 
-            self[component.name] = component;
-
-            component_aliases.forEach(function(alias) {
+            aliases.unshift(component.name);
+            aliases.forEach(function(alias) {
                 if(alias in self) {
                     log.error('components', 'Alias [' + alias + '] already busy in application instance.');
                 }
@@ -53,16 +54,17 @@ module.exports = function(Application) {
         this._attach_components();
     };
 
-    Application.fn.Component = function(component_options) {
-        var component = this._components[component_options.name];
+    Application.fn.Component = function(component_config) {
+        component_config = _.defaults(component_config || {}, autoformed_config);
 
-        if(component) {
-            return component;
+        var unique_name = component_config.name;
+
+        if(unique_name in this._components) {
+            log.error('components', 'Name [' + unique_name + '] already busy.');
         }
 
-        component_options.config = this._config.components[component_options.name] || {};
-        component = Component(component_options);
+        component_config.config = this._config.components[unique_name] || {};
 
-        return this._components[component.name] = component;
+        return this._components[unique_name] = Component(component_config);
     };
 };

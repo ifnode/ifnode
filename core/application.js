@@ -24,7 +24,7 @@ var debug = require('debug')('ifnode:application'),
         this.id = helper.uid();
         this.alias = app_config.alias || this.id;
 
-        this._project_folder = app_config.project_folder || path.dirname(process.argv[1]);
+        this._project_folder = app_config.project_folder || app_config.projectFolder || path.dirname(process.argv[1]);
         this._backend_folder = path.resolve(this._project_folder, 'protected/');
 
         _initialize_config.call(this, app_config.env || app_config.environment);
@@ -144,47 +144,48 @@ Application.fn.register = function(module) {
 };
 Application.fn.load = function() {
     var self = this,
-        load_hash = {
-            'components': '_init_components',
-            'models': '_init_models',
-            'controllers': '_init_controllers'
-        },
-        load_module = {
-            'components': ['component'],
-            'models': ['schema'],
-            'controllers': ['controller']
-        },
+        initialize_models = function(type) {
+            var args = require('./model_schema');
 
-        list_of_modules,
-        init_modules = function(type) {
-            var load_module = {
-                    'schema': require('./model_schema'),
-                    'component': self.Component.bind(self),
-                    'controller': require('./controller')
-                },
+            list_of_modules.forEach(function (module) {
+                var result,
+                    module_by_type = module[type];
 
-                args = load_module[type];
-
-            list_of_modules.forEach(function(module) {
-                var result;
-
-                if(!(type in module)) {
-                    return;
-                }
-
-                switch(type) {
-                    case 'schema':
-                        result = args();
-
-                        module[type](self, result);
-                        self.attach_schema(result);
-                        break;
-                    case 'component':
-                    case 'controller':
-                        module[type](self, args);
-                        break;
+                if (module_by_type) {
+                    result = args();
+                    module_by_type(self, result);
+                    module[type](self, args);
+                    self.attach_schema(result);
                 }
             });
+
+            self._init_models();
+        },
+        initialize_components = function(type) {
+            var args = self.Component.bind(self);
+
+            list_of_modules.forEach(function(module) {
+                var module_by_type = module[type];
+
+                if(module_by_type) {
+                    module_by_type(self, args);
+                }
+            });
+
+            self._init_components();
+        },
+        initialize_controllers = function(type) {
+            var args = require('./controller');
+
+            list_of_modules.forEach(function(module) {
+                var module_by_type = module[type];
+
+                if(module_by_type) {
+                    module_by_type(self, args);
+                }
+            });
+
+            self._init_controllers();
         },
 
         require_module = function(module_name) {
@@ -197,21 +198,19 @@ Application.fn.load = function() {
             }
 
             return module;
-        };
+        },
 
-    list_of_modules = this._modules = Array.isArray(this._modules)? this._modules.map(function(module) {
+        list_of_modules;
+
+    list_of_modules = helper.to_array(this._modules).map(function(module) {
         return typeof module === 'string'? require_module(module) : module;
-    }) : [];
-
-    [
-        'models',
-        'components',
-        'controllers'
-    ].forEach(function(load_part) {
-        load_module[load_part].forEach(init_modules);
-        self[load_hash[load_part]]();
     });
 
+    initialize_models();
+    initialize_components();
+    initialize_controllers();
+
+    this._modules = list_of_modules;
     this._is_loaded = true;
 
     return this;

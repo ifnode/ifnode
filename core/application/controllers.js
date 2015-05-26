@@ -13,20 +13,17 @@ module.exports = function(Application) {
     var autoformed_controller_config;
 
     Application.fn._initialize_controllers = function() {
-        var controllers_folder = this.config.application.folders.controllers,
-            controllers_full_path = path.resolve(this._project_folder, controllers_folder),
+        var controllers_path = this.config.application.folders.controllers,
             first_loaded_file = '!',
             last_loaded_file = '~',
 
+            without_extension = helper.without_extension,
             cut_start_slash = function(str) {
                 if(str[0] === '/') {
                     str = str.substring(1);
                 }
 
                 return str;
-            },
-            without_extension = function(path) {
-                return path.split('.')[0];
             },
             read_controllers = function(main_folder, callback) {
                 var regularize = function(directory_path, list) {
@@ -87,8 +84,8 @@ module.exports = function(Application) {
                 read_directory(main_folder);
             };
 
-        if(fs.existsSync(controllers_full_path)) {
-            read_controllers(controllers_full_path, function(controller_file_path, relative_path) {
+        if(fs.existsSync(controllers_path)) {
+            read_controllers(controllers_path, function(controller_file_path, relative_path) {
                 var path_without_extension = without_extension(relative_path),
                     root = path_without_extension
                         .replace(first_loaded_file, '')
@@ -144,11 +141,7 @@ module.exports = function(Application) {
     };
 
     Application.fn.Controller = function(controller_config) {
-        if(!_.isPlainObject(controller_config)) {
-            controller_config = {}
-        }
-
-        var config = _.defaults(controller_config, autoformed_controller_config),
+        var config = _.defaults(controller_config || {}, autoformed_controller_config),
             controller = Controller(config);
 
         if(controller.name in this._controllers) {

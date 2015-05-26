@@ -48,16 +48,14 @@ module.exports = function(Application) {
     };
     Application.fn._compile_models = function() {
         var model_prototypes = this._model_prototypes,
-            app_models = this._models,
+            app_models = this._models;
 
-            compile;
-
-        compile = function(model_id) {
-            var model_prototype = model_prototypes[model_id],
-                compiled_model = model_prototype.__schema.compile(),
+        Object.keys(model_prototypes).forEach(function(model_unique_name) {
+            var model_prototype = model_prototypes[model_unique_name],
+                compiled_model = model_prototype.model_prototype.compile(),
                 options = model_prototype.options;
 
-            app_models[model_id] = compiled_model;
+            app_models[model_unique_name] = compiled_model;
 
             if(options.alias) {
                 helper.to_array(options.alias).forEach(function(alias) {
@@ -68,10 +66,7 @@ module.exports = function(Application) {
                     app_models[alias] = compiled_model;
                 });
             }
-        };
-
-        Object.keys(model_prototypes).forEach(compile);
-        delete this.__model_prototypes;
+        });
     };
     Application.fn._init_models = function() {
         this._model_prototypes = {};
@@ -99,13 +94,18 @@ module.exports = function(Application) {
             options = { schema: this._default_creator };
         }
 
-        var schema = this._schemas[options.schema](model_config);
+        var model_prototype = this._schemas[options.schema](model_config),
+            model_unique_name = model_prototype.name || model_prototype.table || model_prototype.collection;
 
-        this._model_prototypes[schema.table] = {
-            __schema: schema,
+        if(model_unique_name in this._model_prototypes) {
+            log.error('models', 'Name [' + model_unique_name + '] already busy.');
+        }
+
+        this._model_prototypes[model_unique_name] = {
+            model_prototype: model_prototype,
             options: options
         };
 
-        return schema;
+        return model_prototype;
     };
 };

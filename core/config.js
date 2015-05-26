@@ -1,6 +1,7 @@
 'use strict';
 
-var path = require('path'),
+var debug = require('debug')('ifnode:config'),
+    path = require('path'),
     _ = require('lodash'),
     helper = require('./helper'),
 
