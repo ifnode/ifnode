@@ -144,25 +144,26 @@ Application.fn.register = function(module) {
 };
 Application.fn.load = function() {
     var self = this,
-        initialize_models = function(type) {
-            var args = require('./model_schema');
+        initialize_models = function() {
+            var type = 'schema',
+                args = require('./model_schema');
 
             list_of_modules.forEach(function (module) {
-                var result,
+                var schema,
                     module_by_type = module[type];
 
                 if (module_by_type) {
-                    result = args();
-                    module_by_type(self, result);
-                    module[type](self, args);
-                    self.attach_schema(result);
+                    schema = args();
+                    module_by_type(self, schema);
+                    self.attach_schema(schema);
                 }
             });
 
             self._init_models();
         },
-        initialize_components = function(type) {
-            var args = self.Component.bind(self);
+        initialize_components = function() {
+            var type = 'component',
+                args = self.Component.bind(self);
 
             list_of_modules.forEach(function(module) {
                 var module_by_type = module[type];
@@ -174,8 +175,9 @@ Application.fn.load = function() {
 
             self._init_components();
         },
-        initialize_controllers = function(type) {
-            var args = require('./controller');
+        initialize_controllers = function() {
+            var type = 'controller',
+                args = require('./controller');
 
             list_of_modules.forEach(function(module) {
                 var module_by_type = module[type];
