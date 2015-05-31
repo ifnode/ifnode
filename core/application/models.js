@@ -1,6 +1,7 @@
 'use strict';
 
-var path = require('path'),
+var debug = require('debug')('ifnode:models'),
+    path = require('path'),
     diread = require('diread'),
 
     helper = require('./../helper'),
@@ -27,14 +28,19 @@ module.exports = function(Application) {
         self._default_creator = db_connections_names[0];
         db_connections_names.forEach(function(db_connection_name) {
             var db_config = db[db_connection_name],
-                schema_driver = schemas_drivers[db_config.schema];
+                schema_driver = schemas_drivers[db_config.schema],
+                driver;
 
             if(db_config.default) {
                 self._default_creator = db_connection_name;
             }
 
             if(schema_driver.driver) {
-                schema_driver.driver(db_config.config);
+                driver = schema_driver.driver(db_config.config);
+
+                if(typeof driver !== 'undefined') {
+                    schema_driver.fn._driver = driver;
+                }
             }
             schemas[db_connection_name] = schema_driver;
         });
@@ -87,14 +93,14 @@ module.exports = function(Application) {
     };
     Application.fn.Model = function(model_config, options) {
         if(typeof options === 'string') {
-            options = { schema: options }
+            options = { db: options }
         } else if(helper.is_plain_object(options)) {
-            options.schema = options.schema || this._default_creator;
+            options.db = options.db || this._default_creator;
         } else {
-            options = { schema: this._default_creator };
+            options = { db: this._default_creator };
         }
 
-        var model_prototype = this._schemas[options.schema](model_config),
+        var model_prototype = this._schemas[options.db](model_config),
             model_unique_name = model_prototype.name || model_prototype.table || model_prototype.collection;
 
         if(model_unique_name in this._model_prototypes) {

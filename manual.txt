@@ -240,7 +240,7 @@ Model:
         .columns: Object        Describe table or collection columns (example: mongoose columns)
 
     schema_options:             Options for build model`s schema. Specified by model`s schema.
-        .db: String             Name of build schema. By default: first in config.db or "virtual" schema type
+        .db: String             Name of database (from config.db)                                          By default: first in config.db or "virtual" type
         .alias: String|Array    Aliases of model (in app.models)
 
 

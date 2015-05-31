@@ -52,6 +52,12 @@ var debug = require('debug')('ifnode:config'),
                     controllers: path.resolve(backend_folder, 'controllers/'),
                     models: path.resolve(backend_folder, 'models/')
                 }
+            },
+
+            db: {
+                virtual: {
+                    schema: 'virtual'
+                }
             }
         };
     },
@@ -130,13 +136,7 @@ var debug = require('debug')('ifnode:config'),
         }
     },
     initialize_db_config = function(config, default_config) {
-        var db_config = config.db;
-
-        if(!db_config) {
-            _.defaults(config.db, default_config.db);
-        } else {
-            _.extend(config.db, default_config.db);
-        }
+        config.db = _.defaults(config.db || {}, default_config.db);
     },
     initialize_config_helpers = function(config, default_config) {
         config.by_path = function(path) {

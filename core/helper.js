@@ -34,6 +34,15 @@ module.exports = {
 
         return [obj];
     },
+    push: function(array, items) {
+        items = Array.isArray(items)?
+            items :
+            [].slice.call(arguments, 1);
+
+        if(items.length > 0) {
+            [].push.apply(array, items);
+        }
+    },
 
     location_init: function(site_config, ssl) {
         var origin_getter = function() {

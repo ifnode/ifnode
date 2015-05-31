@@ -8,13 +8,7 @@ var debug = require('debug')('ifnode:controller'),
     async = require('async'),
     express = require('express'),
 
-    add_functions = function(list, fns) {
-        if(!Array.isArray(fns)) {
-            fns = [fns];
-        }
-
-        [].push.apply(list, fns);
-    },
+    add_functions = helper.push,
 
     _process_config = function(controller_config) {
         var self = this;
@@ -68,8 +62,6 @@ var debug = require('debug')('ifnode:controller'),
         debug(
             log.form('%-7s Access: %-7s Only: %-7s %s',
                 method.toUpperCase(),
-                options.access,
-                options.only,
                 (this.root + url).replace(/\/+/g, '/')
             )
         );
@@ -79,7 +71,7 @@ var debug = require('debug')('ifnode:controller'),
         }
 
         for(i = 0, len = this._populates.length; i < len; ++i) {
-            callbacks.push(this._populates[i].call(this));
+            callbacks.push(this._populates[i].bind(this));
         }
         for(i = 0, len = this._middlewares.length; i < len; ++i) {
             callbacks.push(this._middlewares[i].call(this, options));
@@ -89,7 +81,7 @@ var debug = require('debug')('ifnode:controller'),
             .concat(before_callbacks)
             .concat(user_callbacks);
 
-        this._router[method](url, function(request, response, next_route) {
+        this.router[method](url, function(request, response, next_route) {
             async.eachSeries(callbacks, function(callback, next_callback) {
                 var next_handler = function(options) {
                     var is_error = options instanceof Error;
@@ -112,12 +104,13 @@ var debug = require('debug')('ifnode:controller'),
         this.id = helper.uid();
         this.name = config.name;
         this.root = helper.add_end_slash(config.root);
+        this.router = express.Router(config.router);
 
-        this._router = express.Router(config.router);
-        this._common_options = {
-            root: this.root,
-            name: this.name
-        };
+        this._common_options = _.omit(config, [
+            'name',
+            'root',
+            'router'
+        ]);
     };
 
 var Controller = function(config) {
@@ -137,38 +130,38 @@ Controller.fn._middlewares = [];
 Controller.process_config = function(processor) {
     add_functions(Controller.fn._config_processors, processor);
 };
-Controller.populate = function(fns) {
-    add_functions(Controller.fn._populates, fns);
+Controller.populate = function(handler) {
+    add_functions(Controller.fn._populates, handler);
 };
 Controller.middleware = function(fns) {
-    add_functions(Controller.fn._middlewares, fns);
+    fns = helper.to_array(arguments);
+
+    add_functions.apply(null, [Controller.fn._middlewares].concat(fns));
 };
 
-Controller.middleware([
-    function ajax_middleware(options) {
-        var both_request_types = true,
-            only_ajax, without_ajax;
+Controller.middleware(function ajax_middleware(options) {
+    var both_request_types = true,
+        only_ajax, without_ajax;
 
-        if (typeof options.ajax === 'boolean') {
-            both_request_types = false;
-            only_ajax = options.ajax;
-            without_ajax = !options.ajax;
-        }
-
-        return function ajax_middleware(request, response, next) {
-            if (!both_request_types) {
-                if (only_ajax && !request.xhr) {
-                    return response.bad_request('Only AJAX request');
-                }
-                if (without_ajax && request.xhr) {
-                    return response.bad_request('AJAX request is denied');
-                }
-            }
-
-            next();
-        }
+    if (typeof options.ajax === 'boolean') {
+        both_request_types = false;
+        only_ajax = options.ajax;
+        without_ajax = !options.ajax;
     }
-]);
+
+    return function ajax_middleware(request, response, next) {
+        if (!both_request_types) {
+            if (only_ajax && !request.xhr) {
+                return response.bad_request('Only AJAX request');
+            }
+            if (without_ajax && request.xhr) {
+                return response.bad_request('AJAX request is denied');
+            }
+        }
+
+        next();
+    }
+});
 
 Controller.fn.param = function(name, expression) {
     if(typeof name !== 'string') {
@@ -178,18 +171,14 @@ Controller.fn.param = function(name, expression) {
         log.error('controllers', 'Param name must be Function');
     }
 
-    this._router.param.call(this._router, name, expression);
+    this.router.param.call(this.router, name, expression);
 };
 
 Controller.fn.method = function(methods/*, url, options, callbacks */) {
     var self = this,
         args = helper.to_array(arguments, 1);
 
-    if(!Array.isArray(methods)) {
-        methods = [methods];
-    }
-
-    methods.forEach(function(method) {
+    helper.to_array(methods).forEach(function(method) {
         _generate_url.apply(self, [method].concat(args));
     });
 
@@ -203,10 +192,9 @@ Controller.fn.method = function(methods/*, url, options, callbacks */) {
     { method: 'patch' , alias: ['patch'] },
     { method: 'delete', alias: ['delete', 'del'] }
 ].forEach(function(data) {
-    var to_array = helper.to_array,
-        make_sugar = function(method) {
+    var make_sugar = function(method) {
             return function() {
-                return this.method.apply(this, [method].concat(to_array(arguments)));
+                return this.method.apply(this, [method].concat(helper.to_array(arguments)));
             };
         };
 
@@ -249,7 +237,7 @@ Controller.fn.end = function() {
     return this;
 };
 Controller.fn.use = function(routes, callbacks) {
-    this._router.use.apply(this._router, arguments);
+    this.router.use.apply(this.router, arguments);
     return this;
 };
 
@@ -264,9 +252,5 @@ Controller.fn.use = function(routes, callbacks) {
 //
 //    return this._actions[action_name];
 //};
-
-helper.define_properties(Controller.fn, {
-    'router': function() { return this._router }
-});
 
 module.exports = Controller;

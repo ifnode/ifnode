@@ -5,6 +5,7 @@ var debug = require('debug')('ifnode:application'),
     path = require('path'),
     _ = require('lodash'),
     express = require('express'),
+
     helper = require('./helper'),
     log = require('./extensions/log'),
 
@@ -143,51 +144,77 @@ Application.fn.register = function(module) {
     log.error('plugins', 'Wrong plugin type');
 };
 Application.fn.load = function() {
-    var self = this,
+    var app = this,
+
         initialize_models = function() {
             var type = 'schema',
-                args = require('./model_schema');
+                model_schema = require('./model_schema'),
+                modules = app._modules,
 
-            list_of_modules.forEach(function (module) {
-                var schema,
-                    module_by_type = module[type];
+                i,
+                schema,
+                module;
 
-                if (module_by_type) {
-                    schema = args();
-                    module_by_type(self, schema);
-                    self.attach_schema(schema);
+            for(i = 0; i < modules.length; ++i) {
+                module = modules[i][type];
+
+                if(module) {
+                    schema = model_schema();
+                    module(app, schema);
+                    app.attach_schema(schema);
                 }
-            });
+            }
 
-            self._init_models();
+            app._init_models();
         },
         initialize_components = function() {
             var type = 'component',
-                args = self.Component.bind(self);
+                Component = app.Component.bind(app),
+                modules = app._modules,
 
-            list_of_modules.forEach(function(module) {
-                var module_by_type = module[type];
+                i, module;
 
-                if(module_by_type) {
-                    module_by_type(self, args);
+            app._components = {};
+            app._initialize_components();
+
+            for(i = 0; i < modules.length; ++i) {
+                module = modules[i][type];
+
+                if(module) {
+                    module(app, Component);
                 }
-            });
+            }
 
-            self._init_components();
+            app._attach_components();
         },
         initialize_controllers = function() {
             var type = 'controller',
-                args = require('./controller');
+                Controller = require('./controller'),
+                modules = app._modules,
 
-            list_of_modules.forEach(function(module) {
-                var module_by_type = module[type];
+                i, module;
 
-                if(module_by_type) {
-                    module_by_type(self, args);
+            for(i = 0; i < modules.length; ++i) {
+                module = modules[i][type];
+
+                if(module) {
+                    module(app, Controller);
                 }
+            }
+
+            app._init_controllers();
+        },
+
+        initialize_modules = function() {
+            var modules = app._modules;
+
+            modules = helper.to_array(modules).map(function(module) {
+                return typeof module === 'string'? require_module(module) : module;
             });
 
-            self._init_controllers();
+            modules.push(require('./../plugins/ifnode-virtual'));
+
+            app._modules = modules;
         },
 
         require_module = function(module_name) {
@@ -196,23 +223,17 @@ Application.fn.load = function() {
             try {
                 module = require(module_name);
             } catch(e) {
-                module = self.ext(module_name);
+                module = app.ext(module_name);
             }
 
             return module;
-        },
+        };
 
-        list_of_modules;
-
-    list_of_modules = helper.to_array(this._modules).map(function(module) {
-        return typeof module === 'string'? require_module(module) : module;
-    });
-
+    initialize_modules();
     initialize_models();
     initialize_components();
     initialize_controllers();
 
-    this._modules = list_of_modules;
     this._is_loaded = true;
 
     return this;
