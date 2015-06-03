@@ -60,7 +60,7 @@ var debug = require('debug')('ifnode:controller'),
             i, len;
 
         debug(
-            log.form('%-7s Access: %-7s Only: %-7s %s',
+            log.form('%-7s %s',
                 method.toUpperCase(),
                 (this.root + url).replace(/\/+/g, '/')
             )
