@@ -63,6 +63,7 @@ var debug = require('debug')('ifnode:config'),
     },
 
     initialize_properties_config = function(config, default_config, project_folder) {
+        config.environment = config.env = config.environment || config.env || default_config.environment;
         config.application = config.application || {};
         config.components = config.components || {};
 
@@ -89,29 +90,45 @@ var debug = require('debug')('ifnode:config'),
         });
     },
     initialize_site_config = function(config, default_config, project_folder) {
-        var set_default = function(site_config, default_config) {
-            if(!site_config.host) {
-                site_config.host = default_config.host;
-            }
-            if(_.contains(['127.0.0.1', 'localhost'], site_config.host) &&
-                !site_config.port
-            ) {
-                site_config.port = default_config.port;
-            }
-        };
+        var initialize_ssl_config = function() {
+                var check_ssl_property = function(config, default_ssl_config) {
+                    if(typeof config.ssl !== 'undefined') {
+                        if(typeof config.ssl === 'boolean') {
+                            return;
+                        }
+
+                        if(config.ssl.pfx) {
+                            config.ssl.pfx = path.resolve(project_folder, config.ssl.pfx);
+                        } else {
+                            config.ssl.key = path.resolve(project_folder, config.ssl.key);
+                            config.ssl.cert = path.resolve(project_folder, config.ssl.cert);
+                        }
+                    } else if(default_ssl_config) {
+                        set_defaults({
+                            obj: [config, 'ssl'],
+                            defaults: default_ssl_config
+                        });
+                    }
+                };
+
+                check_ssl_property(config.site);
+                check_ssl_property(config.site.local,  config.site.ssl);
+                check_ssl_property(config.site.global, config.site.ssl);
+            },
+            set_default = function(site_config, default_config) {
+                if(!site_config.host) {
+                    site_config.host = default_config.host;
+                }
+                if(_.contains(['127.0.0.1', 'localhost'], site_config.host) &&
+                    !site_config.port
+                ) {
+                    site_config.port = default_config.port;
+                }
+            };
 
         if(!config.site) {
             config.site = _.clone(default_config.site);
             return;
-        }
-
-        if(config.site.ssl) {
-            if(config.site.ssl.pfx) {
-                config.site.ssl.pfx = path.resolve(project_folder, config.site.ssl.pfx);
-            } else {
-                config.site.ssl.key = path.resolve(project_folder, config.site.ssl.key);
-                config.site.ssl.cert = path.resolve(project_folder, config.site.ssl.cert);
-            }
         }
 
         if(!config.site.local) {
@@ -124,8 +141,10 @@ var debug = require('debug')('ifnode:config'),
             config.site.global = _.clone(config.site.local);
         }
 
-        helper.location_init(config.site.local, !!config.site.ssl);
-        helper.location_init(config.site.global, !!config.site.ssl);
+        initialize_ssl_config();
+
+        helper.location_init(config.site.local, !!config.site.local.ssl);
+        helper.location_init(config.site.global, !!config.site.global.ssl);
     },
     initialize_session_config = function(config, default_config) {
         var session_config = config.application.session,

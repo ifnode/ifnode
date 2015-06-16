@@ -1,10 +1,15 @@
 module.exports = {
-    env: 'local',
-
     site: {
         local: {
-            host: '127.0.0.1',
-            port: 3000
+            port: 3000,
+            ssl: true
+        },
+        global: {
+            host: 'ifnode.com',
+            ssl: {
+                key: 'path/to/key',
+                cert: 'path/to/cert'
+            }
         }
     }
 };

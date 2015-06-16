@@ -28,11 +28,28 @@ describe('Application', function() {
             app.project_folder.should.be.equal(app.projectFolder);
 
             app.alias.should.be.equal(application_alias);
-
-            app.config.should.be.an.Object;
-            app.config.env.should.be.equal(env);
         });
 
+        it('should be valid configuration', function() {
+            var app = ifnode('application'),
+
+                config = app.config,
+                site_config = config.site;
+
+            config.should.be.an.Object;
+
+            config.env.should.be.equal('local');
+            config.environment.should.be.equal('local');
+
+            site_config.local.origin.should.be.equal('https://localhost:3000');
+            site_config.global.ssl.key.should.be.equal(path.resolve(app.project_folder, 'path/to/key'));
+            site_config.global.origin.should.be.equal('https://ifnode.com');
+
+            config.application.express.should.be.an.Object;
+            config.application.folders.should.be.an.Object;
+
+            config.db.virtual.schema.should.be.equal('virtual');
+        });
 
         it('should few instances', function() {
             var app1 = ifnode({

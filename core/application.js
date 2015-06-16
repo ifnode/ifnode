@@ -73,9 +73,9 @@ var debug = require('debug')('ifnode:application'),
     },
     _initialize_server = function() {
         var server,
-            credentials = this._config.site.ssl;
+            credentials = this._config.site.local.ssl;
 
-        if(credentials) {
+        if(_.isPlainObject(credentials)) {
             if(credentials.pfx) {
                 credentials = {
                     pfx: fs.readFileSync(credentials.pfx, 'utf8')
