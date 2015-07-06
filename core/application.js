@@ -256,7 +256,7 @@ helper.define_properties(Application.fn, {
 
     'components':  function() { return this._components },
     'models':      function() { return this._models },
-    'controllers': function() { return this._controllers    'controllers': function() { return this._controllers }
+    'controllers': function() { return this._controllers }
 });
 
 module.exports = Application;
