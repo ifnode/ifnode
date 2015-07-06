@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('lodash'),
 
     intersection = function() {
@@ -28,70 +30,58 @@ var _ = require('lodash'),
         }
     },
     response_populate = function(response) {
-        var send = function(options) {
-            if(options.code) {
-                response.status(options.code);
+        var send = function(code, data) {
+            if(!data) {
+                response.sendStatus(code);
+            } else {
+                response.status(code).send(data);
             }
-
-            response.send(options.resp);
         };
 
         response.ok = function(data) {
-            send({
-                resp: data
-            });
+            send(200, data);
         };
-        response.fail = function(key) {
-            send({ resp: {
-                status: 'fail',
-                data: key
-            } });
+        response.fail = function(data) {
+            send(400, data || 'Bad Request');
         };
-        response.err = response.error = function(err) {
-            console.log(err);
-
-            send({
-                code: 500,
-                resp: 'Server Internal Error'
-            });
+        response.err = response.error = function(data) {
+            send(500, data || 'Server Internal Error');
         };
 
+        response.bad_request = response.badRequest = response.fail;
+        response.unauthorized = function(data) {
+            send(401, data);
+        };
         response.forbidden = function(data) {
-            send({
-                code: 403,
-                resp: data
-            });
+            send(403, data);
         };
         response.not_found = response.notFound = function(data) {
-            send({
-                code: 404,
-                resp: data
-            });
+            send(404, data);
+        };
+    },
+
+    populate = function(options, next) {
+        var populated_object = options.populated_object,
+            rewrited = intersection(options.list, populated_object),
+            error = null;
+
+        if(!rewrited.length) {
+            options.populate_function(populated_object);
+        } else {
+            error = new Error(_.template('Some module rewrite response. <%= type %>: <%= keys %>.')({
+                type: options.type,
+                keys: rewrited
+            }));
+        }
+
+        next(error);
+    },
+
+    middleware = function(callback) {
+        return function(options) {
+            return callback;
         };
     };
-
-var populate = function(options, next) {
-    var populated_object = options.populated_object,
-        rewrited = intersection(options.list, populated_object),
-        error = null;
-
-    if(!rewrited.length) {
-        options.populate_function(populated_object);
-    } else {
-        error = new Error(_.template('Some module rewrite response. <%= type %>: <%= keys %>.')({
-            type: options.type,
-            keys: rewrited
-        }));
-    }
-
-    next(error);
-};
-
-var middleware = function(callback) {
-    return function(options) {
-        return callback;
-    };
-};
 
 module.exports = {
     request: middleware(function(request, response, next) {
@@ -113,6 +103,8 @@ module.exports = {
                 'fail',
                 'err', 'error',
 
+                'bad_request', 'badRequest',
+                'unauthorized',
                 'forbidden',
                 'not_found', 'notFound'
             ],

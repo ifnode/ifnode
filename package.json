@@ -4,7 +4,7 @@
     "description": "Node.js MVC Framework",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "mocha --check-leaks"
     },
     "repository": {
         "type": "git",
@@ -17,15 +17,18 @@
     "author": "ilfroloff <ilfroloff@gmail.com> (https://twitter.com/ilfroloff)",
     "license": "MIT",
     "dependencies": {
-        "sprintf": "latest",
+        "express": "4.x.x",
+        "sprintf": "0.x.x",
         "diread": "latest",
-        "async": "latest",
-        "lodash": "latest",
-        "node-uuid": "latest",
+        "async": "0.x.x",
+        "lodash": "3.x.x",
+        "node-uuid": "1.x.x",
 
-        "express": "latest"
+        "debug": "latest"
     },
     "devDependencies": {
-        "mocha": "latest"
+        "supertest": "1.x.x",
+        "mocha": "2.x.x",
+        "should": "6.x.x"
     }
 }

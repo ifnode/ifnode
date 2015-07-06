@@ -1,227 +1,185 @@
-var helper = require('./helper'),
+'use strict';
+
+var debug = require('debug')('ifnode:controller'),
+    helper = require('./helper'),
     log = require('./extensions/log'),
 
     _ = require('lodash'),
     async = require('async'),
     express = require('express'),
 
-    is_plain_object = helper.is_plain_object,
-    is_url = function(url) {
-        if(_.isUndefined(url)) {
-            return false;
+    add_functions = helper.push,
+
+    _process_config = function(controller_config) {
+        var self = this;
+
+        if(!_.isPlainObject(controller_config)) {
+            controller_config = {};
         }
-        if(!_.isString(url)) {
-            throw new Error('Url wrong type. Must be string');
+
+        this._config_processors.forEach(function(processor) {
+            controller_config = processor.call(self, controller_config);
+        });
+
+        return controller_config;
+    },
+    _regulize_route_params = function(args) {
+        var url, options, callbacks;
+
+        if(_.isFunction(args[0])) {
+            url = '/';
+            options = _.clone(this._common_options);
+            callbacks = args;
+        } else if(_.isPlainObject(args[0])) {
+            url = '/';
+            options = _.extend(_.clone(this._common_options), args[0]);
+            callbacks = args.slice(1);
+        } else {
+            url = args[0];
+            if(_.isPlainObject(args[1])) {
+                options = _.extend(_.clone(this._common_options), args[1]);
+                callbacks = args.slice(2);
+            } else {
+                options = _.clone(this._common_options);
+                callbacks = args.slice(1);
+            }
         }
-        return true;
+
+        return [url, options, callbacks];
+    },
+    _generate_url = function(method) {
+        var args = helper.to_array(arguments, 1),
+            params = _regulize_route_params.call(this, args),
+
+            url = params[0],
+            options = params[1],
+            before_callbacks = this._common_options.before || [],
+            user_callbacks = params[2],
+            callbacks = [],
+
+            i, len;
+
+        debug(
+            log.form('%-7s %s',
+                method.toUpperCase(),
+                (this.root + url).replace(/\/+/g, '/')
+            )
+        );
+
+        for(i = 0, len = user_callbacks.length; i < len; ++i) {
+            user_callbacks[i] = user_callbacks[i].bind(this);
+        }
+
+        for(i = 0, len = this._populates.length; i < len; ++i) {
+            callbacks.push(this._populates[i].bind(this));
+        }
+        for(i = 0, len = this._middlewares.length; i < len; ++i) {
+            callbacks.push(this._middlewares[i].call(this, options));
+        }
+
+        callbacks = callbacks
+            .concat(before_callbacks)
+            .concat(user_callbacks);
+
+        this.router[method](url, function(request, response, next_route) {
+            async.eachSeries(callbacks, function(callback, next_callback) {
+                var next_handler = function(options) {
+                    var is_error = options instanceof Error;
+
+                    if(is_error) {
+                        return next_route(options);
+                    }
+
+                    next_callback();
+                };
+
+                callback(request, response, next_handler, next_route);
+            });
+        });
     },
 
-    Controller;
+    _initialize = function(controller_config) {
+        var config = _process_config.call(this, controller_config);
 
-Controller = function(config) {
+        this.id = helper.uid();
+        this.name = config.name;
+        this.root = helper.add_end_slash(config.root);
+        this.router = express.Router(config.router);
+
+        this._common_options = _.omit(config, [
+            'name',
+            'root',
+            'router'
+        ]);
+    };
+
+var Controller = function(config) {
     if(!(this instanceof Controller)) {
         return new Controller(config);
     }
-    this.init(config);
+
+    _initialize.call(this, config);
 };
 
 Controller.fn = Controller.prototype;
 
-Controller.fn._default_config = {
-    root: '/'
-    //ajax: ,
-};
 Controller.fn._config_processors = [];
 Controller.fn._populates = [];
 Controller.fn._middlewares = [];
 
 Controller.process_config = function(processor) {
-    this.fn._config_processors.push(processor);
+    add_functions(Controller.fn._config_processors, processor);
 };
-
-var add_fn = function(list, fns) {
-    helper.to_array(fns).forEach(function(fn) {
-        if(typeof fn === 'function') {
-            list.push(fn);
-        } else {
-            console.warn('Not a function: ', fn);
-        }
-    });
-};
-
-Controller.populate = function(fns) {
-    add_fn(Controller.fn._populates, fns);
+Controller.populate = function(handler) {
+    add_functions(Controller.fn._populates, handler);
 };
 Controller.middleware = function(fns) {
-    add_fn(Controller.fn._middlewares, fns);
+    fns = helper.to_array(arguments);
+
+    add_functions.apply(null, [Controller.fn._middlewares].concat(fns));
 };
 
-Controller.fn._page_only_ajax = function(request, response, next) {
-    response.status(400).send('Only AJAX');
-};
-Controller.fn._page_without_ajax = function(request, response, next) {
-    response.status(400).send('AJAX is denied');
-};
-Controller.fn._page_not_found = function(request, response, next) {
-    response.status(404).send('Page not Found');
-};
+Controller.middleware(function ajax_middleware(options) {
+    var both_request_types = true,
+        only_ajax, without_ajax;
 
-Controller.fn._process_config = function(controller_config) {
-    var self = this;
-
-    if(!is_plain_object(controller_config)) {
-        controller_config = this._default_config;
+    if (typeof options.ajax === 'boolean') {
+        both_request_types = false;
+        only_ajax = options.ajax;
+        without_ajax = !options.ajax;
     }
 
-    controller_config.root = is_url(controller_config.root) ?
-        controller_config.root :
-        this._default_config.root;
-
-    this._config_processors.forEach(function(processor) {
-        controller_config = processor.call(self, controller_config);
-    });
-
-    return controller_config;
-};
-
-Controller.fn.init = function(config) {
-    this._config = this._process_config(config);
-    this._router = express.Router();
-
-    this.id = helper.uid();
-    this.name = this._config.name || this.id;
-    this._root = this._config.root;
-
-    this._actions = {};
-    this._common_options = _.omit(this._config, [
-        'name',
-        'root'
-    ]);
-};
-
-// TODO: make method who init all custom middleware
-Controller.middleware([
-    function add_special_function(options) {
-        var self = this;
-
-        return function add_special_function(request, response, next) {
-            response.page_not_found = response.pageNotFound = function() {
-                self._page_not_found(request, response, next);
-            };
-            next();
-        };
-    },
-    function ajax_middleware(options) {
-        var self = this,
-            both_request_types = true,
-            only_ajax, without_ajax;
-
-        if (_.isBoolean(options.ajax)) {
-            both_request_types = false;
-            only_ajax = options.ajax;
-            without_ajax = !options.ajax;
-        }
-
-        return function ajax_middleware(request, response, next) {
-            if (!both_request_types) {
-                if (only_ajax && !request.xhr) {
-                    return self._page_only_ajax.apply(self, arguments);
-                }
-                if (without_ajax && request.xhr) {
-                    return self._page_without_ajax.apply(self, arguments);
-                }
+    return function ajax_middleware(request, response, next) {
+        if (!both_request_types) {
+            if (only_ajax && !request.xhr) {
+                return response.bad_request('Only AJAX request');
             }
-
-            next();
+            if (without_ajax && request.xhr) {
+                return response.bad_request('AJAX request is denied');
+            }
         }
+
+        next();
     }
-]);
+});
 
-Controller.fn._regulize_route_params = function(args) {
-    var url, options, callbacks;
-
-    if(typeof args[0] === 'function') {
-        url = '/';
-        options = _.clone(this._common_options);
-        callbacks = args;
-    } else if(is_plain_object(args[0])) {
-        url = '/';
-        options = _.extend(_.clone(this._common_options), args[0]);
-        callbacks = args.slice(1);
-    } else {
-        url = args[0];
-
-        if(is_plain_object(args[1])) {
-            options = _.extend(_.clone(this._common_options), args[1]);
-            callbacks = args.slice(2);
-        } else {
-            options = _.clone(this._common_options);
-            callbacks = args.slice(1);
-        }
+Controller.fn.param = function(name, expression) {
+    if(typeof name !== 'string') {
+        log.error('controllers', 'Param name must be String');
+    }
+    if(typeof expression !== 'function') {
+        log.error('controllers', 'Param name must be Function');
     }
 
-    return [url, options, callbacks];
-};
-Controller.fn._generate_url = function(method) {
-    var args = helper.to_array(arguments, 1),
-        params = this._regulize_route_params(args),
-
-        url = params[0],
-        options = params[1],
-        before_callbacks = this._common_options.before || [],
-        user_callbacks = params[2],
-        callbacks = [],
-
-        i, len;
-
-    log.console('%-7s Access: %-7s Only: %-7s %s',
-        method.toUpperCase(),
-        options.access,
-        options.only,
-        (this._root + url).replace(/\/+/g, '/'));
-
-    for(i = 0, len = user_callbacks.length; i < len; ++i) {
-        user_callbacks[i] = user_callbacks[i].bind(this);
-    }
-
-    for(i = 0, len = this._populates.length; i < len; ++i) {
-        callbacks.push(this._populates[i].call(this));
-    }
-    for(i = 0, len = this._middlewares.length; i < len; ++i) {
-        callbacks.push(this._middlewares[i].call(this, options));
-    }
-
-    callbacks = callbacks
-        .concat(before_callbacks)
-        .concat(user_callbacks);
-
-    this._router[method](url, function(request, response, next_route) {
-        async.eachSeries(callbacks, function(callback, next_callback) {
-            var next_handler = function(options) {
-                var is_error = options instanceof Error;
-
-                if(is_error) {
-                    return next_route(options);
-                }
-
-                next_callback();
-            };
-
-            callback(request, response, next_handler, next_route);
-        });
-    });
+    this.router.param.call(this.router, name, expression);
 };
 
 Controller.fn.method = function(methods/*, url, options, callbacks */) {
     var self = this,
         args = helper.to_array(arguments, 1);
 
-    if(!Array.isArray(methods)) {
-        methods = [methods];
-    }
-
-    methods.forEach(function(method) {
-        self._generate_url.apply(self, [method].concat(args));
+    helper.to_array(methods).forEach(function(method) {
+        _generate_url.apply(self, [method].concat(args));
     });
 
     return this;
@@ -234,66 +192,65 @@ Controller.fn.method = function(methods/*, url, options, callbacks */) {
     { method: 'patch' , alias: ['patch'] },
     { method: 'delete', alias: ['delete', 'del'] }
 ].forEach(function(data) {
-    var to_array = helper.to_array,
-        make_sugar = function(method) {
+        var make_sugar = function(method) {
             return function() {
-                this.method.apply(this, [method].concat(to_array(arguments)));
-                return this;
+                return this.method.apply(this, [method].concat(helper.to_array(arguments)));
             };
         };
 
-    data.alias.forEach(function(alias) {
-        Controller.fn[alias] = make_sugar(data.method);
+        data.alias.forEach(function(alias) {
+            Controller.fn[alias] = make_sugar(data.method);
+        });
     });
-});
 
-Controller.fn.error_handler = function(err, request, response, next) {
-    log.console('[ifnode] [controller] Default error handler');
-    next(err);
-};
+//Controller.fn.route = function(route, options) {
+//    var self = this,
+//        route_arguments = _regulize_route_params.call(this, helper.to_array(arguments, 0));
+//
+//    var route_methods = {
+//        'get': function(/* callbacks */) {
+//            var _args = [].push.apply(route_arguments.slice(0, 2), helper.to_array(arguments));
+//
+//            self.get.apply(self, _args);
+//
+//            return route_methods;
+//        }
+//    };
+//
+//    return route_methods;
+//};
+
 Controller.fn.error = function(custom_error_handler) {
-    var self = this,
-        handler = typeof custom_error_handler === 'function'?
-            custom_error_handler :
-            this.error_handler;
+    var self = this;
 
-    this.error_handler = function(err, request, response, next) {
-        handler.apply(self, arguments);
-    };
-
-    this._router.use(this.error_handler.bind(this));
+    this.error_handler = custom_error_handler;
+    this.use(function(err, request, response, next) {
+        custom_error_handler.apply(self, arguments);
+    });
 
     return this;
 };
-
 Controller.fn.end = function() {
-    this.use(this._page_not_found.bind(this));
+    this.use(function(request, response) {
+        response.not_found();
+    });
     return this;
 };
-Controller.fn.use = function(callbacks) {
-    callbacks = helper.to_array(arguments);
-    this._router.use.apply(this._router, callbacks);
+Controller.fn.use = function(routes, callbacks) {
+    this.router.use.apply(this.router, arguments);
     return this;
 };
 
-Controller.fn.before = function(callbacks) {
-    callbacks = helper.to_array(arguments);
-    this._common_options.through = callbacks;
-};
-
-Controller.fn.action = function(action_name, handler) {
-    if(typeof handler === 'function') {
-        if(action_name in this._actions) {
-            console.warn('Action %s already exist', handler);
-        } else {
-            this._actions[action_name] = this[action_name] = handler.bind(this);
-        }
-    }
-
-    return this._actions[action_name];
-};
-
-Controller.fn.__defineGetter__('root', function() { return this._root; });
-Controller.fn.__defineGetter__('router', function() { return this._router; });
+//Controller.fn.action = function(action_name, handler) {
+//    if(typeof handler === 'function') {
+//        if(action_name in this._actions) {
+//            console.warn('Action %s already exist', handler);
+//        } else {
+//            this._actions[action_name] = this[action_name] = handler.bind(this);
+//        }
+//    }
+//
+//    return this._actions[action_name];
+//};
 
 module.exports = Controller;

@@ -8,6 +8,19 @@ insight_controller.get(function(req, res, next) {
 });
 
 
+-- route
+main_controller.route('/:id', { })
+    .get(function() {
+
+    })
+    .post(function() {
+
+    })
+    .patch(function() {
+
+    });
+
+
 -- привязка одного контроллера к другому
 var insight_controller = app.Controller({ root: '/api/insight/:id' });
 insight_controller.get(...);
@@ -38,9 +51,18 @@ insight_controller
     .del('/:element_id', function() {})
     .method(['put', 'patch'], '/:element_id', function() {});
 
+-- опция map
+main_controller = app.Controller({
+    name: 'main',
+    map: {
+        'get /:id': 'get_page',
+        'post /': {
+            action: 'create_new_page',
+            only: 'moderator'
+        }
+    }
+});
 
-
--- Global
 -- опции models/controllers для системных настроек (порядок загрузки, алиасы, тип коннектора и пр.)
 module.exports = {
     models: {
@@ -58,7 +80,5 @@ module.exports = {
     }
 }
 
-
--- Extensions
-Добавление готовых нодджс модулей в ифнод или своих кастомных. Экстеншены либо не привязаны к ифноду, либо получают
-из какой-то конфиг
+- Policies:
+-- кастомные роли юзеров для доступа к роутам контроллера
