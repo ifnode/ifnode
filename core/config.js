@@ -74,6 +74,15 @@ var debug = require('debug')('ifnode:config'),
 
                 config.application.folders[type] = full_path;
             });
+
+            if(config.application.folders.views) {
+                set_defaults({
+                    obj: [config.application, 'express'],
+                    defaults: {
+                        views: config.application.folders.views
+                    }
+                });
+            }
         } else {
             config.application.folders = {};
         }
