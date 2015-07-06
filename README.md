@@ -21,6 +21,11 @@ For install `ifnode` type command
 npm install ifnode --save
 ```
 
+## Docs
+Coming soon [ifnode site](http://ifnode.com/) will be released with pretty documentation.
+
+Now can read raw [documentation](https://github.com/ilfroloff/ifnode/blob/master/manual.txt) for basic idea. Also can check [examples](https://github.com/ifnode/examples).
+
 ## Also
 **[Here](https://github.com/ilfroloff/ifnode/wiki)** you can find few articles about ifnode!
 
