@@ -155,7 +155,10 @@ Default options:
     name: String                 Name of controller                                      [optional] By default: path/to/controller
     router: Object               express.Router options.                                 [optional] By default: {}
                                  See here: http://expressjs.com/4x/api.html#router
-    ajax: Undefined|Boolean      AJAX settings of controller`s actions                   [optional] By default: undefined
+    map: Object                  Mapping system for describe controller                  [optional] By default: null
+
+    ajax: null|Boolean                   AJAX settings of controller`s actions                   [optional] By default: undefined
+    before: String|Function|Array        Handlers which invoke before route handlers             [optional] By default: []
 
 Note: controller`s filename !.js or ~.js are special. Those filenames not participate in forming name and root options.
     !.js: always initialize first in folder. Next loaded controllers into folders, and next files

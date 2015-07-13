@@ -8,6 +8,11 @@ var ifnode = require('../'),
     app = ifnode({
         project_folder: path.resolve(__dirname, '../examples/controllers'),
         alias: 'cntllrs'
+    }).load(),
+
+    app_map = ifnode({
+        project_folder: path.resolve(__dirname, '../examples/controller_map'),
+        alias: 'cntllrs_map'
     }).load();
 
 describe('Controllers', function() {
@@ -43,6 +48,53 @@ describe('Controllers', function() {
                 (function() {
                     app.controllers.main.param('abc');
                 }).should.throw();
+            });
+        });
+
+        describe('options', function() {
+            it('.before', function(done) {
+                request(app.listener)
+                    .get('/check_before')
+                    .expect({ with_user: 'no' }, done);
+            });
+
+            it('permanent', function(done) {
+                request(app.listener)
+                    .get('/check_permanent_options')
+                    .expect({ permanent: 'yes' }, done);
+            });
+            it('custom', function(done) {
+                request(app.listener)
+                    .get('/check_custom_options')
+                    .expect({ custom: 'yes' }, done);
+            });
+
+            describe('.map', function() {
+                it('get /', function(done) {
+                    request(app_map.listener)
+                        .get('/')
+                        .expect('simple route', done);
+                });
+                it('get /:param', function(done) {
+                    request(app_map.listener)
+                        .get('/1')
+                        .expect({ id: 1, name: 'ilfroloff' }, done);
+                });
+                it('post /', function(done) {
+                    request(app_map.listener)
+                        .post('/')
+                        .expect({ permanent: 'yes' }, done);
+                });
+                it('put /:id', function(done) {
+                    request(app_map.listener)
+                        .put('/1')
+                        .expect('updated', done);
+                });
+                it('delete /:id', function(done) {
+                    request(app_map.listener)
+                        .delete('/1')
+                        .expect({ custom: 'yes' }, done);
+                });
             });
         });
 

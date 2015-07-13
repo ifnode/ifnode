@@ -13,7 +13,8 @@ module.exports = function(Application) {
     var autoformed_controller_config;
 
     Application.fn._initialize_controllers = function() {
-        var controllers_path = this.config.application.folders.controllers,
+        var self = this,
+            controllers_path = this.config.application.folders.controllers,
             first_loaded_file = '!',
             last_loaded_file = '~',
 
@@ -62,7 +63,9 @@ module.exports = function(Application) {
 
                     read_directory = function(dir_path) {
                         var files = fs.readdirSync(dir_path),
-                            read_parts = regularize(dir_path, files);
+                            read_parts = regularize(dir_path, files.filter(function(filename) {
+                                return filename.indexOf('DS_Store') === -1;
+                            }));
 
                         if(read_parts.start) {
                             read_file(path.resolve(dir_path, read_parts.start));
@@ -105,6 +108,8 @@ module.exports = function(Application) {
                 autoformed_controller_config = config;
 
                 require(controller_file_path);
+
+                self._controllers[autoformed_controller_config.name]._compile();
             });
         }
     };
@@ -147,6 +152,8 @@ module.exports = function(Application) {
         if(controller.name in this._controllers) {
             log.error('controllers', 'Controller with name [' + controller.name + '] already set.');
         }
+
+        autoformed_controller_config = config;
 
         this._controllers[controller.name] = controller;
 

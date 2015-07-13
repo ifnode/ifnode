@@ -151,7 +151,8 @@ var debug = require('debug')('ifnode:config'),
         }
 
         initialize_ssl_config();
-
+    },
+    initialize_additional_site_config = function(config) {
         helper.location_init(config.site.local, !!config.site.local.ssl);
         helper.location_init(config.site.global, !!config.site.global.ssl);
     },
@@ -190,6 +191,7 @@ var debug = require('debug')('ifnode:config'),
             default_config = initialize_default_config(options);
 
         if(!options.config_path) {
+            initialize_additional_site_config(default_config);
             return helper.deep_freeze(default_config);
         }
 
@@ -197,6 +199,7 @@ var debug = require('debug')('ifnode:config'),
 
         initialize_properties_config(config, default_config, options.project_folder);
         initialize_site_config(config, default_config, options.project_folder);
+        initialize_additional_site_config(config);
         initialize_session_config(config, default_config);
         initialize_db_config(config, default_config);
         initialize_config_helpers(config, default_config);

@@ -38,30 +38,11 @@ elements_controller.get('/:same_param', function(req, res, next) {
 });
 
 
--- поддержка before, after
+-- поддержка after
 var insight_controller = app.Controller({ root: '/api/insight/:id' });
 
-insight_controller.before(function(req, res, next) { next(); });
 insight_controller.after(function(/* ничего */) { console.log(); });
 
-insight_controller
-    .get('/:element_id', function() {})
-    .post(check_data, function() {})
-    .put(check_data, function() {})
-    .del('/:element_id', function() {})
-    .method(['put', 'patch'], '/:element_id', function() {});
-
--- опция map
-main_controller = app.Controller({
-    name: 'main',
-    map: {
-        'get /:id': 'get_page',
-        'post /': {
-            action: 'create_new_page',
-            only: 'moderator'
-        }
-    }
-});
 
 -- опции models/controllers для системных настроек (порядок загрузки, алиасы, тип коннектора и пр.)
 module.exports = {
@@ -79,6 +60,3 @@ module.exports = {
         }
     }
 }
-
-- Policies:
--- кастомные роли юзеров для доступа к роутам контроллера
