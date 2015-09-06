@@ -1,4 +1,3 @@
-
             ____  _________
            /   / /        /
           /   / /   _____/_    ___  _______    _____      ______
@@ -10,6 +9,8 @@
     /___/ /___/
 
     Best MVC framework for node.js :^)
+
+[![Build Status](https://travis-ci.org/ilfroloff/ifnode.svg?branch=master)](https://travis-ci.org/ilfroloff/ifnode)
 
 ## What is ifnode?
 
