@@ -1,6 +1,6 @@
 'use strict';
 
-var app = require('ifnode')('cntllrs_map'),
+var app = require('../../../../')('cntllrs_map'),
 
     items = [
         { id: 1, name: 'ilfroloff' },

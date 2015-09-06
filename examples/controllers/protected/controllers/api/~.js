@@ -1,3 +1,3 @@
-var app = require('ifnode')('cntllrs'),
+var app = require('../../../../../')('cntllrs'),
 
     api_end_controller = app.Controller();

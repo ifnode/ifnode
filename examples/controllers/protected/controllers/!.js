@@ -1,4 +1,4 @@
-var app = require('ifnode')('cntllrs'),
+var app = require('../../../../')('cntllrs'),
 
     main_controller = app.Controller({
         name: 'main',

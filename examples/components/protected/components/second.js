@@ -1,4 +1,4 @@
-var app = require('ifnode')('cmpts'),
+var app = require('../../../../')('cmpts'),
     second = app.Component({
         name: 'second'
     });
