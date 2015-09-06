@@ -121,7 +121,7 @@ ifnode options:
         ifnode middlewares:
             body:                           Build on body-parser module
                 '${parser}': options        ${parser} - name of parser, options - hash of parser options. See here: https://github.com/expressjs/body-parser
-            statics:                        Build on serve-statics module. Tree variant of initialize static files
+            statics:                        Build on serve-statics module. Three variants of initializing of static files
                 path: String                Options see here: https://github.com/expressjs/serve-static
                 variants: Object
                     path1: options,
@@ -279,7 +279,7 @@ Example:
         knex = require('knex');
 
     exports.schema = function(app, Schema) {
-        Schema.type = 'knex';
+        Schema.schema = 'knex';
         Schema.driver = function(db_config) {
             return knex(db_config);
         };
