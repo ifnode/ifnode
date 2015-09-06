@@ -25,7 +25,7 @@ For install `ifnode` type command:
 
 ## Docs
 
-Now can read wiki [documentation](/ilfroloff/ifnode/wiki). Also can check [examples](https://github.com/ifnode/examples).
+Now can read wiki [documentation](https://github.com/ilfroloff/ifnode/wiki/docs). Also can check [examples](https://github.com/ifnode/examples).
 
 Coming soon [ifnode site](http://ifnode.com/) will be released with pretty documentation.
 
