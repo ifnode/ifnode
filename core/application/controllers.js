@@ -95,8 +95,9 @@ module.exports = function(Application) {
                         .replace(last_loaded_file, '')
                         .replace(/\\/g, '/'),
                     name = cut_start_slash(path_without_extension),
+                    config = {},
 
-                    config = {};
+                    controller;
 
                 if(name !== '') {
                     config.name = name;
@@ -109,7 +110,11 @@ module.exports = function(Application) {
 
                 require(controller_file_path);
 
-                self._controllers[autoformed_controller_config.name]._compile();
+                controller = self._controllers[autoformed_controller_config.name];
+
+                if(controller) {
+                    controller._compile();
+                }
             });
         }
     };
