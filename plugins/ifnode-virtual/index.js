@@ -6,7 +6,7 @@ var _copy_values = function(config) {
 
     for(i = keys.length; i--; ) {
         key = keys[i];
-        this[key] = keys[key];
+        this[key] = config[key];
     }
 };
 
