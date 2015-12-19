@@ -101,7 +101,11 @@ var debug = require('debug')('ifnode:controller'),
                     next_callback();
                 };
 
-                callback(request, response, next_handler, next_route);
+                try {
+                    callback(request, response, next_handler, next_route);
+                } catch(err) {
+                    next_route(err);
+                }
             });
         });
     },
