@@ -192,10 +192,10 @@ var debug = require('debug')('ifnode:config'),
 
         if(!options.config_path) {
             initialize_additional_site_config(default_config);
-            return helper.deep_freeze(default_config);
+            return default_config;
         }
 
-        config = require(options.config_path);
+        config = _.cloneDeep(require(options.config_path));
 
         initialize_properties_config(config, default_config, options.project_folder);
         initialize_site_config(config, default_config, options.project_folder);
@@ -204,7 +204,7 @@ var debug = require('debug')('ifnode:config'),
         initialize_db_config(config, default_config);
         initialize_config_helpers(config, default_config);
 
-        return helper.deep_freeze(config);
+        return config;
     };
 
 module.exports = function(options) {
