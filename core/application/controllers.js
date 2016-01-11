@@ -20,7 +20,9 @@ module.exports = function(Application) {
 
             without_extension = helper.without_extension,
             cut_start_slash = function(str) {
-                if(str[0] === '/') {
+                var first_letter = str[0];
+
+                if(first_letter === '/' || first_letter === '\\') {
                     str = str.substring(1);
                 }
 
