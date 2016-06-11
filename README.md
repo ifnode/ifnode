@@ -24,6 +24,19 @@ For install `ifnode` type command:
 
     npm install ifnode --save
 
+## Ideology
+
+* `ifnode`'s main idea is not dictate for developer what need to do but make all for simplification work
+* `ifnode` is simple, understandable and light
+* `ifnode` build on `express.js`: get all possibilities of module (routes, middleware) and extends opportunities
+* `ifnode` have the four build items:
+  * **[extensions](https://github.com/ilfroloff/ifnode/wiki/docs-app-extensions)**
+  * **[models](https://github.com/ilfroloff/ifnode/wiki/docs-app-models)**
+  * **[components](https://github.com/ilfroloff/ifnode/wiki/docs-app-components)**
+  * **[controllers](https://github.com/ilfroloff/ifnode/wiki/docs-app-controllers)**
+* `ifnode` have a **[plugins system](https://github.com/ilfroloff/ifnode/wiki/docs-app-plugins)**
+* `ifnode` use **[Service Locator Pattern](https://en.wikipedia.org/wiki/Service_locator_pattern)**
+
 ## Documentation
 
 Now can read wiki [documentation](https://github.com/ilfroloff/ifnode/wiki/docs). Also can check [examples](https://github.com/ifnode/examples).
