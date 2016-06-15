@@ -11,7 +11,6 @@ describe('Extensions', function() {
 
         it('should have aliases', function() {
             app.extension.should.be.equal(app.ext);
-            app.require.should.be.equal(app.ext);
         });
     });
 

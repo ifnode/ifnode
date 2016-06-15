@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - "4.4.3" # LTS
+  - "4.4.5" # LTS
+  - "6.2.1" # Last current
   - "6"
   - "5"
   - "4"

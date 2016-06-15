@@ -158,6 +158,15 @@ describe('Application', function() {
         });
     });
 
+    describe('app.require(id: String)', function() {
+        var app = require('../examples/extensions/app');
+
+        app.require('protected/extensions/a').should.have.property('value', 'a');
+        app.require('./protected/extensions/a/b').should.have.property('value', 'a/b');
+        app.require('app').should.be.equal(app);
+        app.require('./../extensions/app').should.be.equal(app);
+    });
+
     describe('app constants', function() {
         var app = ifnode();
 
