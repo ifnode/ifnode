@@ -1,5 +1,6 @@
 'use strict';
-var helper = require('./helper');
+
+var UUID = require('node-uuid');
 
 module.exports = function SchemaFactory() {
     var Schema = function(model_config) {
@@ -9,7 +10,7 @@ module.exports = function SchemaFactory() {
 
         var initialize_method = this.initialize || this.init;
 
-        this.id = helper.uid();
+        this.id = UUID.v4();
 
         if(initialize_method) {
             initialize_method.call(this, model_config);

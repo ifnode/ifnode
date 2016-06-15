@@ -1,11 +1,13 @@
+'use strict';
+
 var path = require('path'),
     diread = require('diread'),
 
     Component = require('./../component');
 
 module.exports = function(Application) {
-    Application.fn._components = {};
-    Application.fn._initialize_components = function() {
+    Application.prototype._components = {};
+    Application.prototype._initialize_components = function() {
         var custom_components_folder = this.config.application.folders.components,
 
             core_components_path = path.resolve(this._ifnode_core_folder, 'components/'),
@@ -18,7 +20,7 @@ module.exports = function(Application) {
         diread({ src: core_components_path }).each(cb);
         diread({ src: custom_components_path }).each(cb);
     };
-    Application.fn._attach_components = function() {
+    Application.prototype._attach_components = function() {
         var self = this,
             app_components = self._components;
 
@@ -49,15 +51,15 @@ module.exports = function(Application) {
     };
 
 // TODO: think about helper and write components initialize
-    Application.fn._init_components = function() {
+    Application.prototype._init_components = function() {
         this._initialize_components();
         this._attach_components();
     };
 
-    Application.fn.attach_component = function(component) {
+    Application.prototype.attach_component = function(component) {
         this._components[component.name] = component;
     };
-    Application.fn.Component = function(component_options) {
+    Application.prototype.Component = function(component_options) {
         var component = this._components[component_options.name];
 
         if(component) {
@@ -67,6 +69,8 @@ module.exports = function(Application) {
         component_options.config = this._config.components[component_options.name] || {};
         component = Component(component_options);
 
-        return this._components[component.name] = component;
+        this._components[component.name] = component;
+
+        return component;
     };
 };

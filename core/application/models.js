@@ -1,14 +1,12 @@
 'use strict';
 
-var debug = require('debug')('ifnode:models'),
-    path = require('path'),
-    diread = require('diread'),
-
-    helper = require('./../helper'),
-    log = require('./../extensions/log');
+var _isPlainObject = require('lodash/isPlainObject');
+var toArray = require('./../helper/toArray');
+var Diread = require('diread');
+var Log = require('./../extensions/log');
 
 module.exports = function(Application) {
-    Application.fn._initialize_schemas = function() {
+    Application.prototype._initialize_schemas = function() {
         var self = this,
             db = this._config.db,
             schemas_drivers = this._schemas_drivers,
@@ -45,14 +43,14 @@ module.exports = function(Application) {
             schemas[db_connection_name] = schema_driver;
         });
     };
-    Application.fn._initialize_models = function() {
-        diread({
+    Application.prototype._initialize_models = function() {
+        Diread({
             src: this.config.application.folders.models
         }).each(function(model_file_path) {
             require(model_file_path);
         });
     };
-    Application.fn._compile_models = function() {
+    Application.prototype._compile_models = function() {
         var model_prototypes = this._model_prototypes,
             app_models = this._models;
 
@@ -64,9 +62,9 @@ module.exports = function(Application) {
             app_models[model_unique_name] = compiled_model;
 
             if(options.alias) {
-                helper.to_array(options.alias).forEach(function(alias) {
+                toArray(options.alias).forEach(function(alias) {
                     if(alias in app_models) {
-                        log.error('models', 'Alias [' + alias + '] already busy.');
+                        Log.error('models', 'Alias [' + alias + '] already busy.');
                     }
 
                     app_models[alias] = compiled_model;
@@ -74,7 +72,7 @@ module.exports = function(Application) {
             }
         });
     };
-    Application.fn._init_models = function() {
+    Application.prototype._init_models = function() {
         this._model_prototypes = {};
 
         this._schemas = {};
@@ -84,17 +82,17 @@ module.exports = function(Application) {
         this._compile_models();
     };
 
-    Application.fn.attach_schema = function(Schema) {
+    Application.prototype.attach_schema = function(Schema) {
         if(!this._schemas_drivers) {
             this._schemas_drivers = {};
         }
 
         this._schemas_drivers[Schema.schema] = Schema;
     };
-    Application.fn.Model = function(model_config, options) {
+    Application.prototype.Model = function(model_config, options) {
         if(typeof options === 'string') {
-            options = { db: options }
-        } else if(helper.is_plain_object(options)) {
+            options = { db: options };
+        } else if(_isPlainObject(options)) {
             options.db = options.db || this._default_creator;
         } else {
             options = { db: this._default_creator };
@@ -104,7 +102,7 @@ module.exports = function(Application) {
             model_unique_name = model_prototype.name || model_prototype.table || model_prototype.collection;
 
         if(model_unique_name in this._model_prototypes) {
-            log.error('models', 'Name [' + model_unique_name + '] already busy.');
+            Log.error('models', 'Name [' + model_unique_name + '] already busy.');
         }
 
         this._model_prototypes[model_unique_name] = {

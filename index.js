@@ -1,31 +1,40 @@
-var package_json = require('./package.json'),
-    Application = require('./core/application'),
+'use strict';
 
-    ifnode;
+var Application = require('./core/Application');
+var package_json = require('./package.json');
 
-Application._default_app_key = null;
-Application._apps = {};
+var _applications_cache = {};
+var _default_app_key = null;
 
-ifnode = function(options) {
-    if(Application._default_app_key && !options) {
-        return Application._apps[Application._default_app_key];
+/**
+ * Creates or/and return application instance
+ *
+ * @class IFNode
+ * @param {String|Object} options
+ * @returns {Application}
+ */
+var IFNode = function(options) {
+    if(_default_app_key && !options) {
+        return _applications_cache[_default_app_key];
     }
     if(typeof options === 'string') {
-        return Application._apps[options];
+        return _applications_cache[options];
     }
 
-    var app = Application(options),
-        key = app.alias || app.id;
+    var app = new Application(options);
+    var key = app.alias || app.id;
 
-    if(!Application._default_app_key) {
-        Application._default_app_key = key;
+    if(!_default_app_key) {
+        _default_app_key = key;
     }
 
-    return Application._apps[key] = app;
+    _applications_cache[key] = app;
+
+    return app;
 };
 
-Object.defineProperty(ifnode, 'VERSION', {
+Object.defineProperty(IFNode, 'VERSION', {
     value: package_json.version
 });
 
-module.exports = ifnode;
+module.exports = IFNode;

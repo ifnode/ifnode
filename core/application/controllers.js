@@ -1,24 +1,26 @@
 'use strict';
 
-var debug = require('debug')('ifnode:controllers'),
-    fs = require('fs'),
-    path = require('path'),
-    _ = require('lodash'),
+var _defaults = require('lodash/defaults');
+var _last = require('lodash/last');
 
-    helper = require('./../helper'),
-    log = require('./../extensions/log'),
-    Controller = require('./../controller');
+var pathWithoutExtension = require('./../helper/pathWithoutExtension');
+var addSlashToStringEnd = require('./../helper/addSlashToStringEnd');
+
+var debug = require('debug')('ifnode:controllers');
+var FS = require('fs');
+var Path = require('path');
+var Log = require('./../extensions/log');
+var Controller = require('./../Controller');
 
 module.exports = function(Application) {
     var autoformed_controller_config;
 
-    Application.fn._initialize_controllers = function() {
+    Application.prototype._initialize_controllers = function() {
         var self = this,
             controllers_path = this.config.application.folders.controllers,
             first_loaded_file = '!',
             last_loaded_file = '~',
 
-            without_extension = helper.without_extension,
             cut_start_slash = function(str) {
                 var first_letter = str[0];
 
@@ -31,9 +33,9 @@ module.exports = function(Application) {
             read_controllers = function(main_folder, callback) {
                 var regularize = function(directory_path, list) {
                         var is_directory = function(file_name) {
-                                var file_path = path.resolve(directory_path, file_name);
+                                var file_path = Path.resolve(directory_path, file_name);
 
-                                return fs.statSync(file_path).isDirectory();
+                                return FS.statSync(file_path).isDirectory();
                             },
                             regularized = {
                                 start: false,
@@ -45,9 +47,9 @@ module.exports = function(Application) {
                         list.forEach(function(file_name) {
                             if(is_directory(file_name)) {
                                 regularized.directories.push(file_name);
-                            } else if(first_loaded_file === without_extension(path.basename(file_name))) {
+                            } else if(first_loaded_file === pathWithoutExtension(Path.basename(file_name))) {
                                 regularized.start = file_name;
-                            } else if(last_loaded_file === without_extension(path.basename(file_name))) {
+                            } else if(last_loaded_file === pathWithoutExtension(Path.basename(file_name))) {
                                 regularized.end = file_name;
                             } else {
                                 regularized.files.push(file_name);
@@ -64,34 +66,34 @@ module.exports = function(Application) {
                     },
 
                     read_directory = function(dir_path) {
-                        var files = fs.readdirSync(dir_path),
+                        var files = FS.readdirSync(dir_path),
                             read_parts = regularize(dir_path, files.filter(function(filename) {
                                 return filename.indexOf('DS_Store') === -1;
                             }));
 
                         if(read_parts.start) {
-                            read_file(path.resolve(dir_path, read_parts.start));
+                            read_file(Path.resolve(dir_path, read_parts.start));
                         }
 
                         read_parts.directories.forEach(function(directory_name) {
-                            read_directory(path.resolve(dir_path, directory_name));
+                            read_directory(Path.resolve(dir_path, directory_name));
                         });
 
                         read_parts.files.forEach(function(file_name) {
-                            read_file(path.resolve(dir_path, file_name));
+                            read_file(Path.resolve(dir_path, file_name));
                         });
 
                         if(read_parts.end) {
-                            read_file(path.resolve(dir_path, read_parts.end));
+                            read_file(Path.resolve(dir_path, read_parts.end));
                         }
                     };
 
                 read_directory(main_folder);
             };
 
-        if(fs.existsSync(controllers_path)) {
+        if(FS.existsSync(controllers_path)) {
             read_controllers(controllers_path, function(controller_file_path, relative_path) {
-                var path_without_extension = without_extension(relative_path),
+                var path_without_extension = pathWithoutExtension(relative_path),
                     root = path_without_extension
                         .replace(first_loaded_file, '')
                         .replace(last_loaded_file, '')
@@ -105,7 +107,7 @@ module.exports = function(Application) {
                     config.name = name;
                 }
                 if(root !== '') {
-                    config.root = helper.add_end_slash(root);
+                    config.root = addSlashToStringEnd(root);
                 }
 
                 autoformed_controller_config = config;
@@ -120,7 +122,7 @@ module.exports = function(Application) {
             });
         }
     };
-    Application.fn._compile_controllers = function() {
+    Application.prototype._compile_controllers = function() {
         var app = this._listener,
             app_controllers = this._controllers,
             app_controllers_ids = Object.keys(app_controllers),
@@ -131,7 +133,7 @@ module.exports = function(Application) {
             return;
         }
 
-        last_controller = app_controllers[_.last(app_controllers_ids)];
+        last_controller = app_controllers[_last(app_controllers_ids)];
         app_controllers_ids.forEach(function(controller_id) {
             var controller = app_controllers[controller_id];
 
@@ -140,24 +142,24 @@ module.exports = function(Application) {
 
         app.use(function(err, request, response, next) {
             if(typeof last_controller.error_handler !== 'function') {
-                log.error('controllers', err);
+                Log.error('controllers', err);
             }
 
             last_controller.error_handler.apply(last_controller, arguments);
         });
     };
-    Application.fn._init_controllers = function() {
+    Application.prototype._init_controllers = function() {
         this._controllers = {};
         this._initialize_controllers();
         this._compile_controllers();
     };
 
-    Application.fn.Controller = function(controller_config) {
-        var config = _.defaults(controller_config || {}, autoformed_controller_config),
+    Application.prototype.Controller = function(controller_config) {
+        var config = _defaults(controller_config || {}, autoformed_controller_config),
             controller = Controller(config);
 
         if(controller.name in this._controllers) {
-            log.error('controllers', 'Controller with name [' + controller.name + '] already set.');
+            Log.error('controllers', 'Controller with name [' + controller.name + '] already set.');
         }
 
         autoformed_controller_config = config;

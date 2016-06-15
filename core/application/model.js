@@ -1,11 +1,12 @@
-var path = require('path'),
-    diread = require('diread'),
+var _isPlainObject = require('lodash/isPlainObject');
+var toArray = require('./../helper/toArray');
 
-    helper = require('./../helper');
+var Path = require('path');
+var Diread = require('diread');
 
 module.exports = function(Application) {
-    Application.fn._schemas_drivers = {};
-    Application.fn._initialize_schemas = function() {
+    Application.prototype._schemas_drivers = {};
+    Application.prototype._initialize_schemas = function() {
         var self = this,
             db = this._config.db,
             schemas_drivers = this._schemas_drivers,
@@ -38,16 +39,16 @@ module.exports = function(Application) {
             schemas[db_connection_name] = schema_driver;
         });
     };
-    Application.fn._initialize_models = function() {
+    Application.prototype._initialize_models = function() {
         var models_folder = this.config.application.folders.models;
 
-        diread({
-            src: path.resolve(this._project_folder, models_folder)
+        Diread({
+            src: Path.resolve(this._project_folder, models_folder)
         }).each(function(model_file_path) {
             require(model_file_path);
         });
     };
-    Application.fn._compile_models = function() {
+    Application.prototype._compile_models = function() {
         var model_prototypes = this._model_prototypes,
             app_models = this._models,
 
@@ -61,7 +62,7 @@ module.exports = function(Application) {
             app_models[model_id] = compiled_model;
 
             if(options.alias) {
-                helper.to_array(options.alias).forEach(function(alias) {
+                toArray(options.alias).forEach(function(alias) {
                     if(alias in app_models) {
                         throw new Error('Alias {' + alias + '} already busy');
                     }
@@ -74,7 +75,7 @@ module.exports = function(Application) {
         Object.keys(model_prototypes).forEach(compile);
         delete this._model_prototypes;
     };
-    Application.fn._init_models = function() {
+    Application.prototype._init_models = function() {
         this._model_prototypes = {};
 
         this._schemas = {};
@@ -84,12 +85,12 @@ module.exports = function(Application) {
         this._compile_models();
     };
 
-    Application.fn.attach_schema = function(Schema) {
+    Application.prototype.attach_schema = function(Schema) {
         this._schemas_drivers[Schema.type] = Schema;
     };
-    Application.fn.Model = function(model_config, options) {
+    Application.prototype.Model = function(model_config, options) {
         if(typeof options !== 'undefined') {
-            if(helper.is_plain_object(options)) {
+            if(_isPlainObject(options)) {
                 options.type = options.type || this._default_creator;
             } else {
                 options = { type: options };

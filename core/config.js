@@ -1,18 +1,44 @@
 'use strict';
 
+var _clone = require('lodash/clone');
+var _cloneDeep = require('lodash/cloneDeep');
+var _defaults = require('lodash/defaults');
+var _includes = require('lodash/includes');
+
 var debug = require('debug')('ifnode:config'),
     path = require('path'),
-    _ = require('lodash'),
-    helper = require('./helper'),
 
+    location_init = function(site_config, ssl) {
+        var origin_getter = function() {
+                var protocol = ssl? 'https://' : 'http://',
+                    port = this.port? ':' + this.port : '',
+                    host = this.host? this.host : 'localhost';
+
+                return protocol + host + port;
+            },
+            generate_url = function(pathname) {
+                if(pathname[0] !== '/') {
+                    pathname = '/' + pathname;
+                }
+
+                return this.origin + pathname;
+            };
+
+        Object.defineProperties(site_config, {
+            'origin': { enumerable: true, get: origin_getter },
+            'url': { enumerable: true, value: generate_url }
+        });
+
+        return site_config;
+    },
     set_defaults = function(params) {
         var obj = params.obj[0],
             prop = params.obj[1],
             defaults = params.defaults;
 
         obj[prop] = obj[prop]?
-            _.defaults(obj[prop], defaults) :
-            _.clone(defaults);
+            _defaults(obj[prop], defaults) :
+            _clone(defaults);
     },
 
     initialize_default_config = function(options) {
@@ -128,7 +154,7 @@ var debug = require('debug')('ifnode:config'),
                 if(!site_config.host) {
                     site_config.host = default_config.host;
                 }
-                if(_.contains(['127.0.0.1', 'localhost'], site_config.host) &&
+                if(_includes(['127.0.0.1', 'localhost'], site_config.host) &&
                     !site_config.port
                 ) {
                     site_config.port = default_config.port;
@@ -136,25 +162,25 @@ var debug = require('debug')('ifnode:config'),
             };
 
         if(!config.site) {
-            config.site = _.clone(default_config.site);
+            config.site = _clone(default_config.site);
             return;
         }
 
         if(!config.site.local) {
-            config.site.local = _.clone(default_config.site.local);
+            config.site.local = _clone(default_config.site.local);
         } else {
             set_default(config.site.local, default_config.site.local);
         }
 
         if(!config.site.global) {
-            config.site.global = _.clone(config.site.local);
+            config.site.global = _clone(config.site.local);
         }
 
         initialize_ssl_config();
     },
     initialize_additional_site_config = function(config) {
-        helper.location_init(config.site.local, !!config.site.local.ssl);
-        helper.location_init(config.site.global, !!config.site.global.ssl);
+        location_init(config.site.local, !!config.site.local.ssl);
+        location_init(config.site.global, !!config.site.global.ssl);
     },
     initialize_session_config = function(config, default_config) {
         var session_config = config.application.session,
@@ -165,7 +191,7 @@ var debug = require('debug')('ifnode:config'),
         }
     },
     initialize_db_config = function(config, default_config) {
-        config.db = _.defaults(config.db || {}, default_config.db);
+        config.db = _defaults(config.db || {}, default_config.db);
     },
     initialize_config_helpers = function(config, default_config) {
         config.by_path = function(path) {
@@ -195,7 +221,7 @@ var debug = require('debug')('ifnode:config'),
             return default_config;
         }
 
-        config = _.cloneDeep(require(options.config_path));
+        config = _cloneDeep(require(options.config_path));
 
         initialize_properties_config(config, default_config, options.project_folder);
         initialize_site_config(config, default_config, options.project_folder);

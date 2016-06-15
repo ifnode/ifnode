@@ -1,11 +1,13 @@
 'use strict';
 
-var path = require('path'),
-    _ = require('lodash'),
-    express = require('express');
+var _isPlainObject = require('lodash/isPlainObject');
+var _pairs = require('lodash/toPairs');
+
+var Path = require('path');
+var Express = require('express');
 
 module.exports = function(Application) {
-    Application.fn._initialize_middleware = function(middleware_configs, app) {
+    Application.prototype._initialize_middleware = function(middleware_configs, app) {
         var project_folder = this._project_folder,
 
             ifnode_middleware = {
@@ -22,16 +24,16 @@ module.exports = function(Application) {
                         init = function(static_file_config) {
                             if(typeof static_file_config === 'string') {
                                 by_string(static_file_config);
-                            } else if(_.isPlainObject(static_file_config)) {
+                            } else if(_isPlainObject(static_file_config)) {
                                 by_object(static_file_config);
                             }
                         },
                         by_string = function(static_file_config) {
-                            app.use(serve_static(path.resolve(project_folder, static_file_config)));
+                            app.use(serve_static(Path.resolve(project_folder, static_file_config)));
                         },
                         by_object = function(static_file_configs) {
-                            _.pairs(static_file_configs).forEach(function(static_file_config) {
-                                app.use(serve_static(static_file_config[0], static_file_config[1]))
+                            _pairs(static_file_configs).forEach(function(static_file_config) {
+                                app.use(serve_static(static_file_config[0], static_file_config[1]));
                             });
                         };
 
@@ -55,7 +57,7 @@ module.exports = function(Application) {
                 app.use(module.apply(module, config));
             },
             init_by_function = function(name, fn) {
-                fn(app, express);
+                fn(app, Express);
             };
 
         Object.keys(middleware_configs).forEach(function(middleware_name) {
@@ -72,7 +74,7 @@ module.exports = function(Application) {
                     }
 
                     init_by_array_config(middleware_name, middleware_config);
-                } else if(_.isPlainObject(middleware_config)) {
+                } else if(_isPlainObject(middleware_config)) {
                     if(!Object.keys(middleware_config).length) {
                         return init_by_empty_config(middleware_name);
                     }
