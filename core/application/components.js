@@ -16,15 +16,21 @@ module.exports = function(Application) {
 
     Application.prototype._initialize_components = function() {
         Diread({
-            src: this.config.application.folders.components
-        }).each(function(component_file_path) {
-            var basename = Path.basename(component_file_path);
+            src: this.config.application.folders.components,
+            directories: true,
+            level: 1,
+            mask: function(path) {
+                return path === pathWithoutExtension(path) ||
+                    path.indexOf('.js') !== -1;
+            }
+        }).each(function(component_path) {
+            var basename = Path.basename(component_path);
 
             autoformed_config = {
                 name: pathWithoutExtension(basename)
             };
 
-            require(component_file_path);
+            require(component_path);
         });
     };
     Application.prototype._attach_components = function() {
