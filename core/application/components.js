@@ -71,7 +71,7 @@ module.exports = function(Application) {
             Log.error('components', 'Name [' + unique_name + '] already busy.');
         }
 
-        component_config.config = this._config.components[unique_name] || {};
+        component_config.config = this.config.components[unique_name] || {};
 
         this._components[unique_name] = Component(component_config);
 

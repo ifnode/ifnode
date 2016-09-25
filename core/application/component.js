@@ -66,7 +66,7 @@ module.exports = function(Application) {
             return component;
         }
 
-        component_options.config = this._config.components[component_options.name] || {};
+        component_options.config = this.config.components[component_options.name] || {};
         component = Component(component_options);
 
         this._components[component.name] = component;

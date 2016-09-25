@@ -9,14 +9,14 @@ var _default_app_key = null;
 /**
  * Creates or/and return application instance
  *
- * @class IFNode
- * @param {String|Object} options
+ * @param   {string|ApplicationOptions} options
  * @returns {Application}
  */
 var IFNode = function(options) {
     if(_default_app_key && !options) {
         return _applications_cache[_default_app_key];
     }
+
     if(typeof options === 'string') {
         return _applications_cache[options];
     }

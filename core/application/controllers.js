@@ -123,7 +123,7 @@ module.exports = function(Application) {
         }
     };
     Application.prototype._compile_controllers = function() {
-        var app = this._listener,
+        var app = this.listener,
             app_controllers = this._controllers,
             app_controllers_ids = Object.keys(app_controllers),
 
