@@ -3,16 +3,23 @@
 var UUID = require('node-uuid');
 var toArray = require('./helper/toArray');
 
-var Component = function(options) {
-    if(!(this instanceof Component)) {
-        return new Component(options);
-    }
-
+/**
+ *
+ * @class Component
+ *
+ * @param   {Object}    options
+ * @returns {Component}
+ * @constructor
+ */
+function Component(options) {
     this.init(options);
-};
+}
 
-Component.fn = Component.prototype;
-Component.fn.init = function(options) {
+/**
+ *
+ * @param {Object}  options
+ */
+Component.prototype.init = function(options) {
     this.id = UUID.v4();
     this.name = options.name;
     this.alias = toArray(options.alias);

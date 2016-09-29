@@ -186,13 +186,21 @@ var _initialize = function(controller_config) {
     ]);
 };
 
-var Controller = function(config) {
+/**
+ *
+ * @class Controller
+ *
+ * @param   {Object}    config
+ * @returns {Controller}
+ * @constructor
+ */
+function Controller(config) {
     if(!(this instanceof Controller)) {
         return new Controller(config);
     }
 
     _initialize.call(this, config);
-};
+}
 
 Controller.fn = Controller.prototype;
 

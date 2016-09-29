@@ -14,7 +14,7 @@ module.exports = function(Application) {
     };
     Application.prototype._compile_controllers = function() {
         var app_controllers = this._controllers,
-            app_server = this._server;
+            app_server = this.server;
 
         Object.keys(app_controllers).forEach(function(controller_id) {
             var controller = app_controllers[controller_id];

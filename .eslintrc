@@ -1,0 +1,40 @@
+{
+  "env": {
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 5,
+    "sourceType": "script"
+  },
+  "rules": {
+    "dot-notation": "error",
+    "curly": "off",
+    "eqeqeq": "error",
+    "linebreak-style": "error",
+    "no-bitwise": "error",
+    "no-cond-assign": "off",
+    "no-debugger": "off",
+    "no-eq-null": "error",
+    "no-eval": "error",
+    "no-loop-func": "error",
+    "no-caller": "error",
+    "no-script-url": "error",
+    "no-shadow": "off",
+    "no-new-func": "off",
+    "no-new-wrappers": "off",
+    "no-empty": "error",
+    "no-new": "error",
+    "no-plusplus": "off",
+    "no-undef": "error",
+    "no-unused-expressions": "off",
+    "no-unused-vars": "error",
+    "no-use-before-define": "error",
+    "strict": "off",
+    "semi": "off",
+    "quotes": "off",
+    "wrap-iife": [
+      "error",
+      "any"
+    ]
+  }
+}
