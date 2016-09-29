@@ -4,7 +4,6 @@ var _defaults = require('lodash/defaults');
 var toArray = require('./../helper/toArray');
 var pathWithoutExtension = require('./../helper/pathWithoutExtension');
 
-var debug = require('debug')('ifnode:components');
 var Path = require('path');
 var Diread = require('diread');
 
@@ -30,16 +29,20 @@ module.exports = function(Application) {
                 name: pathWithoutExtension(basename)
             };
 
-            require(component_path);
+            try {
+                require(component_path);
+            } catch(error) {
+                Log.warning('components', 'Cannot load component [' + autoformed_config.name + '] by path [' + component_path + ']');
+            }
         });
     };
     Application.prototype._attach_components = function() {
-        var self = this,
-            app_components = self._components;
+        var self = this;
+        var app_components = self._components;
 
         Object.keys(app_components).forEach(function(unique_name) {
-            var component = app_components[unique_name],
-                aliases = toArray(component.alias);
+            var component = app_components[unique_name];
+            var aliases = toArray(component.alias);
 
             if(component.initialize) {
                 component.initialize(component.config);
@@ -73,7 +76,7 @@ module.exports = function(Application) {
 
         component_config.config = this.config.components[unique_name] || {};
 
-        this._components[unique_name] = Component(component_config);
+        this._components[unique_name] = new Component(component_config);
 
         return this._components[unique_name];
     };

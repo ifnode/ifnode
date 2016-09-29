@@ -1,24 +1,20 @@
 'use strict';
 
-var path = require('path'),
-    diread = require('diread'),
-
-    Component = require('./../component');
+var Path = require('path');
+var Diread = require('diread');
+var Component = require('./../component');
 
 module.exports = function(Application) {
     Application.prototype._components = {};
     Application.prototype._initialize_components = function() {
-        var custom_components_folder = this.config.application.folders.components,
+        var custom_components_folder = this.config.application.folders.components;
+        var custom_components_path = Path.resolve(this._project_folder, custom_components_folder);
 
-            core_components_path = path.resolve(this._ifnode_core_folder, 'components/'),
-            custom_components_path = path.resolve(this._project_folder, custom_components_folder),
-
-            cb = function(component_file_path) {
-                require(component_file_path);
-            };
-
-        diread({ src: core_components_path }).each(cb);
-        diread({ src: custom_components_path }).each(cb);
+        Diread({
+            src: custom_components_path
+        }).each(function(component_file_path) {
+            require(component_file_path);
+        });
     };
     Application.prototype._attach_components = function() {
         var self = this,
@@ -67,7 +63,7 @@ module.exports = function(Application) {
         }
 
         component_options.config = this.config.components[component_options.name] || {};
-        component = Component(component_options);
+        component = new Component(component_options);
 
         this._components[component.name] = component;
 
