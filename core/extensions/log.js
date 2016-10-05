@@ -13,7 +13,9 @@ var toArray = require('./../helper/toArray');
  * @constructor
  */
 function Log(args) {
-    this.log('common', this.form.apply(this, arguments));
+    var callee = Log;
+
+    callee.log.apply(callee, ['common'].concat(toArray(arguments)));
 }
 
 Log.DEBUG_KEY = 'ifnode:';
@@ -38,7 +40,7 @@ Log.log = function(key, args) {
 Log.form = function(args) {
     args = [].slice.call(arguments);
 
-    return sprintf.apply(null, args);
+    return sprintf.apply(sprintf, args);
 };
 
 /**
