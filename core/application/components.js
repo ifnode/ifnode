@@ -32,7 +32,17 @@ module.exports = function(Application) {
             try {
                 require(component_path);
             } catch(error) {
-                Log.warning('components', 'Cannot load component [' + autoformed_config.name + '] by path [' + component_path + ']');
+                /**
+                 * Errors inside component will not catch by this handle
+                 */
+                if(error.message.indexOf(component_path) === -1) {
+                    throw error;
+                } else {
+                    Log.warning(
+                        'components',
+                        'Cannot load component [' + autoformed_config.name + '] by path [' + component_path + ']'
+                    );
+                }
             }
         });
     };
