@@ -1,6 +1,6 @@
 {
     "name": "ifnode",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "description": "Node.js MVC Framework",
     "main": "index.js",
     "scripts": {
@@ -17,11 +17,11 @@
     "author": "ilfroloff <ilfroloff@gmail.com> (https://twitter.com/ilfroloff)",
     "license": "MIT",
     "dependencies": {
-        "express": "4.13.4",
+        "express": "4.14.0",
         "sprintf": "0.1.5",
         "diread": "0.2.0",
         "lodash": "4.13.1",
-        "node-uuid": "1.4.3",
+        "node-uuid": "1.4.7",
         "debug": "2.2.0"
     },
     "devDependencies": {
