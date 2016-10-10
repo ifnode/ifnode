@@ -6,8 +6,19 @@
     "ecmaVersion": 5,
     "sourceType": "script"
   },
+  "plugins": [
+    "require-jsdoc"
+  ],
   "rules": {
+    "require-jsdoc": ["error", {
+      "require": {
+        "FunctionDeclaration": true,
+        "MethodDefinition": true,
+        "ClassDeclaration": false
+      }
+    }],
     "dot-notation": "error",
+    "constructor-super": "error",
     "curly": "off",
     "eqeqeq": "error",
     "linebreak-style": "error",

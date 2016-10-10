@@ -120,8 +120,14 @@ describe('Application', function() {
             var app = ifnode();
 
             app.run();
-            app.down();
-            done();
+
+            /**
+             * setTimeout for node.js 0.10.x compatibility
+             */
+            setTimeout(function() {
+                app.down();
+                done();
+            }, 10);
         });
 
         it('with callback', function(done) {

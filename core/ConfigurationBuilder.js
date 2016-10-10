@@ -80,46 +80,73 @@ function initialize_properties_config(config, default_config, project_folder) {
         defaults: default_config.application.express
     });
 }
+
+/**
+ *
+ * @param {Object}          config
+ * @param {IFSiteConfig}    config.site
+ * @param {Object}          default_config
+ * @param {IFSiteConfig}    default_config.site
+ * @param {string}          project_folder
+ */
 function initialize_site_config(config, default_config, project_folder) {
-    var initialize_ssl_config = function() {
-            var check_ssl_property = function(config, default_ssl_config) {
-                if(typeof config.ssl !== 'undefined') {
-                    if(typeof config.ssl === 'boolean') {
-                        return;
-                    }
-
-                    if(config.ssl.pfx) {
-                        config.ssl.pfx = path.resolve(project_folder, config.ssl.pfx);
-                    } else {
-                        config.ssl.key = path.resolve(project_folder, config.ssl.key);
-                        config.ssl.cert = path.resolve(project_folder, config.ssl.cert);
-                    }
-                } else if(default_ssl_config) {
-                    set_defaults({
-                        obj: [config, 'ssl'],
-                        defaults: default_ssl_config
-                    });
+    /**
+     *
+     */
+    function initialize_ssl_config() {
+        /**
+         *
+         * @param {Object}  config
+         * @param {Object}  default_ssl_config
+         */
+        function check_ssl_property(config, default_ssl_config) {
+            if(typeof config.ssl !== 'undefined') {
+                if(typeof config.ssl === 'boolean') {
+                    return;
                 }
-            };
 
-            check_ssl_property(config.site);
-            check_ssl_property(config.site.local,  config.site.ssl);
-            check_ssl_property(config.site.global, config.site.ssl);
-        },
-        set_default = function(site_config, default_config) {
-            if(!site_config.host) {
-                site_config.host = default_config.host;
+                if(config.ssl.pfx) {
+                    config.ssl.pfx = path.resolve(project_folder, config.ssl.pfx);
+                } else {
+                    config.ssl.key = path.resolve(project_folder, config.ssl.key);
+                    config.ssl.cert = path.resolve(project_folder, config.ssl.cert);
+                }
+            } else if(default_ssl_config) {
+                set_defaults({
+                    obj: [config, 'ssl'],
+                    defaults: default_ssl_config
+                });
             }
-            if(_includes(['127.0.0.1', 'localhost'], site_config.host) &&
-                !site_config.port
-            ) {
-                site_config.port = default_config.port;
-            }
-        };
+        }
+
+        check_ssl_property(config.site);
+        check_ssl_property(config.site.local,  config.site.ssl);
+        check_ssl_property(config.site.global, config.site.ssl);
+    }
+
+    /**
+     *
+     * @param {Object}  site_config
+     * @param {Object}  default_config
+     */
+    function set_default(site_config, default_config) {
+        if(!site_config.host) {
+            site_config.host = default_config.host;
+        }
+        if(_includes(['127.0.0.1', 'localhost'], site_config.host) &&
+            !site_config.port
+        ) {
+            site_config.port = default_config.port;
+        }
+    }
 
     if(!config.site) {
         config.site = _clone(default_config.site);
         return;
+    }
+
+    if(!config.site.connection) {
+        config.site.connection = default_config.site.connection;
     }
 
     if(!config.site.local) {
@@ -150,6 +177,11 @@ function initialize_db_config(config, default_config) {
     config.db = _defaults(config.db || {}, default_config.db);
 }
 
+/**
+ *
+ * @param   {Object}    options
+ * @returns {IFConfig}
+ */
 function initialize_default_config(options) {
     var backend_folder = options.backend_folder;
     var env = options.environment || 'local';
@@ -164,6 +196,7 @@ function initialize_default_config(options) {
             //
             //    pfx: ''
             //},
+            connection: 'http',
             local: {
                 host: 'localhost',
                 port: 8080
