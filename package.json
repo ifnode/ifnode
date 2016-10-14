@@ -1,6 +1,6 @@
 {
     "name": "ifnode",
-    "version": "1.4.2",
+    "version": "1.5.0",
     "description": "Node.js MVC Framework",
     "main": "index.js",
     "scripts": {
@@ -20,13 +20,15 @@
         "express": "4.14.0",
         "sprintf": "0.1.5",
         "diread": "0.2.0",
-        "lodash": "4.13.1",
+        "lodash": "4.16.4",
         "node-uuid": "1.4.7",
         "debug": "2.2.0"
     },
     "devDependencies": {
         "supertest": "1.1.x",
         "mocha": "2.2.x",
-        "should": "6.0.x"
+        "should": "6.0.x",
+        "eslint": "3.7.0",
+        "eslint-plugin-require-jsdoc": "1.0.x"
     }
 }

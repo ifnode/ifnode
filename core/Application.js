@@ -1,9 +1,7 @@
 'use strict';
 
-var _isPlainObject = require('lodash/isPlainObject');
-var _includes = require('lodash/includes');
-var FS = require('fs');
 var Path = require('path');
+var Util = require('util');
 var Express = require('express');
 var UUID = require('node-uuid');
 var Diread = require('diread');
@@ -23,22 +21,17 @@ var DAOList = require('./application/DAOList');
 var ModelBuilder = require('./application/ModelBuilder');
 
 var Controller = require('./Controller');
-var IFNodeVirtualSchema = require('./../plugins/ifnode-virtual');
+var RestMiddleware = require('./middleware/rest');
 
-/**
- * @typedef {Object} ApplicationOptions
- *
- * @property {string}   [app_config.alias]
- * @property {string}   [app_config.project_folder]
- * @property {string}   [app_config.projectFolder]
- * @property {string}   [app_config.environment]
- */
+var IFNodeVirtualSchema = require('./../plugins/ifnode-virtual');
+var NodeHTTPServer = require('./../plugins/node-http_s-server');
 
 /**
  * Creates a new Application instance
  *
- * @class Application
- * @param {ApplicationOptions} [options={}]
+ * @class
+ *
+ * @param {ApplicationOptions}  [options={}]
  */
 function Application(options) {
     this._constructor(options || {});
@@ -51,7 +44,7 @@ require('./application/controllers')(Application);
 /**
  * Require module from start point like application project folder
  *
- * @param   {string} id
+ * @param   {string}    id
  * @returns {*}
  */
 Application.prototype.require = function(id) {
@@ -90,24 +83,16 @@ Application.prototype.register = function(plugin) {
  * @returns {Application}
  */
 Application.prototype.load = function() {
+    /**
+     *
+     * @param {Application} app
+     */
     function initialize_modules(app) {
-        var require_module = function(module_name) {
-            var module;
-
-            try {
-                module = require(module_name);
-            } catch(e) {
-                module = app.ext(module_name);
-            }
-
-            return module;
-        };
-
         var modules = app._modules;
 
         modules = toArray(modules).map(function(module) {
             return typeof module === 'string'?
-                require_module(module) :
+                app._require_module(module) :
                 module;
         });
 
@@ -116,6 +101,10 @@ Application.prototype.load = function() {
         app._modules = modules;
     }
 
+    /**
+     *
+     * @param {Application} app
+     */
     function initialize_models(app) {
         var db = app.config.db;
 
@@ -153,6 +142,10 @@ Application.prototype.load = function() {
         Object.freeze(app.models);
     }
 
+    /**
+     *
+     * @param {Application} app
+     */
     function initialize_components(app) {
         var type = 'component',
             Component = app.Component.bind(app),
@@ -174,6 +167,10 @@ Application.prototype.load = function() {
         app._attach_components();
     }
 
+    /**
+     *
+     * @param {Application} app
+     */
     function initialize_controllers(app) {
         var type = 'controller',
             modules = app._modules,
@@ -202,46 +199,8 @@ Application.prototype.load = function() {
 };
 
 /**
- * Start web-server
  *
- * @param {function} callback
- */
-Application.prototype.run = function(callback) {
-    if(!this._is_loaded) {
-        this.load();
-    }
-
-    var app_instance = this,
-        local_config = this.config.site.local,
-        server_params = [];
-
-    if(local_config.port) {
-        server_params.push(local_config.port);
-    }
-    if(!_includes(['127.0.0.1', 'localhost'], local_config.host)) {
-        server_params.push(local_config.host);
-    }
-    if(typeof callback === 'function') {
-        server_params.push(function() {
-            callback.call(app_instance, app_instance.config);
-        });
-    }
-
-    this.server.listen.apply(this.server, server_params);
-};
-
-/**
- * Stop web-server
- *
- * @param {function} callback
- */
-Application.prototype.down = function(callback) {
-    this.server.close.call(this.server, callback);
-};
-
-/**
- *
- * @param   {string} id
+ * @param   {string}    id
  * @returns {*}
  */
 Application.prototype.extension = function(id) {
@@ -271,10 +230,40 @@ Application.prototype.Model = function(model_config, options) {
 };
 
 /**
+ * Start web-server
+ *
+ * @param {function}    callback
+ */
+Application.prototype.run = Util.deprecate(function(callback) {
+    if(!this._is_loaded) {
+        this.load();
+    }
+
+    var self = this;
+    var connection = this.connection;
+
+    if(typeof callback === 'function') {
+        connection.listen(function() {
+            callback.call(self, self.config);
+        });
+    } else {
+        connection.listen();
+    }
+}, 'Deprecated from 2.0.0 version. Server will started by app.connection.listen()');
+
+/**
+ * Stop web-server
+ *
+ * @param {function}    callback
+ */
+Application.prototype.down = Util.deprecate(function(callback) {
+    this.connection.close(callback);
+}, 'Deprecated from 2.0.0 version. Server will be stopped by app.connection.close()');
+
+/**
  * Initializes application instance
  *
- * @constructs Application
- * @param {ApplicationOptions} [app_config]
+ * @param {ApplicationOptions}  [app_config]
  * @private
  */
 Application.prototype._constructor = function(app_config) {
@@ -282,26 +271,28 @@ Application.prototype._constructor = function(app_config) {
         Log.error('application', 'Alias must be String');
     }
 
-    this._require_cache = {};
-    this._extensions_cache = {};
-
     this.id = UUID.v4();
     this.alias = app_config.alias || this.id;
 
+    this._require_cache = {};
+    this._extensions_cache = {};
     this._project_folder = app_config.project_folder || app_config.projectFolder || Path.dirname(process.argv[1]);
     this._backend_folder = Path.resolve(this._project_folder, 'protected/');
 
     this._models_builder = null;
 
     this._initialize_config(app_config.env || app_config.environment);
-    this._initialize_listener.call(this);
-    this._initialize_server.call(this);
+
+    this.listener = this._initialize_listener();
+
+    this.connection = this._initialize_connection_server();
+    this.server = this.connection.server;
 };
 
 /**
  * Initialize application instance configuration
  *
- * @param {string} environment
+ * @param {string}  environment
  * @private
  */
 Application.prototype._initialize_config = function(environment) {
@@ -322,60 +313,72 @@ Application.prototype._initialize_config = function(environment) {
 /**
  * Initialize server listener
  *
+ * @returns {Express}
  * @private
  */
 Application.prototype._initialize_listener = function() {
-    var app = Express(),
-        config = this.config,
-        app_config = config.application,
+    var app = Express();
+    var config = this.config;
+    var app_config = config.application;
 
-        middleware_configs = app_config.middleware,
-        express_configs = app_config.express,
+    var middleware_configs = app_config.middleware;
 
-        rest = require('./middleware/rest');
-
-    app.use(rest.response());
+    app.use(RestMiddleware.response());
     if(middleware_configs) {
         this._initialize_middleware(middleware_configs, app);
-        app.use(rest.request());
+        app.use(RestMiddleware.request());
     }
+
+    var express_configs = app_config.express;
 
     Object.keys(express_configs).forEach(function(express_option) {
         app.set(express_option, express_configs[express_option]);
     });
 
-    this.listener = app;
+    return app;
 };
 
 /**
- * Initialize native node.js http(s) server
+ * Initialize native node.js (http,https, etc) server
  *
+ * @returns {IConnectionServer}
  * @private
  */
-Application.prototype._initialize_server = function() {
-    var server,
-        credentials = this.config.site.local.ssl;
+Application.prototype._initialize_connection_server = function() {
+    var site_config = this.config.site;
+    var connection = site_config.connection;
 
-    if(_isPlainObject(credentials)) {
-        if(credentials.pfx) {
-            credentials = {
-                pfx: FS.readFileSync(credentials.pfx, 'utf8')
-            };
-        } else if(credentials.key && credentials.cert) {
-            credentials = {
-                key: FS.readFileSync(credentials.key, 'utf8'),
-                cert: FS.readFileSync(credentials.cert, 'utf8')
-            };
-        } else {
-            Log.error('application', 'Wrong https credentials');
-        }
+    switch(connection) {
+        case 'http':
+        case 'https':
+            return new NodeHTTPServer(this.listener, site_config);
+        default:
+            /**
+             *
+             * @class IConnectionServer
+             */
+            var ServerCreator = this._require_module(connection);
 
-        server = require('https').createServer(credentials, this.listener);
-    } else {
-        server = require('http').createServer(this.listener);
+            return new ServerCreator(this.listener, site_config);
+    }
+};
+
+/**
+ * Require node_module or application extension
+ *
+ * @returns {*}
+ * @private
+ */
+Application.prototype._require_module = function(module_name) {
+    var Module;
+
+    try {
+        Module = require(module_name);
+    } catch(e) {
+        Module = this.extension(module_name);
     }
 
-    this.server = server;
+    return Module;
 };
 
 defineProperties(Application.prototype, {
