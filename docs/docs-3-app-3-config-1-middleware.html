@@ -1,0 +1,68 @@
+<h2 id="middleware">Middleware</h2>
+<p>Middleware is special field of <code>config.application</code>. Here can set different <code>express.js</code> middleware and create own.</p>
+<h3 id="set-middleware">Set middleware</h3>
+<p>Can three possibilities to set middleware:</p>
+<ul>
+<li>By object</li>
+<li>By array</li>
+<li>By function</li>
+</ul>
+<p>Notes:</p>
+<ol>
+<li>in <code>by object</code> and <code>by array</code> key is name of npm module. </li>
+<li>in <code>by function</code> key can be any.</li>
+</ol>
+<p>Order of middleware load is <code>natural</code> (first key - first load, second key - second load, etc)</p>
+<h3 id="by-object">by object</h3>
+<p>For middleware where options is one object. For example, <em><a href="https://www.npmjs.com/package/connect-multiparty">connect-multiparty</a></em>:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-attribute">application</span>: {
+        middleware: {
+            <span class="hljs-string">'connect-multiparty'</span>: {
+                maxFilesSize: <span class="hljs-number">10</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> // <span class="hljs-string">'10mb'</span>
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="by-array">by array</h3>
+<p>For middleware where options is several agruments. For example, <em><a href="https://www.npmjs.com/package/serve-static">serve-static</a></em>:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-attribute">application</span>: {
+        middleware: {
+            <span class="hljs-string">'serve-static'</span>: [<span class="hljs-string">'public/'</span>, { extensions: [<span class="hljs-string">'js'</span>, <span class="hljs-string">'css'</span>] }]
+        }
+    }
+}
+</code></pre>
+<h3 id="by-function">by function</h3>
+<p>&quot;Raw&quot; set of middleware. Possibility to create own middleware or attach any external middleware:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> session = <span class="hljs-keyword">require</span>(<span class="hljs-string">'express-session'</span>),
+    connect_mongo = <span class="hljs-keyword">require</span>(<span class="hljs-string">'connect-mongo'</span>)(session);
+
+{
+    application: {
+        middleware: {
+            <span class="hljs-string">'own-middleware'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(app, express)</span> </span>{
+                app.<span class="hljs-keyword">use</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(request, response, next)</span> </span>{
+                    <span class="hljs-comment">// do something</span>
+                    next();
+                });
+            },
+            <span class="hljs-string">'attach-session'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(app)</span> </span>{
+                app.<span class="hljs-keyword">use</span>(session({
+                    resave: <span class="hljs-keyword">false</span>,
+                    saveUninitialized: <span class="hljs-keyword">true</span>,
+                    cookie: {},
+
+                    store: <span class="hljs-keyword">new</span> connect_mongo({
+                        db: <span class="hljs-string">'database'</span>,
+                        host: <span class="hljs-string">'localhost'</span>,
+                        port: <span class="hljs-number">27017</span>
+                    })
+                }));
+            },
+        }
+    }
+}
+</code></pre>

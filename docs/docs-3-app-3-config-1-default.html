@@ -1,0 +1,79 @@
+<h2 id="default-config">Default config</h2>
+<p>This is default <code>ifnode</code> config:</p>
+<pre><code class="lang-javascript">module.exports = {
+    environmen<span class="hljs-variable">t:</span> <span class="hljs-string">'local'</span>,
+    site: {
+        loca<span class="hljs-variable">l:</span> {
+            hos<span class="hljs-variable">t:</span> <span class="hljs-string">'localhost'</span>,
+            por<span class="hljs-variable">t:</span> <span class="hljs-number">8080</span>
+        },
+        globa<span class="hljs-variable">l:</span> {
+            hos<span class="hljs-variable">t:</span> <span class="hljs-string">'localhost'</span>,
+            por<span class="hljs-variable">t:</span> <span class="hljs-number">8080</span>
+        }
+    },
+
+    application: {
+        expres<span class="hljs-variable">s:</span> {
+            <span class="hljs-string">'env'</span>: <span class="hljs-string">'local'</span>,
+            <span class="hljs-string">'view engine'</span>: <span class="hljs-string">'jade'</span>,
+            <span class="hljs-string">'x-powered-by'</span>: false
+        },
+        folder<span class="hljs-variable">s:</span> {
+            extension<span class="hljs-variable">s:</span>  <span class="hljs-string">'/path/to/project/protected/extensions/'</span>,
+            component<span class="hljs-variable">s:</span>  <span class="hljs-string">'/path/to/project/protected/components/'</span>,
+            <span class="hljs-keyword">view</span><span class="hljs-variable">s:</span>       <span class="hljs-string">'/path/to/project/protected/views/'</span>,
+            controller<span class="hljs-variable">s:</span> <span class="hljs-string">'/path/to/project/protected/controllers/'</span>,
+            model<span class="hljs-variable">s:</span>      <span class="hljs-string">'/path/to/project/protected/models/'</span>
+        }
+    },
+
+    d<span class="hljs-variable">b:</span> {
+        virtua<span class="hljs-variable">l:</span> {
+            schem<span class="hljs-variable">a:</span> <span class="hljs-string">'virtual'</span>
+        }
+    }
+}
+</code></pre>
+<p>Properties can be extended or changed. Also can add own properties.</p>
+<h2 id="special-properties">Special properties</h2>
+<h3 id="site">site</h3>
+<p>Is special property where set application urls: <code>local</code> and <code>global</code>.
+Both build to special object with property <code>origin</code> and method <code>url</code>. Example:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// config/dev.js</span>
+site: {
+    <span class="hljs-built_in">local</span>: {
+        port: <span class="hljs-number">1010</span>
+    },
+    <span class="hljs-built_in">global</span>: {
+        host: <span class="hljs-string">'nicedomainname.io'</span>
+    },
+    ssl: {
+        key: <span class="hljs-string">'ssl/key.pem'</span>,
+            cert: <span class="hljs-string">'ssl/cert.pem'</span>
+    }
+}
+
+<span class="hljs-comment">// app.js</span>
+<span class="hljs-built_in">var</span> app = ifnode({
+        env: <span class="hljs-string">'dev'</span>
+    }),
+    site = app.config.site;
+
+site.<span class="hljs-built_in">local</span>.origin;      <span class="hljs-comment">// https://localhost:1010</span>
+site.<span class="hljs-built_in">local</span>.url(<span class="hljs-string">'/u/1'</span>); <span class="hljs-comment">// https://localhost:1010/u/1</span>
+site.<span class="hljs-built_in">global</span>.origin;     <span class="hljs-comment">// https://nicedomainname.io</span>
+site.<span class="hljs-built_in">global</span>.url(<span class="hljs-string">'u/2'</span>); <span class="hljs-comment">// https://nicedomainname.io/u/2</span>
+</code></pre>
+<h3 id="application">application</h3>
+<p>Application field contains settings for express.js core (list check <a href="http://expressjs.com/4x/api.html#app.set">here</a>), path to application components folders and [[middleware|docs/app/config/middleware]].</p>
+<h3 id="components">components</h3>
+<p>Any config has special property <code>components</code>, where set data for components. For example <a href="">ifnode-auth</a>:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-attribute">components</span>: {
+        auth: {
+            userFieldId: <span class="hljs-string">'email'</span>
+        }
+    }
+}
+</code></pre>

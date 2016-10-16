@@ -1,0 +1,365 @@
+<h3 id="config-">Config:</h3>
+<p>Config is <code>js</code> or <code>json</code> object with all application options. Can contain any and same of options specialized for <code>ifnode</code>.</p>
+<p>Path to config&#39;s folder <code>${project_folder}/config</code></p>
+<h3 id="specialized-ifnode-options-">Specialized ifnode options:</h3>
+<h4 id="site-">site:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>site</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Description of site url</td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.local</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Local url (use for start server)</td>
+<td style="text-align:left"><code>{ host: &#39;localhost&#39;, port: 8080 }</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.local.host</code></td>
+<td style="text-align:left">String\</td>
+<td style="text-align:left">Undefined</td>
+<td style="text-align:left">Host for creating server</td>
+<td><code>&#39;localhost&#39;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.local.port</code></td>
+<td style="text-align:left">Number\</td>
+<td style="text-align:left">Undefined</td>
+<td style="text-align:left">Port for creating server</td>
+<td><code>8080</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.global</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Global url (&quot;nice&quot; domain of site)</td>
+<td style="text-align:left"><code>{ host: &#39;localhost&#39; }</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.global.host</code></td>
+<td style="text-align:left">String\</td>
+<td style="text-align:left">Undefined</td>
+<td style="text-align:left">Host of &quot;nice&quot; domain</td>
+<td><code>&#39;localhost&#39;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.global.port</code></td>
+<td style="text-align:left">Number\</td>
+<td style="text-align:left">Undefined</td>
+<td style="text-align:left">Port of &quot;nice&quot; domain</td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.ssl</code></td>
+<td style="text-align:left">Object\</td>
+<td style="text-align:left">Undefined</td>
+<td style="text-align:left">SSL support. Check <a href="https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener">here</a></td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.ssl.key</code></td>
+<td style="text-align:left">String\</td>
+<td style="text-align:left">Undefined</td>
+<td style="text-align:left">Full or relative (at <code>${project_folder}</code>) path to <code>key.pem</code>  (just path, not need read as file)</td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.ssl.cert</code></td>
+<td style="text-align:left">String\</td>
+<td style="text-align:left">Undefined</td>
+<td style="text-align:left">Full or relative (at <code>${project_folder}</code>) path to <code>cert.pem</code> (just path, not need read as file)</td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.ssl.pfx</code></td>
+<td style="text-align:left">String\</td>
+<td style="text-align:left">Undefined</td>
+<td style="text-align:left">Full or relative (at <code>${project_folder}</code>) path to <code>pfx.pem</code> (just path, not need read as file)</td>
+<td><code>undefined</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="note-">Note:</h5>
+<p><code>ifnode</code> generate special <code>app.config.site</code> options: .site with options:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.origin</td>
+<td style="text-align:left">Equal to: <code>http(s)://${host}[:${port}]</code> (if set <code>site.ssl</code> - <code>https</code>, other - <code>http</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left">.url(String pathname)</td>
+<td style="text-align:left">Method for generate link</td>
+</tr>
+</tbody>
+</table>
+<p>Example (<code>coffeescript</code>):</p>
+<pre><code class="lang-coffeescript"><span class="hljs-meta"># config/dev.js</span>
+site:
+    <span class="hljs-built_in">local</span>:
+        port: <span class="hljs-number">1010</span>
+global:
+    host: <span class="hljs-string">'nicedomainname.io'</span>
+ssl:
+    key: <span class="hljs-string">'ssl/key.pem'</span>
+    cert: <span class="hljs-string">'ssl/cert.pem'</span>
+
+<span class="hljs-meta"># app.js</span>
+app = ifnode( env: <span class="hljs-string">'dev'</span> )
+site = app.config.site;
+
+site.<span class="hljs-built_in">local</span>.origin <span class="hljs-meta"># https:<span class="hljs-comment">//localhost:1010</span></span>
+site.<span class="hljs-built_in">local</span>.url <span class="hljs-string">'/u/1'</span> <span class="hljs-meta"># https:<span class="hljs-comment">//localhost:1010/u/1</span></span>
+site.global.origin <span class="hljs-meta"># https:<span class="hljs-comment">//nicedomainname.io</span></span>
+site.global.url <span class="hljs-string">'u/1'</span> <span class="hljs-meta"># https:<span class="hljs-comment">//nicedomainname.io/u/1</span></span>
+</code></pre>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript">site:                  # Description of site url
+    loca<span class="hljs-variable">l:</span>             # Local url (use <span class="hljs-keyword">for</span> start server)
+        hos<span class="hljs-variable">t:</span>          # [optional] By defaul<span class="hljs-variable">t:</span> localhost
+        por<span class="hljs-variable">t:</span>          # [optional] By defaul<span class="hljs-variable">t:</span> <span class="hljs-number">8080</span>
+    globa<span class="hljs-variable">l:</span>            # Global url (<span class="hljs-string">"nice"</span> domain of site)
+        hos<span class="hljs-variable">t:</span>          # [optional] By defaul<span class="hljs-variable">t:</span> localhost
+        por<span class="hljs-variable">t:</span>          # [optional] By defaul<span class="hljs-variable">t:</span> null
+    ss<span class="hljs-variable">l:</span>               # SSL support. Check here - http<span class="hljs-variable">s:</span>//nodejs.org/api/https.html#https_https_createserver_options_requestlistener
+        key:           # Full <span class="hljs-built_in">or</span> relative (at project_folder) path <span class="hljs-keyword">to</span> key.pem  (just path, not need <span class="hljs-keyword">read</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">file</span>)
+        cer<span class="hljs-variable">t:</span>          # Full <span class="hljs-built_in">or</span> relative (at project_folder) path <span class="hljs-keyword">to</span> cert.pem (just path, not need <span class="hljs-keyword">read</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">file</span>)
+        pfx:           # Full <span class="hljs-built_in">or</span> relative (at project_folder) path <span class="hljs-keyword">to</span> pfx.pem  (just path, not need <span class="hljs-keyword">read</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">file</span>)
+
+###
+Note: ifnode generate config option .site with option<span class="hljs-variable">s:</span>
+    .origin                   Equal <span class="hljs-keyword">to</span>: http(s)://${host}[:${port}] (<span class="hljs-keyword">if</span> <span class="hljs-keyword">set</span> site.ssl - https, other - http)
+    .url(pathname: String)    Method <span class="hljs-keyword">for</span> generate link
+###
+</code></pre>
+<h4 id="application-">application:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>application</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Application and <code>express()</code> settings</td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.environment</code></td>
+<td style="text-align:left">Name of environment</td>
+<td style="text-align:left">Name of config file (if config by file) or <code>&#39;local&#39;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Hash of express application settings. List <a href="http://expressjs.com/4x/api.html#app.set">here</a></td>
+<td style="text-align:left">Predefined options check below</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express.env</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left"><code>env</code> option</td>
+<td style="text-align:left">Same as <code>application.environment</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express[&#39;view engine&#39;]</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Template</td>
+<td style="text-align:left"><code>&#39;jade&#39;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express.views</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Path to application views</td>
+<td style="text-align:left"><code>${backend_folder}/views</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express[&#39;x-powered-by&#39;]</code></td>
+<td style="text-align:left">Boolean</td>
+<td style="text-align:left">Add to response header <code>express.js</code> mark</td>
+<td style="text-align:left"><code>false</code> (sorry, <code>express.js</code> :) )</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Hash of pathes to application components</td>
+<td style="text-align:left">Check below</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.extensions</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of extensions</td>
+<td style="text-align:left"><code>${backend_folder}/extensions</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.components</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of components</td>
+<td style="text-align:left"><code>${backend_folder}/components</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.views</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of views</td>
+<td style="text-align:left"><code>${backend_folder}/views</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.controllers</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of controllers</td>
+<td style="text-align:left"><code>${backend_folder}/controllers</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.models</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of models</td>
+<td style="text-align:left"><code>${backend_folder}/models</code></td>
+</tr>
+</tbody>
+</table>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript">application:                # Application (<span class="hljs-built_in">and</span> express()) settings
+    environmen<span class="hljs-variable">t:</span>            # Name of environment. By defaul<span class="hljs-variable">t:</span> name of config <span class="hljs-keyword">file</span> (<span class="hljs-keyword">if</span> config by <span class="hljs-keyword">file</span>) <span class="hljs-built_in">or</span> <span class="hljs-string">"local"</span>
+    expres<span class="hljs-variable">s:</span>                # Hash of express application settings (lis<span class="hljs-variable">t:</span> http://expressjs.<span class="hljs-keyword">com</span>/<span class="hljs-number">4</span><span class="hljs-keyword">x</span>/api.html#app.<span class="hljs-keyword">set</span>)
+        <span class="hljs-keyword">en</span><span class="hljs-variable">v:</span>                # By defaul<span class="hljs-variable">t:</span> name of config <span class="hljs-keyword">file</span> (<span class="hljs-keyword">if</span> config by <span class="hljs-keyword">file</span>) <span class="hljs-built_in">or</span> <span class="hljs-string">"local"</span>
+        <span class="hljs-string">"view engine"</span>:      # By defaul<span class="hljs-variable">t:</span> jade
+        <span class="hljs-keyword">view</span><span class="hljs-variable">s:</span>              # By defaul<span class="hljs-variable">t:</span> ${backend_folder}/views
+        <span class="hljs-string">"x-powered-by"</span>      # By defaul<span class="hljs-variable">t:</span> false (sorry, express :) )
+    folder<span class="hljs-variable">s:</span>
+        extension<span class="hljs-variable">s:</span>         # Folder of extensions.  By defaul<span class="hljs-variable">t:</span> ${backend_folder}/extensions
+        component<span class="hljs-variable">s:</span>         # Folder of components.  By defaul<span class="hljs-variable">t:</span> ${backend_folder}/components
+        <span class="hljs-keyword">view</span><span class="hljs-variable">s:</span>              # Folder of views.       By defaul<span class="hljs-variable">t:</span> ${backend_folder}/views
+        controller<span class="hljs-variable">s:</span>        # Folder of controllers. By defaul<span class="hljs-variable">t:</span> ${backend_folder}/controllers
+        model<span class="hljs-variable">s:</span>             # Folder of models.      By defaul<span class="hljs-variable">t:</span> ${backend_folder}/models
+</code></pre>
+<h4 id="middleware-">middleware:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>middleware</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Definition of middleware modules external (examples: <code>connect-multiparty</code>, <code>cookie-parser</code>, etc) or own</td>
+</tr>
+</tbody>
+</table>
+<p>More information about <code>ifnode</code> middleware read [[here|docs/app/config/middleware]].</p>
+<p>Below specialized <code>ifnode</code> middleware:</p>
+<h6 id="middleware-body-">middleware.body:</h6>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>middleware.body</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Build on <code>body-parser</code> node module</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>middleware.body[${parser}]</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left"><code>${parser}</code> - name of parser, <code>options</code> - hash of <code>${parser}</code> options. Check <a href="https://github.com/expressjs/body-parser">here</a></td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<pre><code class="lang-javascript">{
+    <span class="hljs-string">'body'</span>: {
+        <span class="hljs-string">'text'</span>: {},
+        <span class="hljs-string">'urlencoded'</span>: {
+            extended: true
+        },
+        <span class="hljs-string">'json'</span>: {
+            limit: <span class="hljs-string">'500kb'</span>
+        }
+    }
+}
+</code></pre>
+<h6 id="middleware-statics-">middleware.statics:</h6>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>middleware.statics</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Build on <code>serve-statics</code> node module. Has three variant of initialize static files</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>middleware.statics[options]</code></td>
+<td style="text-align:left">String\</td>
+<td style="text-align:left">Object\</td>
+<td>Array</td>
+<td>Check options <a href="https://github.com/expressjs/serve-static">here</a></td>
+</tr>
+</tbody>
+</table>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript">middleware:                            # External middleware modules (example<span class="hljs-variable">s:</span> connect-multiparty, cookie-parser etc)
+###
+    ifnode middleware<span class="hljs-variable">s:</span>
+        body:                          # Build <span class="hljs-keyword">on</span> body-parser module
+            <span class="hljs-string">'${parser}'</span>: <span class="hljs-keyword">options</span>        ${parser} - name of parser, <span class="hljs-keyword">options</span> - hash of parser <span class="hljs-keyword">options</span>. See here: http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/expressjs/body-parser
+        static<span class="hljs-variable">s:</span>                       # Build <span class="hljs-keyword">on</span> serve-statics module. Tree variant of initialize static <span class="hljs-keyword">files</span>
+            path: String                Options see here: http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/expressjs/serve-static
+            variant<span class="hljs-variable">s:</span> Object
+                path1: <span class="hljs-keyword">options</span>,
+                path2: <span class="hljs-keyword">options</span>,
+                ...
+            varian<span class="hljs-variable">t:</span> Array
+                path,
+                path1,
+                { path2: <span class="hljs-keyword">options</span> },
+                ...
+###
+</code></pre>
+<h4 id="db-">db:</h4>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript">db:                                     # Initialize options <span class="hljs-keyword">of</span> databases (models schemas)
+    name_of_db:                         # <span class="hljs-keyword">Name</span> <span class="hljs-keyword">of</span> database connect
+        schema: # <span class="hljs-keyword">name</span> <span class="hljs-keyword">of</span> schema #      # Schema <span class="hljs-keyword">name</span> (<span class="hljs-keyword">for</span> choose <span class="hljs-keyword">of</span> schema)
+        config: # schema config #       # Config <span class="hljs-keyword">of</span> database connection
+</code></pre>
+<h4 id="components-">components:</h4>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript">component<span class="hljs-variable">s:</span>                             # Initialize <span class="hljs-keyword">options</span> <span class="hljs-keyword">for</span> components of ifnode
+    name_of_componen<span class="hljs-variable">t:</span> # <span class="hljs-keyword">options</span> #
+</code></pre>

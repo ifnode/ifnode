@@ -1,0 +1,40 @@
+<h3 id="-docs-docs-api-docs-api-app-docs-api-app-app-controller-docs-api-app-controller-method">[[Docs|docs]] → [[API|docs/api]] → [[app|docs/api/app]] → [[app.Controller|docs/api/app/controller]] → .method</h3>
+<h3 id="parameters-">Parameters:</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Argument</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">method</td>
+<td style="text-align:left">Name of method. Current available: get, post, put, patch, delete</td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left">path</td>
+<td style="text-align:left">Next part of url. Check <a href="http://expressjs.com/4x/api.html#router.METHOD">here</a>. Instead of express&#39;s variant of set, cannot be regular expression</td>
+<td style="text-align:left"><code>/</code></td>
+</tr>
+<tr>
+<td style="text-align:left">options</td>
+<td style="text-align:left">Special options for route</td>
+<td style="text-align:left">Equal to <a href="/ilfroloff/ifnode/wiki/docs-api-app-controller#options">controller&#39;s options</a> omit <code>root</code>, <code>name</code> and <code>router</code></td>
+</tr>
+<tr>
+<td style="text-align:left">callback</td>
+<td style="text-align:left">Handler(s) of request</td>
+</tr>
+</tbody>
+</table>
+<p>&quot;Syntax sugar&quot; for <code>.method()</code>:</p>
+<pre><code><span class="hljs-title">.get()</span>
+<span class="hljs-title">.post()</span>
+<span class="hljs-title">.put()</span>
+<span class="hljs-title">.patch()</span>
+<span class="hljs-title">.delete()</span>
+<span class="hljs-title">.del()</span>
+</code></pre>

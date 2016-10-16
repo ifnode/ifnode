@@ -1,0 +1,28 @@
+<h2 id="extensions">Extensions</h2>
+<p>When application requires special and independent from system module it is Extension. Extensions are similar to <code>npm</code> module. Extension&#39;s load have <a href="https://nodejs.org/api/modules.html#modules_all_together">same rules of initializing</a> and usage as <code>npm</code> modules.</p>
+<p>Extension loads by application&#39;s instance method <code>app.extension</code> (or alias <code>app.ext</code>)</p>
+<h3 id="example">Example</h3>
+<p>Simple extension file:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// extensions/error/index.js</span>
+<span class="hljs-built_in">module</span>.exports.err = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./err'</span>);
+<span class="hljs-built_in">module</span>.exports.throw = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./throw'</span>);
+
+<span class="hljs-comment">// extensions/error/throw.js</span>
+<span class="hljs-keyword">var</span> err = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./err'</span>);
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error_message</span>) </span>{
+    <span class="hljs-keyword">throw</span> err(error_message);
+};
+<span class="hljs-comment">// extensions/error/err.js</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error_message</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(error_message);
+};
+</code></pre>
+<p>Application file:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// app.js    </span>
+<span class="hljs-keyword">var</span> ifnode = require(<span class="hljs-symbol">'ifnod</span>e'),
+    app = ifnode();
+
+app.ext(<span class="hljs-symbol">'error</span>-<span class="hljs-keyword">throw</span>').<span class="hljs-keyword">throw</span>(<span class="hljs-symbol">'boo</span>m') <span class="hljs-comment">// throw error boom</span>
+app.ext(<span class="hljs-symbol">'error</span>-<span class="hljs-keyword">throw</span>/err')(<span class="hljs-symbol">'boo</span>m') <span class="hljs-comment">// returns Error instance boom</span>
+</code></pre>

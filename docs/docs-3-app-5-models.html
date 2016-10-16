@@ -1,0 +1,37 @@
+<h2 id="models">Models</h2>
+<p>Model is database presentation of tables (SQL) or collections (NoSQL) data.</p>
+<p><code>ifnode</code> model is middleware between native npm module for database (mongoose, knex, etc) and real using. <code>ifnode</code> make all dirty work for initialize and populate all application data presentations.</p>
+<h3 id="example">Example</h3>
+<p>Create <code>mongodb</code> model using <code>ifnode-mongoose</code> - middleware between <code>mongoose</code> module and <code>ifnode</code>:</p>
+<p>Creating config file with database options:</p>
+<pre><code class="lang-javascript">// config/local.js    
+module.exports = {
+    db: {
+        mongo: {
+            schema: <span class="hljs-string">'mongoose'</span>,
+            config: {
+                database: <span class="hljs-string">'library'</span>,
+                host: <span class="hljs-string">'localhost'</span>
+            }
+        }
+    }
+};
+</code></pre>
+<p>Creating books model:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// models/books.js    </span>
+<span class="hljs-keyword">var</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ifnode'</span>)(),
+    books = app.Model({
+        <span class="hljs-attr">collection</span>: <span class="hljs-string">'books'</span>
+    });
+</code></pre>
+<p>Application file:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// app.js    </span>
+<span class="hljs-keyword">var</span> ifnode = require('ifnode'),
+    <span class="hljs-keyword">app</span> = ifnode({
+        env: '<span class="hljs-keyword">local</span>'
+    });
+
+<span class="hljs-comment">// load all models and initialize them</span>
+<span class="hljs-keyword">app</span>.load();
+<span class="hljs-keyword">app</span>.models.books.findOne(); <span class="hljs-comment">// return instance of mongoose.Model</span>
+</code></pre>

@@ -1,0 +1,44 @@
+<h1 id="-docs-docs-application-items">[[Docs|docs]] → Application items</h1>
+<h2 id="-ifnode-build-items-hierarchy"><code>ifnode</code> build items hierarchy</h2>
+<p>Like was <strong>[[said before|docs/intro/ideology]]</strong>, <code>ifnode</code> contains four build items:</p>
+<ul>
+<li><strong>[[extensions|docs/app/extensions]]</strong></li>
+<li><strong>[[models|docs/app/models]]</strong></li>
+<li><strong>[[components|docs/app/components]]</strong></li>
+<li><strong>[[controllers|docs/app/controllers]]</strong></li>
+</ul>
+<p>Each item have specific role for building <code>ifnode</code> application. Simple hierarchy of each application elements:</p>
+<p><img src="https://github.com/ilfroloff/ilfroloff.github.io/blob/master/hierarchy.png" alt="Application items hierarchy"></p>
+<p>Like presented in picture, each item have specified and direct role in <code>ifnode</code> application. Let&#39;s check each part closer.</p>
+<h3 id="node_modules">node_modules</h3>
+<p><code>node_modules</code> is a fundamental part of each application. <code>npm</code> have a large amount of great and not modules</p>
+<h3 id="extensions-helpers-layer-">extensions (Helpers Layer)</h3>
+<p>Frequently developing application requires some specified module which cannot find in <code>npm</code>. Extensions are the internal application modules. It can be helper&#39;s functions, internal logging system, etc. <code>ifnode</code>&#39;s extension can to extend some <code>npm</code> module and to increase possibilities.</p>
+<p>Also extensions using in <code>ifnode</code>&#39;s <strong>[[plugins system|docs/app/plugins]]</strong>, because each <code>ifnode</code>&#39;s plugin is extension (or <code>npm</code> module) in general.</p>
+<p>Notes:</p>
+<ul>
+<li>extension can accessed other extension</li>
+</ul>
+<p><em>P.S. One of &quot;native&quot; <code>npm</code> variant of creating own modules describes <strong><a href="https://blog.risingstack.com/nodejs-at-scale-npm-best-practices/#9developingpackages">here</a></strong>.</em></p>
+<h3 id="models-data-access-layer-">models (Data Access Layer)</h3>
+<p>Most problems requires processing data. Data can be from database or by services, and application must have access point to get or change this data. <code>ifnode</code>&#39;s models part is it.
+Each model build on <code>schema</code> - point to get and work with data. Each <code>schema</code> is <code>npm</code> module or extension, because <code>schema</code> cannot be related of developing application. Frequently <code>schema</code> is a middleware between <code>ifnode</code>&#39;s models system and external data access library (for example, <strong><a href="https://www.npmjs.com/package/ifnode-mongoose">ifnode-mongoose</a></strong>).</p>
+<p>Notes:</p>
+<ul>
+<li>model cannot accessed other model</li>
+</ul>
+<h3 id="components-business-layer-">components (Business Layer)</h3>
+<p>Business Layer resolves two problems:</p>
+<ol>
+<li>How application must work with models data</li>
+<li>How one part of application must to influence to other part</li>
+</ol>
+<p>In general, component has access to such models and relates those models to one functionality part. Also, component can be used for creating independent module from other application parts, but dependent of current application environment configuration.</p>
+<p>Example of component usage: developer wants to create component which generate excel file from some database&#39;s table data - it must be implemented in <code>ifnode</code> components application part.</p>
+<p>Notes:</p>
+<ul>
+<li>component can accessed other component</li>
+</ul>
+<h3 id="controllers-requests-layer-">controllers (Requests Layer)</h3>
+<p>Controllers system of <code>ifnode</code> build on <code>express</code> <code>npm</code> module and extends it possibilities. Each controller is a independent route point with specified behavior. Behavior describes by plugins. For example you want to add possibility to prevent access to some IP&#39;s.
+Controller inherits <code>express.Router</code> and have most of <code>Router</code> class methods.</p>

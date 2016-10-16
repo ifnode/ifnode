@@ -1,0 +1,166 @@
+<h3 id="-docs-docs-api-docs-api-app-docs-api-app-app-model">[[Docs|docs]] → [[API|docs/api]] → [[app|docs/api/app]] → app.Model</h3>
+<p>Returns <code>model</code> instance:</p>
+<pre><code class="lang-javascript"><span class="hljs-selector-tag">app</span><span class="hljs-selector-class">.Model</span>(<span class="hljs-selector-tag">Object</span> <span class="hljs-selector-tag">model_options</span> <span class="hljs-selector-attr">[, Object schema_options]</span>)
+</code></pre>
+<p>All model&#39;s schemas must be added by plugins (like <a href="/ifnode/mongoose"><code>ifnode-mongoose</code></a>).</p>
+<p>Default schema is <code>virtual</code>. Code of <code>virtual</code> schema is find <a href="/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js">here</a></p>
+<h3 id="parameters-">Parameters:</h3>
+<h4 id="model_options-">model_options:</h4>
+<p>Options to create model instance. All options are specified by model&#39;s schema.</p>
+<p>Below recommended options:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.name</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Name of model</td>
+</tr>
+<tr>
+<td style="text-align:left">.table</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Name of table (for SQL databases: MySQL, PostgreSQL, etc)</td>
+</tr>
+<tr>
+<td style="text-align:left">.collection</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Name of collection (for NoSQL databases: mongodb, redis, etc)</td>
+</tr>
+<tr>
+<td style="text-align:left">.columns</td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Describe table or collection columns (example: <code>mongoose</code> options <code>columns</code>)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="schema_options-">schema_options:</h4>
+<p>Options for build model&#39;s schema.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.db</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Name of database (one of keys in <code>config.db</code>)</td>
+<td style="text-align:left">First in <code>config.db</code> or <code>virtual</code></td>
+</tr>
+<tr>
+<td style="text-align:left">.alias</td>
+<td style="text-align:left">String\</td>
+<td style="text-align:left">Array</td>
+<td style="text-align:left">Aliases of model (in <code>app.models</code>)</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="create-own-schema-">Create own Schema:</h3>
+<p>Example:</p>
+<pre><code class="lang-javascript">// own-schema.js
+exports.schema = function(app, Schema) {
+    Schema.schema = 'name-of-schema';
+    Schema.driver = function(db_config) {
+        // driver initaialize
+       <span class="hljs-built_in"> return </span>driver;
+    };
+
+    Schema.fn.initialize = function(model_config) {
+        // model<span class="hljs-built_in"> instance </span>initialize
+    };
+    Schema.fn.compile = function() {
+        // returns model<span class="hljs-built_in"> instance </span>which accessed by app.models[name]
+       <span class="hljs-built_in"> return </span>model;
+    };
+};
+</code></pre>
+<p>Real schema <code>ifnode-knex.js</code>:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// knex.js</span>
+<span class="hljs-keyword">var</span> knex = <span class="hljs-built_in">require</span>(<span class="hljs-string">'knex'</span>);
+
+exports.schema = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">app, KnexSchema</span>) </span>{
+    KnexSchema.schema = <span class="hljs-string">'knex'</span>;
+    KnexSchema.driver = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">db_config</span>) </span>{
+        <span class="hljs-keyword">return</span> knex(db_config);
+    };
+
+    KnexSchema.fn.initialize = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">model_config</span>) </span>{
+        <span class="hljs-keyword">this</span>.table = model_config.table;
+        <span class="hljs-keyword">this</span>.driver = <span class="hljs-keyword">this</span>._driver;
+
+        <span class="hljs-keyword">this</span>.all = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.driver(<span class="hljs-keyword">this</span>.table);
+        };
+    };
+    KnexSchema.fn.compile = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };
+};
+</code></pre>
+<p>Description of field:</p>
+<table>
+<thead>
+<tr>
+<th>Options</th>
+<th>Description</th>
+<th>Optional</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.schema</td>
+<td>Name of schema</td>
+</tr>
+<tr>
+<td>.driver(Object db_config)</td>
+<td>Static method for initializing of schema driver</td>
+<td>true</td>
+</tr>
+<tr>
+<td>.fn</td>
+<td>Alias of <code>Schema.prototype</code></td>
+<td>-</td>
+</tr>
+<tr>
+<td>.fn._driver</td>
+<td>Results of <code>.driver()</code> method</td>
+<td>-</td>
+</tr>
+<tr>
+<td>.fn.initialize(Object model_config)</td>
+<td>Create model instance by schema</td>
+<td>true</td>
+</tr>
+<tr>
+<td>.fn.compile()</td>
+<td>Return final model instance (this model can access by <code>app.models</code>)</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<p>Aliases:</p>
+<table>
+<thead>
+<tr>
+<th>Options</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.fn.init()</td>
+<td>Alias of <code>.fn.initialize()</code></td>
+</tr>
+</tbody>
+</table>

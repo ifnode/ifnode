@@ -1,0 +1,28 @@
+<h2 id="application-structure">Application structure</h2>
+<p><code>ifnode</code> propose next application structure:</p>
+<pre><code>application_name/
+|<span class="hljs-string">-- assets/
+</span>|<span class="hljs-string">-- config/
+</span>|<span class="hljs-string">   </span>|<span class="hljs-string">   ...
+</span>|<span class="hljs-string">   `-- local.js
+</span>|
+|<span class="hljs-string">-- node_modules/
+</span>|<span class="hljs-string">   </span>|<span class="hljs-string">   ...
+</span>|<span class="hljs-string">   `-- ifnode/
+</span>|
+|<span class="hljs-string">-- protected/
+</span>|<span class="hljs-string">   </span>|<span class="hljs-string">-- components/
+</span>|<span class="hljs-string">   </span>|<span class="hljs-string">-- controllers/
+</span>|<span class="hljs-string">       </span>|<span class="hljs-string">   ...
+</span>|<span class="hljs-string">       `-- ~.js
+</span>|<span class="hljs-string">   </span>|<span class="hljs-string">-- extensions/
+</span>|<span class="hljs-string">   </span>|<span class="hljs-string">-- models/
+</span>|<span class="hljs-string">   `-- views/
+</span>|<span class="hljs-string">       </span>|<span class="hljs-string">   ...
+</span>|<span class="hljs-string">       `-- index
+</span>|
+|<span class="hljs-string">-- public/
+</span>|
+`-- app.js
+</code></pre><p><code>ifnode</code> require only <code>protected/</code> folder with framework files.</p>
+<p>Below read more about main components.</p>

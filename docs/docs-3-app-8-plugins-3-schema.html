@@ -1,0 +1,83 @@
+<h2 id="schema-plugin">Schema plugin</h2>
+<p>Possibility to create own schema plugin to <code>ifnode</code>.</p>
+<p>Schema is middleware between <code>ifnode</code> models and database module (mongoose, knex, etc).</p>
+<h3 id="creating-own-plugin">Creating own plugin</h3>
+<p>Below example of simple plugin <code>memorystore</code> for store data in RAM:</p>
+<p>Plugin file:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// extensions/memorystore.js    </span>
+<span class="hljs-keyword">var</span> util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);
+
+exports.schema = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">app, MemoryStore</span>) </span>{
+    <span class="hljs-comment">// name of schema</span>
+    MemoryStore.schema = <span class="hljs-string">'memory'</span>;
+
+    <span class="hljs-comment">// initialize method for each new model instance</span>
+    MemoryStore.fn.initialize = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">model_config</span>) </span>{
+        util._extend(<span class="hljs-keyword">this</span>, model_config);
+
+        <span class="hljs-keyword">this</span>._values = {};
+        <span class="hljs-keyword">this</span>.table = <span class="hljs-keyword">this</span>.table || <span class="hljs-keyword">this</span>.name;
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };
+
+    <span class="hljs-comment">// create ended model which accessing by app.models['name']</span>
+    MemoryStore.fn.compile = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };
+
+    MemoryStore.fn.set = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._values[key] = value;
+    };
+    MemoryStore.fn.get = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> key === <span class="hljs-string">'undefined'</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._values;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._values[key] || <span class="hljs-literal">null</span>;
+        }
+    };
+    MemoryStore.fn.remove = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+        <span class="hljs-keyword">delete</span> <span class="hljs-keyword">this</span>._values[key];
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    };
+    MemoryStore.fn.has = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+        <span class="hljs-keyword">return</span> key <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>._values;
+    };
+
+    MemoryStore.fn.to_array = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> values = <span class="hljs-keyword">this</span>._values,
+            keys = <span class="hljs-built_in">Object</span>.keys(values);
+
+        <span class="hljs-keyword">return</span> keys.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key</span>) </span>{
+            <span class="hljs-keyword">return</span> values[key];
+        });
+    };
+};
+</code></pre>
+<p>Model file:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// models/users.js    </span>
+<span class="hljs-keyword">var</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ifnode'</span>)(),
+    users_model = app.Model({
+        <span class="hljs-attr">name</span>: <span class="hljs-string">'users'</span>
+    });
+
+users_model.get_all = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.to_array();
+};
+</code></pre>
+<p>Application file:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// app.js    </span>
+<span class="hljs-built_in">var</span> ifnode = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ifnode'</span>),
+    app = ifnode();
+
+app.register(<span class="hljs-string">'memorystore'</span>);
+app.load();
+
+app.models.users.set(<span class="hljs-number">1</span>, { <span class="hljs-attribute">id:</span><span class="hljs-string"> 1, name</span>: <span class="hljs-string">'ilfroloff'</span> });
+app.models.users.get_all(); <span class="hljs-comment">// [{ id: 1, name: 'ilfroloff' }]</span>
+</code></pre>
+<h2 id="real-examples">Real examples</h2>
+<ul>
+<li><strong><a href="https://github.com/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js">ifnode-virtual</a></strong></li>
+<li><strong><a href="https://github.com/ifnode/mongoose">ifnode-mongoose</a></strong></li>
+</ul>
