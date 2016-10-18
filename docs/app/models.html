@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/docs/api">API</a><ul>
+<li><a href="/docs/api/ifnode">ifnode</a></li>
+<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
+<li><a href="/docs/api/app">app</a><ul>
+<li><a href="/docs/api/app/model">app.Model</a></li>
+<li><a href="/docs/api/app/component">app.Component</a></li>
+<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h2 id="models">Models</h2>
+<p>Model is database presentation of tables (SQL) or collections (NoSQL) data.</p>
+<p><code>ifnode</code> model is middleware between native npm module for database (mongoose, knex, etc) and real using. <code>ifnode</code> make all dirty work for initialize and populate all application data presentations.</p>
+<h3 id="example">Example</h3>
+<p>Create <code>mongodb</code> model using <code>ifnode-mongoose</code> - middleware between <code>mongoose</code> module and <code>ifnode</code>:</p>
+<p>Creating config file with database options:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// config/local.js    </span>
+module<span class="token punctuation" >.</span>exports <span class="token operator" >=</span> <span class="token punctuation" >{</span>
+    db<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        mongo<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            schema<span class="token punctuation" >:</span> <span class="token string" >'mongoose'</span><span class="token punctuation" >,</span>
+            config<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+                database<span class="token punctuation" >:</span> <span class="token string" >'library'</span><span class="token punctuation" >,</span>
+                host<span class="token punctuation" >:</span> <span class="token string" >'localhost'</span>
+            <span class="token punctuation" >}</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >}</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+</code></pre>
+<p>Creating books model:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// models/books.js    </span>
+<span class="token keyword" >var</span> app <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
+    books <span class="token operator" >=</span> app<span class="token punctuation" >.</span><span class="token function" >Model</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+        collection<span class="token punctuation" >:</span> <span class="token string" >'books'</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+</code></pre>
+<p>Application file:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// app.js    </span>
+<span class="token keyword" >var</span> ifnode <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
+    app <span class="token operator" >=</span> <span class="token function" >ifnode</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+        env<span class="token punctuation" >:</span> <span class="token string" >'local'</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+
+<span class="token comment" spellcheck="true">// load all models and initialize them</span>
+app<span class="token punctuation" >.</span><span class="token function" >load</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+app<span class="token punctuation" >.</span>models<span class="token punctuation" >.</span>books<span class="token punctuation" >.</span><span class="token function" >findOne</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span> <span class="token comment" spellcheck="true">// return instance of mongoose.Model</span>
+</code></pre>
+
+</section>
+
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

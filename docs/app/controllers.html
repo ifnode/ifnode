@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/docs/api">API</a><ul>
+<li><a href="/docs/api/ifnode">ifnode</a></li>
+<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
+<li><a href="/docs/api/app">app</a><ul>
+<li><a href="/docs/api/app/model">app.Model</a></li>
+<li><a href="/docs/api/app/component">app.Component</a></li>
+<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h2 id="controllers">Controllers</h2>
+<p>Controller is item for building routes system of <code>ifnode</code> application. </p>
+<h3 id="example">Example</h3>
+<p>Create simple controller for two routes <code>/</code> and <code>/api/login</code> with options.</p>
+<p>View <code>index.jade</code>:</p>
+<pre><code class="lang-jade"><span class="token comment" spellcheck="true">// views/index.jade</span>
+<span class="token tag" >div</span> <span class="token plain-text" >Hello World!</span>
+</code></pre>
+<p>Creating controller file:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// controllers/!.js</span>
+<span class="token keyword" >var</span> app <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
+    main_controller <span class="token operator" >=</span> app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+        name<span class="token punctuation" >:</span> <span class="token string" >'main'</span><span class="token punctuation" >,</span>
+        root<span class="token punctuation" >:</span> <span class="token string" >'/'</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+
+main_controller<span class="token punctuation" >.</span><span class="token keyword" >get</span><span class="token punctuation" >(</span><span class="token keyword" >function</span><span class="token punctuation" >(</span>request<span class="token punctuation" >,</span> response<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    response<span class="token punctuation" >.</span><span class="token function" >render</span><span class="token punctuation" >(</span><span class="token string" >'index'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+main_controller<span class="token punctuation" >.</span><span class="token keyword" >get</span><span class="token punctuation" >(</span><span class="token string" >'/api/login'</span><span class="token punctuation" >,</span> <span class="token punctuation" >{</span> ajax<span class="token punctuation" >:</span> <span class="token boolean" >true</span> <span class="token punctuation" >}</span><span class="token punctuation" >,</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>request<span class="token punctuation" >,</span> response<span class="token punctuation" >,</span> next<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token function" >get_user</span><span class="token punctuation" >(</span><span class="token keyword" >function</span><span class="token punctuation" >(</span>err<span class="token punctuation" >,</span> user<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+        <span class="token keyword" >if</span><span class="token punctuation" >(</span>err<span class="token punctuation" >)</span> <span class="token punctuation" >{</span> <span class="token keyword" >return</span> <span class="token function" >next</span><span class="token punctuation" >(</span>err<span class="token punctuation" >)</span><span class="token punctuation" >;</span> <span class="token punctuation" >}</span>
+
+        request<span class="token punctuation" >.</span><span class="token function" >login</span><span class="token punctuation" >(</span>user<span class="token punctuation" >,</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>err<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+            <span class="token keyword" >if</span><span class="token punctuation" >(</span>err<span class="token punctuation" >)</span> <span class="token punctuation" >{</span> <span class="token keyword" >return</span> <span class="token function" >next</span><span class="token punctuation" >(</span>err<span class="token punctuation" >)</span><span class="token punctuation" >;</span> <span class="token punctuation" >}</span>
+
+            response<span class="token punctuation" >.</span><span class="token function" >redirect</span><span class="token punctuation" >(</span><span class="token string" >'/'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+        <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+</code></pre>
+<p>Application file:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// app.js    </span>
+<span class="token keyword" >var</span> ifnode <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
+    app <span class="token operator" >=</span> <span class="token function" >ifnode</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+
+<span class="token comment" spellcheck="true">// run webserver</span>
+app<span class="token punctuation" >.</span><span class="token function" >run</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+</code></pre>
+<p>Test case:</p>
+<pre><code class="lang-bash">curl localhost:8080 <span class="token comment" spellcheck="true"># status 200, &lt;div>Hello World!&lt;/div></span>
+curl localhost:8080/api/login <span class="token comment" spellcheck="true"># status 400, Only AJAX request</span>
+</code></pre>
+
+</section>
+
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

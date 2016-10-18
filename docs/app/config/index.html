@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/docs/api">API</a><ul>
+<li><a href="/docs/api/ifnode">ifnode</a></li>
+<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
+<li><a href="/docs/api/app">app</a><ul>
+<li><a href="/docs/api/app/model">app.Model</a></li>
+<li><a href="/docs/api/app/component">app.Component</a></li>
+<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h2 id="config-">Config:</h2>
+<p>Config is <code>js</code> or <code>json</code> object with all application options. Can contain any and same of options specialized for <code>ifnode</code>.</p>
+<p>Path to config&#39;s folder <code>${project_folder}/config</code></p>
+<h3 id="specialized-ifnode-options-">Specialized ifnode options:</h3>
+<h4 id="site-">site:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>site</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Description of site url</td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.local</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Local url (use for start server)</td>
+<td style="text-align:left"><code>{ host: &#39;localhost&#39;, port: 8080 }</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.local.host</code></td>
+<td style="text-align:left">String &#10072; Undefined</td>
+<td style="text-align:left">Host for creating server</td>
+<td style="text-align:left"><code>&#39;localhost&#39;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.local.port</code></td>
+<td style="text-align:left">Number &#10072; Undefined</td>
+<td style="text-align:left">Port for creating server</td>
+<td style="text-align:left"><code>8080</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.global</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Global url (&quot;nice&quot; domain of site)</td>
+<td style="text-align:left"><code>{ host: &#39;localhost&#39; }</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.global.host</code></td>
+<td style="text-align:left">String &#10072; Undefined</td>
+<td style="text-align:left">Host of &quot;nice&quot; domain</td>
+<td style="text-align:left"><code>&#39;localhost&#39;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.global.port</code></td>
+<td style="text-align:left">Number &#10072; Undefined</td>
+<td style="text-align:left">Port of &quot;nice&quot; domain</td>
+<td style="text-align:left"><code>undefined</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.ssl</code></td>
+<td style="text-align:left">Object &#10072; Undefined</td>
+<td style="text-align:left">SSL support. Check <a href="https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener">here</a></td>
+<td style="text-align:left"><code>undefined</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.ssl.key</code></td>
+<td style="text-align:left">String &#10072; Undefined</td>
+<td style="text-align:left">Full or relative (at <code>${project_folder}</code>) path to <code>key.pem</code>  (just path, not need read as file)</td>
+<td style="text-align:left"><code>undefined</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.ssl.cert</code></td>
+<td style="text-align:left">String &#10072; Undefined</td>
+<td style="text-align:left">Full or relative (at <code>${project_folder}</code>) path to <code>cert.pem</code> (just path, not need read as file)</td>
+<td style="text-align:left"><code>undefined</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>site.ssl.pfx</code></td>
+<td style="text-align:left">String &#10072; Undefined</td>
+<td style="text-align:left">Full or relative (at <code>${project_folder}</code>) path to <code>pfx.pem</code> (just path, not need read as file)</td>
+<td style="text-align:left"><code>undefined</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="note-">Note:</h5>
+<p><code>ifnode</code> generate special <code>app.config.site</code> options: .site with options:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.origin</td>
+<td style="text-align:left">Equal to: <code>http(s)://${host}[:${port}]</code> (if set <code>site.ssl</code> - <code>https</code>, other - <code>http</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left">.url(String pathname)</td>
+<td style="text-align:left">Method for generate link</td>
+</tr>
+</tbody>
+</table>
+<p>Example (<code>coffeescript</code>):</p>
+<pre><code class="lang-coffeescript"><span class="token comment" spellcheck="true"># config/dev.js</span>
+<span class="token property" >site</span><span class="token punctuation" >:</span>
+    <span class="token property" >local</span><span class="token punctuation" >:</span>
+        <span class="token property" >port</span><span class="token punctuation" >:</span> <span class="token number" >1010</span>
+<span class="token property" >global</span><span class="token punctuation" >:</span>
+    <span class="token property" >host</span><span class="token punctuation" >:</span> <span class="token string" >'nicedomainname.io'</span>
+<span class="token property" >ssl</span><span class="token punctuation" >:</span>
+    <span class="token property" >key</span><span class="token punctuation" >:</span> <span class="token string" >'ssl/key.pem'</span>
+    <span class="token property" >cert</span><span class="token punctuation" >:</span> <span class="token string" >'ssl/cert.pem'</span>
+
+<span class="token comment" spellcheck="true"># app.js</span>
+app <span class="token operator" >=</span> <span class="token function" >ifnode</span><span class="token punctuation" >(</span> <span class="token property" >env</span><span class="token punctuation" >:</span> <span class="token string" >'dev'</span> <span class="token punctuation" >)</span>
+site <span class="token operator" >=</span> app<span class="token punctuation" >.</span>config<span class="token punctuation" >.</span>site<span class="token punctuation" >;</span>
+
+site<span class="token punctuation" >.</span>local<span class="token punctuation" >.</span>origin <span class="token comment" spellcheck="true"># https://localhost:1010</span>
+site<span class="token punctuation" >.</span>local<span class="token punctuation" >.</span>url <span class="token string" >'/u/1'</span> <span class="token comment" spellcheck="true"># https://localhost:1010/u/1</span>
+site<span class="token punctuation" >.</span>global<span class="token punctuation" >.</span>origin <span class="token comment" spellcheck="true"># https://nicedomainname.io</span>
+site<span class="token punctuation" >.</span>global<span class="token punctuation" >.</span>url <span class="token string" >'u/1'</span> <span class="token comment" spellcheck="true"># https://nicedomainname.io/u/1</span>
+</code></pre>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript"><span class="token property" >site</span><span class="token punctuation" >:</span>                  <span class="token comment" spellcheck="true"># Description of site url</span>
+    <span class="token property" >local</span><span class="token punctuation" >:</span>             <span class="token comment" spellcheck="true"># Local url (use for start server)</span>
+        <span class="token property" >host</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># [optional] By default: localhost</span>
+        <span class="token property" >port</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># [optional] By default: 8080</span>
+    <span class="token property" >global</span><span class="token punctuation" >:</span>            <span class="token comment" spellcheck="true"># Global url ("nice" domain of site)</span>
+        <span class="token property" >host</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># [optional] By default: localhost</span>
+        <span class="token property" >port</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># [optional] By default: null</span>
+    <span class="token property" >ssl</span><span class="token punctuation" >:</span>               <span class="token comment" spellcheck="true"># SSL support. Check here - https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener</span>
+        <span class="token property" >key</span><span class="token punctuation" >:</span>           <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to key.pem  (just path, not need read as file)</span>
+        <span class="token property" >cert</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to cert.pem (just path, not need read as file)</span>
+        <span class="token property" >pfx</span><span class="token punctuation" >:</span>           <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to pfx.pem  (just path, not need read as file)</span>
+
+<span class="token multiline-comment comment" >###
+Note: ifnode generate config option .site with options:
+    .origin                   Equal to: http(s)://${host}[:${port}] (if set site.ssl - https, other - http)
+    .url(pathname: String)    Method for generate link
+###</span>
+</code></pre>
+<h4 id="application-">application:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>application</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Application and <code>express()</code> settings</td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.environment</code></td>
+<td style="text-align:left">Name of environment</td>
+<td style="text-align:left">Name of config file (if config by file) or <code>&#39;local&#39;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Hash of express application settings. List <a href="http://expressjs.com/4x/api.html#app.set">here</a></td>
+<td style="text-align:left">Predefined options check below</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express.env</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left"><code>env</code> option</td>
+<td style="text-align:left">Same as <code>application.environment</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express[&#39;view engine&#39;]</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Template</td>
+<td style="text-align:left"><code>&#39;jade&#39;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express.views</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Path to application views</td>
+<td style="text-align:left"><code>${backend_folder}/views</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application.express[&#39;x-powered-by&#39;]</code></td>
+<td style="text-align:left">Boolean</td>
+<td style="text-align:left">Add to response header <code>express.js</code> mark</td>
+<td style="text-align:left"><code>false</code> (sorry, <code>express.js</code> :) )</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Hash of pathes to application components</td>
+<td style="text-align:left">Check below</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.extensions</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of extensions</td>
+<td style="text-align:left"><code>${backend_folder}/extensions</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.components</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of components</td>
+<td style="text-align:left"><code>${backend_folder}/components</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.views</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of views</td>
+<td style="text-align:left"><code>${backend_folder}/views</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.controllers</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of controllers</td>
+<td style="text-align:left"><code>${backend_folder}/controllers</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>folders.models</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Folder of models</td>
+<td style="text-align:left"><code>${backend_folder}/models</code></td>
+</tr>
+</tbody>
+</table>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript"><span class="token property" >application</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># Application (and express()) settings</span>
+    <span class="token property" >environment</span><span class="token punctuation" >:</span>            <span class="token comment" spellcheck="true"># Name of environment. By default: name of config file (if config by file) or "local"</span>
+    <span class="token property" >express</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># Hash of express application settings (list: http://expressjs.com/4x/api.html#app.set)</span>
+        <span class="token property" >env</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># By default: name of config file (if config by file) or "local"</span>
+        <span class="token string" >"view engine"</span><span class="token punctuation" >:</span>      <span class="token comment" spellcheck="true"># By default: jade</span>
+        <span class="token property" >views</span><span class="token punctuation" >:</span>              <span class="token comment" spellcheck="true"># By default: ${backend_folder}/views</span>
+        <span class="token string" >"x-powered-by"</span>      <span class="token comment" spellcheck="true"># By default: false (sorry, express :) )</span>
+    <span class="token property" >folders</span><span class="token punctuation" >:</span>
+        <span class="token property" >extensions</span><span class="token punctuation" >:</span>         <span class="token comment" spellcheck="true"># Folder of extensions.  By default: ${backend_folder}/extensions</span>
+        <span class="token property" >components</span><span class="token punctuation" >:</span>         <span class="token comment" spellcheck="true"># Folder of components.  By default: ${backend_folder}/components</span>
+        <span class="token property" >views</span><span class="token punctuation" >:</span>              <span class="token comment" spellcheck="true"># Folder of views.       By default: ${backend_folder}/views</span>
+        <span class="token property" >controllers</span><span class="token punctuation" >:</span>        <span class="token comment" spellcheck="true"># Folder of controllers. By default: ${backend_folder}/controllers</span>
+        <span class="token property" >models</span><span class="token punctuation" >:</span>             <span class="token comment" spellcheck="true"># Folder of models.      By default: ${backend_folder}/models</span>
+</code></pre>
+<h4 id="middleware-">middleware:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>middleware</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Definition of middleware modules external (examples: <code>connect-multiparty</code>, <code>cookie-parser</code>, etc) or own</td>
+</tr>
+</tbody>
+</table>
+<p>More information about <code>ifnode</code> middleware read <a href="/docs/app/config/middleware">here</a>.</p>
+<p>Below specialized <code>ifnode</code> middleware:</p>
+<h6 id="middleware-body-">middleware.body:</h6>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>middleware.body</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Build on <code>body-parser</code> node module</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>middleware.body[${parser}]</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left"><code>${parser}</code> - name of parser, <code>options</code> - hash of <code>${parser}</code> options. Check <a href="https://github.com/expressjs/body-parser">here</a></td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<pre><code class="lang-javascript"><span class="token punctuation" >{</span>
+    <span class="token string" >'body'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        <span class="token string" >'text'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span><span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+        <span class="token string" >'urlencoded'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            extended<span class="token punctuation" >:</span> <span class="token boolean" >true</span>
+        <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+        <span class="token string" >'json'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            limit<span class="token punctuation" >:</span> <span class="token string" >'500kb'</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >}</span>
+<span class="token punctuation" >}</span>
+</code></pre>
+<h6 id="middleware-statics-">middleware.statics:</h6>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>middleware.statics</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Build on <code>serve-statics</code> node module. Has three variant of initialize static files</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>middleware.statics[options]</code></td>
+<td style="text-align:left">String &#10072; Object &#10072; Array</td>
+<td style="text-align:left">Check options <a href="https://github.com/expressjs/serve-static">here</a></td>
+</tr>
+</tbody>
+</table>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript"><span class="token property" >middleware</span><span class="token punctuation" >:</span>                            <span class="token comment" spellcheck="true"># External middleware modules (examples: connect-multiparty, cookie-parser etc)</span>
+<span class="token multiline-comment comment" >###
+    ifnode middlewares:
+        body:                          # Build on body-parser module
+            '${parser}': options        ${parser} - name of parser, options - hash of parser options. See here: https://github.com/expressjs/body-parser
+        statics:                       # Build on serve-statics module. Tree variant of initialize static files
+            path: String                Options see here: https://github.com/expressjs/serve-static
+            variants: Object
+                path1: options,
+                path2: options,
+                ...
+            variant: Array
+                path,
+                path1,
+                { path2: options },
+                ...
+###</span>
+</code></pre>
+<h4 id="db-">db:</h4>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript"><span class="token property" >db</span><span class="token punctuation" >:</span>                                     <span class="token comment" spellcheck="true"># Initialize options of databases (models schemas)</span>
+    <span class="token property" >name_of_db</span><span class="token punctuation" >:</span>                         <span class="token comment" spellcheck="true"># Name of database connect</span>
+        <span class="token property" >schema</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># name of schema #      # Schema name (for choose of schema)</span>
+        <span class="token property" >config</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># schema config #       # Config of database connection</span>
+</code></pre>
+<h4 id="components-">components:</h4>
+<p>Raw:</p>
+<pre><code class="lang-coffeescript"><span class="token property" >components</span><span class="token punctuation" >:</span>                             <span class="token comment" spellcheck="true"># Initialize options for components of ifnode</span>
+    <span class="token property" >name_of_component</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># options #</span>
+</code></pre>
+
+</section>
+
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

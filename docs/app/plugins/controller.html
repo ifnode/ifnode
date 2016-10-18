@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/docs/api">API</a><ul>
+<li><a href="/docs/api/ifnode">ifnode</a></li>
+<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
+<li><a href="/docs/api/app">app</a><ul>
+<li><a href="/docs/api/app/model">app.Model</a></li>
+<li><a href="/docs/api/app/component">app.Component</a></li>
+<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h2 id="controller-plugin">Controller plugin</h2>
+<p>Possibility to create own controller plugin to <code>ifnode</code>.</p>
+<h3 id="creating-own-plugin">Creating own plugin</h3>
+<p>Below example of simple plugin <code>ip-filter</code> for filter access by user ip.</p>
+<p>Plugin file:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// extensions/ip-filter</span>
+module<span class="token punctuation" >.</span>exports<span class="token punctuation" >.</span>controller <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>app<span class="token punctuation" >,</span> Controller<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token comment" spellcheck="true">// check needed controller plugin options</span>
+    Controller<span class="token punctuation" >.</span><span class="token function" >process_config</span><span class="token punctuation" >(</span><span class="token keyword" >function</span><span class="token punctuation" >(</span>controller_config<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+        <span class="token keyword" >if</span><span class="token punctuation" >(</span><span class="token function" >is_invalid_ip</span><span class="token punctuation" >(</span>controller_config<span class="token punctuation" >.</span>forbidden_ip<span class="token punctuation" >)</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+            <span class="token keyword" >delete</span> controller_config<span class="token punctuation" >.</span>forbidden_ip<span class="token punctuation" >;</span>
+        <span class="token punctuation" >}</span>
+
+        <span class="token keyword" >if</span><span class="token punctuation" >(</span><span class="token function" >is_invalid_ip</span><span class="token punctuation" >(</span>controller_config<span class="token punctuation" >.</span>skip_ip<span class="token punctuation" >)</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+            <span class="token keyword" >delete</span> controller_config<span class="token punctuation" >.</span>skip_ip<span class="token punctuation" >;</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+
+    <span class="token comment" spellcheck="true">// populate by own methods/properties request or response</span>
+    Controller<span class="token punctuation" >.</span><span class="token function" >populate</span><span class="token punctuation" >(</span><span class="token keyword" >function</span><span class="token punctuation" >(</span>request<span class="token punctuation" >,</span> response<span class="token punctuation" >,</span> next_handler<span class="token punctuation" >,</span> next_route<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+        request<span class="token punctuation" >.</span>user_ip <span class="token operator" >=</span> request<span class="token punctuation" >.</span>headers<span class="token punctuation" >[</span><span class="token string" >'x-forwarded-for'</span><span class="token punctuation" >]</span> <span class="token operator" >||</span>
+            request<span class="token punctuation" >.</span>connection<span class="token punctuation" >.</span>remoteAddress <span class="token operator" >||</span>
+            request<span class="token punctuation" >.</span>socket<span class="token punctuation" >.</span>remoteAddress <span class="token operator" >||</span>
+            request<span class="token punctuation" >.</span>connection<span class="token punctuation" >.</span>socket<span class="token punctuation" >.</span>remoteAddress<span class="token punctuation" >;</span>
+
+        response<span class="token punctuation" >.</span>forbidden_ip_address <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+            <span class="token keyword" >this</span><span class="token punctuation" >.</span><span class="token function" >status</span><span class="token punctuation" >(</span><span class="token number" >401</span><span class="token punctuation" >)</span><span class="token punctuation" >.</span><span class="token function" >send</span><span class="token punctuation" >(</span><span class="token string" >"Access denied for user's ip"</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+        <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+
+    <span class="token comment" spellcheck="true">// set controller middleware</span>
+    Controller<span class="token punctuation" >.</span><span class="token function" >middleware</span><span class="token punctuation" >(</span>
+        <span class="token keyword" >function</span><span class="token punctuation" >(</span>controller_options<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+            <span class="token keyword" >var</span> forbidden_ip <span class="token operator" >=</span> controller_options<span class="token punctuation" >.</span>forbidden_ip<span class="token punctuation" >;</span>
+
+            <span class="token keyword" >return</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>request<span class="token punctuation" >,</span> response<span class="token punctuation" >,</span> next_handler<span class="token punctuation" >,</span> next_route<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+                <span class="token keyword" >if</span><span class="token punctuation" >(</span>request<span class="token punctuation" >.</span>user_ip <span class="token operator" >===</span> forbidden_id<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+                    <span class="token keyword" >return</span> response<span class="token punctuation" >.</span><span class="token function" >forbidden_ip_address</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+                <span class="token punctuation" >}</span>
+
+                <span class="token function" >next_handler</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+            <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+        <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+        <span class="token keyword" >function</span><span class="token punctuation" >(</span>controller_options<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+            <span class="token keyword" >var</span> skip_ip <span class="token operator" >=</span> controller_options<span class="token punctuation" >.</span>skip_ip<span class="token punctuation" >;</span>
+
+            <span class="token keyword" >return</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>request<span class="token punctuation" >,</span> response<span class="token punctuation" >,</span> next_handler<span class="token punctuation" >,</span> next_route<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+                <span class="token keyword" >if</span><span class="token punctuation" >(</span>request<span class="token punctuation" >.</span>user_ip <span class="token operator" >===</span> skip_ip<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+                    <span class="token keyword" >return</span> <span class="token function" >next_route</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span> <span class="token comment" spellcheck="true">// jump to next route</span>
+                <span class="token punctuation" >}</span>
+
+                <span class="token function" >next_handler</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+            <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+</code></pre>
+<p>Controller file:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// controllers/!.js</span>
+<span class="token keyword" >var</span> app <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
+    main_controller <span class="token operator" >=</span> app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+        forbidden_ip<span class="token punctuation" >:</span> <span class="token string" >'127.0.0.1'</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+
+main_controller<span class="token punctuation" >.</span><span class="token keyword" >get</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span> skip_ip<span class="token punctuation" >:</span> <span class="token string" >'10.10.10.1'</span> <span class="token punctuation" >}</span><span class="token punctuation" >,</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>request<span class="token punctuation" >,</span> response<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    response<span class="token punctuation" >.</span><span class="token function" >send</span><span class="token punctuation" >(</span><span class="token string" >'get handler'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+main_controller<span class="token punctuation" >.</span><span class="token function" >use</span><span class="token punctuation" >(</span><span class="token keyword" >function</span><span class="token punctuation" >(</span>request<span class="token punctuation" >,</span> response<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    response<span class="token punctuation" >.</span><span class="token function" >send</span><span class="token punctuation" >(</span><span class="token string" >'use handler'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+</code></pre>
+<p>Test case:</p>
+<pre><code>curl localhost:8080 -H x-forwarded-for=127.0.0.1 # status 401, Access denied for user&#39;s ip
+curl localhost:8080 -H x-forwarded-for=10.10.10.1 # status 200, use handler
+</code></pre><h2 id="real-examples">Real examples</h2>
+<ul>
+<li><strong><a href="https://github.com/ifnode/auth">ifnode-auth</a></strong></li>
+</ul>
+
+</section>
+
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

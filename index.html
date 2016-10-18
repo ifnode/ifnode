@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>ifnode by ilfroloff</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">ifnode</h1>
-      <h2 class="project-tagline">Single, flexible, super-light and pluginnable MVC library</h2>
-      <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
-      <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
-
-    <section class="main-content">
-      <pre><code>        ____  _________
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content index">
+            <pre><code>        ____  _________
        /   / /        /
       /   / /   _____/_    ___  _______    _____      ______
      /   / /   /__  /  |  /  / /  ___  \  /     \    /  ___/
@@ -29,72 +32,41 @@
  /   / /   /    /__/  |__/  \_______/  \_______/ /______/
 /___/ /___/
 
-Best MVC framework for node.js :^)
-</code></pre>
-
-<h2>
-<a id="what-is-ifnode" class="anchor" href="#what-is-ifnode" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is ifnode?</h2>
-
+Best MVC library for node.js :^)
+</code></pre><p><a href="https://travis-ci.org/ilfroloff/ifnode"><img src="https://travis-ci.org/ilfroloff/ifnode.svg?branch=master" alt="Build Status"></a></p>
+<h3 id="what-is-ifnode-">What is <code>ifnode</code>?</h3>
 <ul>
-<li>Simple, light and flexible MVC Framework for <strong><a href="http://nodejs.org/">node.js</a></strong> and <strong><a href="http://iojs.org/">io.js</a></strong>
-</li>
+<li>Simple, light and flexible MVC library for <strong><a href="http://nodejs.org/">node.js</a></strong> and <strong><a href="http://iojs.org/">io.js</a></strong></li>
 <li>Based in <strong><a href="http://expressjs.com/">express.js</a></strong> and other awesome node modules</li>
 <li>Inspired by <strong><a href="http://yiiframework.com/">Yii</a></strong>, <strong><a href="http://rubyonrails.org/">Ruby on Rails</a></strong>, etc</li>
 </ul>
-
-<h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
-
+<h3 id="installation">Installation</h3>
 <p>For install <code>ifnode</code> type command:</p>
-
-<pre><code>npm install ifnode --save
+<pre><code class="lang-bash">npm <span class="token function" >install</span> -S ifnode
 </code></pre>
-
-<h2>
-<a id="ideology" class="anchor" href="#ideology" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ideology</h2>
-
+<h3 id="ideology">Ideology</h3>
 <ul>
-<li>
-<code>ifnode</code>'s main idea is not dictate for developer what need to do but make all for simplification work</li>
-<li>
-<code>ifnode</code> is simple, understandable and light</li>
-<li>
-<code>ifnode</code> build on <code>express.js</code>: get all possibilities of module (routes, middleware) and extends opportunities</li>
-<li>
-<code>ifnode</code> have the four build items:
-
-<ul>
-<li><strong><a href="https://github.com/ilfroloff/ifnode/wiki/docs-app-extensions">extensions</a></strong></li>
-<li><strong><a href="https://github.com/ilfroloff/ifnode/wiki/docs-app-models">models</a></strong></li>
-<li><strong><a href="https://github.com/ilfroloff/ifnode/wiki/docs-app-components">components</a></strong></li>
-<li><strong><a href="https://github.com/ilfroloff/ifnode/wiki/docs-app-controllers">controllers</a></strong></li>
+<li><code>ifnode</code>&#39;s main idea is not dictate for developer what need to do but make all for simplification work</li>
+<li><code>ifnode</code> is simple, understandable and light</li>
+<li><code>ifnode</code> build on <code>express.js</code>: get all possibilities of module (routes, middleware) and extends opportunities</li>
+<li><code>ifnode</code> have the four build items:<ul>
+<li><strong><a href="docs/app/extensions">extensions</a></strong></li>
+<li><strong><a href="docs/app/models">models</a></strong></li>
+<li><strong><a href="docs/app/components">components</a></strong></li>
+<li><strong><a href="docs/app/controllers">controllers</a></strong></li>
 </ul>
 </li>
-<li>
-<code>ifnode</code> have a <strong><a href="https://github.com/ilfroloff/ifnode/wiki/docs-app-plugins">plugins system</a></strong>
-</li>
-<li>
-<code>ifnode</code> use <strong><a href="https://en.wikipedia.org/wiki/Service_locator_pattern">Service Locator Pattern</a></strong>
-</li>
+<li><code>ifnode</code> have a <strong><a href="docs/app/plugins">plugins system</a></strong></li>
+<li><code>ifnode</code> use <strong><a href="https://en.wikipedia.org/wiki/Service_locator_pattern">Service Locator Pattern</a></strong></li>
 </ul>
+<h3 id="documentation">Documentation</h3>
+<p>You can explore the <strong><a href="docs/intro">documentation</a></strong>. Also you can check <code>ifnode</code> applications <strong><a href="https://github.com/ifnode/examples">examples</a></strong>.</p>
 
-<h2>
-<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h2>
-
-<p>Now can read wiki <a href="https://github.com/ilfroloff/ifnode/wiki/docs">documentation</a>. Also can check <a href="https://github.com/ifnode/examples">examples</a>.</p>
-
-<p>Coming soon <a href="http://ifnode.com/">ifnode site</a> will be released with pretty documentation.</p>
-
-<p>© <strong><a href="http://ifnode.com/">ifnode</a></strong></p>
-
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
-    </section>
-
-  
-  </body>
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
 </html>

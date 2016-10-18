@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/docs/api">API</a><ul>
+<li><a href="/docs/api/ifnode">ifnode</a></li>
+<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
+<li><a href="/docs/api/app">app</a><ul>
+<li><a href="/docs/api/app/model">app.Model</a></li>
+<li><a href="/docs/api/app/component">app.Component</a></li>
+<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h2 id="components">Components</h2>
+<p>Component is special <code>ifnode</code> application item. Instead of <code>extension</code>, component know about models and can use them.</p>
+<p>Can be settings by <code>ifnode</code> config.</p>
+<h3 id="example">Example</h3>
+<p>Create <code>thumbnail-generator</code> component with configured image options.</p>
+<p>Creating config file with component options:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// config/local.js    </span>
+module<span class="token punctuation" >.</span>exports <span class="token operator" >=</span> <span class="token punctuation" >{</span>
+    components<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        thumbnailer<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            width<span class="token punctuation" >:</span> <span class="token number" >120</span><span class="token punctuation" >,</span>
+            height<span class="token punctuation" >:</span> <span class="token number" >100</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >}</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+</code></pre>
+<p>Creating thumbnailer component:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// components/thumbnailer.js    </span>
+<span class="token keyword" >var</span> app <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
+    thumbnailer <span class="token operator" >=</span> app<span class="token punctuation" >.</span><span class="token function" >Component</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+        name<span class="token punctuation" >:</span> <span class="token string" >'thumbnailer'</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+
+thumbnailer<span class="token punctuation" >.</span>generate <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>url<span class="token punctuation" >,</span> callback<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token function" >make_thumbnail</span><span class="token punctuation" >(</span>url<span class="token punctuation" >,</span> <span class="token punctuation" >{</span>
+        width<span class="token punctuation" >:</span> <span class="token keyword" >this</span><span class="token punctuation" >.</span>width<span class="token punctuation" >,</span>
+        height<span class="token punctuation" >:</span> <span class="token keyword" >this</span><span class="token punctuation" >.</span>height
+    <span class="token punctuation" >}</span><span class="token punctuation" >,</span> callback<span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+</code></pre>
+<p>Application file:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// app.js    </span>
+<span class="token keyword" >var</span> ifnode <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
+    app <span class="token operator" >=</span> <span class="token function" >ifnode</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+        env<span class="token punctuation" >:</span> <span class="token string" >'local'</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+
+<span class="token comment" spellcheck="true">// load all components and initialize them</span>
+app<span class="token punctuation" >.</span><span class="token function" >load</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+app<span class="token punctuation" >.</span>thumbnailer<span class="token punctuation" >.</span><span class="token function" >generate</span><span class="token punctuation" >(</span><span class="token string" >'https://google.com'</span><span class="token punctuation" >,</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>thumbnailer_path<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token comment" spellcheck="true">// do something</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+</code></pre>
+
+</section>
+
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

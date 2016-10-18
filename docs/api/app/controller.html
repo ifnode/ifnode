@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/docs/api">API</a><ul>
+<li><a href="/docs/api/ifnode">ifnode</a></li>
+<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
+<li><a href="/docs/api/app">app</a><ul>
+<li><a href="/docs/api/app/model">app.Model</a></li>
+<li><a href="/docs/api/app/component">app.Component</a></li>
+<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h2 id="app-controller">app.Controller</h2>
+<p>Returns controller instance:</p>
+<pre><code class="lang-javascript">app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >[</span>Object options<span class="token punctuation" >]</span><span class="token punctuation" >)</span>
+</code></pre>
+<p>Controller can be extended by external plugins (example: <code>ifnode-auth</code>, <code>ifnode-permissions</code> etc)</p>
+<h3 id="-a-name-options-default-parameters-a-"><a name="options">Default parameters:</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Optional</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">root</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Root path to request</td>
+<td style="text-align:left">true</td>
+<td style="text-align:left"><code>/path/to/controller/</code> related <code>${backend_folder}</code></td>
+</tr>
+<tr>
+<td style="text-align:left">name</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Name of controller</td>
+<td style="text-align:left">true</td>
+<td style="text-align:left"><code>path/to/controller</code> related <code>${backend_folder}</code></td>
+</tr>
+<tr>
+<td style="text-align:left">router</td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left"><code>express.Router</code> options. Check <a href="http://expressjs.com/4x/api.html#router">here</a></td>
+<td style="text-align:left">true</td>
+<td style="text-align:left"><code>{}</code></td>
+</tr>
+<tr>
+<td style="text-align:left">ajax</td>
+<td style="text-align:left">Undefined &#10072; Boolean</td>
+<td style="text-align:left">AJAX settings of controller&#39;s actions</td>
+<td style="text-align:left">true</td>
+<td style="text-align:left">undefined</td>
+</tr>
+</tbody>
+</table>
+<h3 id="controller-instance-">Controller instance:</h3>
+<h4 id="constants-">Constants:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.id</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Application id (is auto-generated by GUID function)</td>
+</tr>
+<tr>
+<td style="text-align:left">.root</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Controller&#39;s root path</td>
+</tr>
+<tr>
+<td style="text-align:left">.name</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Controller&#39;s name</td>
+</tr>
+<tr>
+<td style="text-align:left">.router</td>
+<td style="text-align:left">[Router]</td>
+<td style="text-align:left"><code>express.Router()</code> instance</td>
+</tr>
+</tbody>
+</table>
+<h4 id="methods-">Methods:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.param(String param, Function handler)</td>
+<td style="text-align:left">Analog of express<code>s</code>app.param`. Check <a href="http://expressjs.com/4x/api.html#app.param">here</a></td>
+</tr>
+<tr>
+<td style="text-align:left">[[.method(String method [, String path] [, Object options], Function callback [, Function callback...])</td>
+<td style="text-align:left">docs/api/app/controller/.method]]</td>
+<td>Method for creating controller&#39;s route</td>
+</tr>
+<tr>
+<td style="text-align:left">.end()</td>
+<td style="text-align:left">End of controller (if request cannot have handler invoke <code>response.not_found()</code> method. By default go to next controller to find request handler)</td>
+</tr>
+<tr>
+<td style="text-align:left">.use([String path,] Function callback [, Function callback...])</td>
+<td style="text-align:left">Check <a href="http://expressjs.com/4x/api.html#app.use">here</a></td>
+</tr>
+<tr>
+<td style="text-align:left">.error(Function handler)</td>
+<td style="text-align:left">Invoke <code>.error()</code> handler when any request handler&#39;s <code>next()</code> method of controller get instance of <code>Error</code> class. By default try find parent error handler, and if not find throw error in <code>node.js</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="handler-options-">Handler options:</h4>
+<p>All handlers <code>request</code> and <code>response</code> methods populated by same custom options:</p>
+<h5 id="request-">request:</h5>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.data</td>
+<td>&quot;Syntax sugar&quot;. Return <code>request.body</code>, or <code>request.query</code> or <code>null</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="response-">response:</h5>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.ok([String &#10072; Object data])</td>
+<td>Set status <code>200</code> and return <code>data</code></td>
+</tr>
+<tr>
+<td><a name="response-fail">.fail([String &#10072; Object data])</a></td>
+<td>Set status <code>400</code> and return <code>data</code> or text &quot;Bad Request&quot;</td>
+</tr>
+<tr>
+<td><a name="response-error">.error([String &#10072; Object data])</a></td>
+<td>Set status <code>500</code> and return <code>data</code> or text &quot;Server Internal Error&quot;</td>
+</tr>
+<tr>
+<td>.unauthorized([String &#10072; Object data])</td>
+<td>Set status <code>401</code> and return <code>data</code></td>
+</tr>
+<tr>
+<td>.forbidden([String &#10072; Object data])</td>
+<td>Set status <code>403</code> and return <code>data</code></td>
+</tr>
+<tr>
+<td><a name="response-notfound">.not_found([String &#10072; Object data])</a></td>
+<td>Set status <code>404</code> and return <code>data</code></td>
+</tr>
+</tbody>
+</table>
+<p>Aliases:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#response-fail">.bad_request()</a></td>
+<td>Alias of <code>.fail()</code></td>
+</tr>
+<tr>
+<td><a href="#response-fail">.badRequest()</a></td>
+<td>Alias of <code>.fail()</code></td>
+</tr>
+<tr>
+<td><a href="#response-error">.err()</a></td>
+<td>Alias of <code>.error()</code></td>
+</tr>
+<tr>
+<td><a href="#response-notfound">.notFound()</a></td>
+<td>Alias of <code>.not_found()</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="notes-">Notes:</h4>
+<p>Controller&#39;s filename <code>!.js</code> and <code>~.js</code> are special. Those filenames not participate in forming name and root options.</p>
+<p><code>!.js:</code> always initialize first in folder. Next loaded controllers into folders, and next files
+<code>~.js:</code> always initialize last in folder</p>
+<p>Example:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// /protected/controllers/api/v1/!.js</span>
+<span class="token keyword" >var</span> controller <span class="token operator" >=</span> app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+controller<span class="token punctuation" >.</span>name <span class="token comment" spellcheck="true">// api/v1</span>
+controller<span class="token punctuation" >.</span>root <span class="token comment" spellcheck="true">// /api/v1/</span>
+
+<span class="token comment" spellcheck="true">// /protected/controllers/api/v1/user.js</span>
+<span class="token keyword" >var</span> controller <span class="token operator" >=</span> app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+    root<span class="token punctuation" >:</span> <span class="token string" >'/user'</span>
+<span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+controller<span class="token punctuation" >.</span>name <span class="token comment" spellcheck="true">// api/v1/user</span>
+controller<span class="token punctuation" >.</span>root <span class="token comment" spellcheck="true">// /user</span>
+</code></pre>
+<p>Static methods (use for creating controller&#39;s plugin):</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.process_config(...Function processor &#10072; Array processors)</td>
+<td>Add handler for controller`s config</td>
+</tr>
+<tr>
+<td>.populate(...Function populator &#10072; Array populators)</td>
+<td>Add route middleware for populate arguments own options</td>
+</tr>
+<tr>
+<td>.middleware(...Function middleware &#10072; Array middleware)</td>
+<td>Add route middleware for process request</td>
+</tr>
+</tbody>
+</table>
+<h3 id="app-controller-method">app.Controller#.method</h3>
+<h4 id="parameters-">Parameters:</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Argument</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">method</td>
+<td style="text-align:left">Name of method. Current available: get, post, put, patch, delete</td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left">path</td>
+<td style="text-align:left">Next part of url. Check <a href="http://expressjs.com/4x/api.html#router.METHOD">here</a>. Instead of express&#39;s variant of set, cannot be regular expression</td>
+<td style="text-align:left"><code>/</code></td>
+</tr>
+<tr>
+<td style="text-align:left">options</td>
+<td style="text-align:left">Special options for route</td>
+<td style="text-align:left">Equal to <a href="/ilfroloff/ifnode/wiki/docs-api-app-controller#options">controller&#39;s options</a> omit <code>root</code>, <code>name</code> and <code>router</code></td>
+</tr>
+<tr>
+<td style="text-align:left">callback</td>
+<td style="text-align:left">Handler(s) of request</td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p>&quot;Syntax sugar&quot; for <code>.method()</code>:</p>
+<pre><code class="lang-javascript"><span class="token punctuation" >.</span><span class="token keyword" >get</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+<span class="token punctuation" >.</span><span class="token function" >post</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+<span class="token punctuation" >.</span><span class="token function" >put</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+<span class="token punctuation" >.</span><span class="token function" >patch</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+<span class="token punctuation" >.</span><span class="token keyword" >delete</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+<span class="token punctuation" >.</span><span class="token function" >del</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+</code></pre>
+
+</section>
+
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

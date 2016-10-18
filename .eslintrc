@@ -1,0 +1,50 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "script"
+  },
+  "rules": {
+    "require-jsdoc": ["error", {
+      "require": {
+        "FunctionDeclaration": true,
+        "MethodDefinition": true,
+        "ClassDeclaration": false
+      }
+    }],
+    "dot-notation": "error",
+    "constructor-super": "error",
+    "curly": "off",
+    "eqeqeq": "error",
+    "linebreak-style": "error",
+    "no-bitwise": "error",
+    "no-cond-assign": "off",
+    "no-debugger": "off",
+    "no-eq-null": "error",
+    "no-eval": "error",
+    "no-loop-func": "error",
+    "no-caller": "error",
+    "no-script-url": "error",
+    "no-shadow": "off",
+    "no-new-func": "off",
+    "no-new-wrappers": "off",
+    "no-empty": "error",
+    "no-new": "error",
+    "no-plusplus": "off",
+    "no-var": "error",
+    "no-undef": "error",
+    "no-unused-expressions": "off",
+    "no-unused-vars": "error",
+    "no-use-before-define": "error",
+    "strict": "off",
+    "semi": "off",
+    "quotes": "off",
+    "wrap-iife": [
+      "error",
+      "any"
+    ]
+  }
+}

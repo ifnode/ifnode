@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/docs/api">API</a><ul>
+<li><a href="/docs/api/ifnode">ifnode</a></li>
+<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
+<li><a href="/docs/api/app">app</a><ul>
+<li><a href="/docs/api/app/model">app.Model</a></li>
+<li><a href="/docs/api/app/component">app.Component</a></li>
+<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h2 id="default-config">Default config</h2>
+<p>This is default <code>ifnode</code> config:</p>
+<pre><code class="lang-javascript">module<span class="token punctuation" >.</span>exports <span class="token operator" >=</span> <span class="token punctuation" >{</span>
+    environment<span class="token punctuation" >:</span> <span class="token string" >'local'</span><span class="token punctuation" >,</span>
+    site<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        local<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            host<span class="token punctuation" >:</span> <span class="token string" >'localhost'</span><span class="token punctuation" >,</span>
+            port<span class="token punctuation" >:</span> <span class="token number" >8080</span>
+        <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+        global<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            host<span class="token punctuation" >:</span> <span class="token string" >'localhost'</span><span class="token punctuation" >,</span>
+            port<span class="token punctuation" >:</span> <span class="token number" >8080</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+
+    application<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        express<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            <span class="token string" >'env'</span><span class="token punctuation" >:</span> <span class="token string" >'local'</span><span class="token punctuation" >,</span>
+            <span class="token string" >'view engine'</span><span class="token punctuation" >:</span> <span class="token string" >'jade'</span><span class="token punctuation" >,</span>
+            <span class="token string" >'x-powered-by'</span><span class="token punctuation" >:</span> <span class="token boolean" >false</span>
+        <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+        folders<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            extensions<span class="token punctuation" >:</span>  <span class="token string" >'/path/to/project/protected/extensions/'</span><span class="token punctuation" >,</span>
+            components<span class="token punctuation" >:</span>  <span class="token string" >'/path/to/project/protected/components/'</span><span class="token punctuation" >,</span>
+            views<span class="token punctuation" >:</span>       <span class="token string" >'/path/to/project/protected/views/'</span><span class="token punctuation" >,</span>
+            controllers<span class="token punctuation" >:</span> <span class="token string" >'/path/to/project/protected/controllers/'</span><span class="token punctuation" >,</span>
+            models<span class="token punctuation" >:</span>      <span class="token string" >'/path/to/project/protected/models/'</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+
+    db<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        virtual<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            schema<span class="token punctuation" >:</span> <span class="token string" >'virtual'</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >}</span>
+<span class="token punctuation" >}</span>
+</code></pre>
+<p>Properties can be extended or changed. Also can add own properties.</p>
+<h2 id="special-properties">Special properties</h2>
+<h3 id="site">site</h3>
+<p>Is special property where set application urls: <code>local</code> and <code>global</code>.
+Both build to special object with property <code>origin</code> and method <code>url</code>. Example:</p>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// config/dev.js</span>
+site<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+    local<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        port<span class="token punctuation" >:</span> <span class="token number" >1010</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+    global<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        host<span class="token punctuation" >:</span> <span class="token string" >'nicedomainname.io'</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+    ssl<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        key<span class="token punctuation" >:</span> <span class="token string" >'ssl/key.pem'</span><span class="token punctuation" >,</span>
+            cert<span class="token punctuation" >:</span> <span class="token string" >'ssl/cert.pem'</span>
+    <span class="token punctuation" >}</span>
+<span class="token punctuation" >}</span>
+
+<span class="token comment" spellcheck="true">// app.js</span>
+<span class="token keyword" >var</span> app <span class="token operator" >=</span> <span class="token function" >ifnode</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
+        env<span class="token punctuation" >:</span> <span class="token string" >'dev'</span>
+    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
+    site <span class="token operator" >=</span> app<span class="token punctuation" >.</span>config<span class="token punctuation" >.</span>site<span class="token punctuation" >;</span>
+
+site<span class="token punctuation" >.</span>local<span class="token punctuation" >.</span>origin<span class="token punctuation" >;</span>      <span class="token comment" spellcheck="true">// https://localhost:1010</span>
+site<span class="token punctuation" >.</span>local<span class="token punctuation" >.</span><span class="token function" >url</span><span class="token punctuation" >(</span><span class="token string" >'/u/1'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span> <span class="token comment" spellcheck="true">// https://localhost:1010/u/1</span>
+site<span class="token punctuation" >.</span>global<span class="token punctuation" >.</span>origin<span class="token punctuation" >;</span>     <span class="token comment" spellcheck="true">// https://nicedomainname.io</span>
+site<span class="token punctuation" >.</span>global<span class="token punctuation" >.</span><span class="token function" >url</span><span class="token punctuation" >(</span><span class="token string" >'u/2'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span> <span class="token comment" spellcheck="true">// https://nicedomainname.io/u/2</span>
+</code></pre>
+<h3 id="application">application</h3>
+<p>Application field contains settings for express.js core (list check <strong><a href="http://expressjs.com/4x/api.html#app.set">here</a></strong>), path to application components folders and <strong><a href="/docs/app/config/middleware">middleware</a></strong>.</p>
+<h3 id="components">components</h3>
+<p>Any config has special property <code>components</code>, where set data for components. For example <strong><a href="https://www.npmjs.com/package/ifnode-auth">ifnode-auth</a></strong>:</p>
+<pre><code class="lang-javascript"><span class="token punctuation" >{</span>
+    components<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+        auth<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
+            userFieldId<span class="token punctuation" >:</span> <span class="token string" >'email'</span>
+        <span class="token punctuation" >}</span>
+    <span class="token punctuation" >}</span>
+<span class="token punctuation" >}</span>
+</code></pre>
+
+</section>
+
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

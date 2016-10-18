@@ -1,0 +1,20 @@
+{
+  "name": "ifnode-docs",
+  "version": "1.0.0",
+  "scripts": {
+    "static": "node app.js",
+    "pages:index": "node _bundlers/index",
+    "pages:docs": "node _bundlers/docs",
+    "pages:all": "npm run pages:index & npm run pages:docs"
+  },
+  "devDependencies": {
+    "diread": "0.2.0",
+    "highlight.js": "9.7.0",
+    "marked": "0.3.6",
+    "mkpath": "1.0.0",
+    "ifnode": "1.5.0"
+  },
+  "dependencies": {
+    "prismjs": "1.5.1"
+  }
+}

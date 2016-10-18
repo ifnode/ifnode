@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - simple, flexible, super-light and pluginnable library</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable library</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ilfroloff/ifnode/zipball/master" class="btn">Download .zip</a>
+                <a href="https://github.com/ilfroloff/ifnode/tarball/master" class="btn">Download .tar.gz</a>
+            </div>
+        </header>
+        <main class="centered-content main-content docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/docs/api">API</a><ul>
+<li><a href="/docs/api/ifnode">ifnode</a></li>
+<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
+<li><a href="/docs/api/app">app</a><ul>
+<li><a href="/docs/api/app/model">app.Model</a></li>
+<li><a href="/docs/api/app/component">app.Component</a></li>
+<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h2 id="application-items">Application items</h2>
+<h3 id="-ifnode-build-items-hierarchy"><code>ifnode</code> build items hierarchy</h3>
+<p>Like was <strong><a href="/docs/intro/ideology">said before</a></strong>, <code>ifnode</code> contains four build items:</p>
+<ul>
+<li><strong><a href="/docs/app/extensions">extensions</a></strong></li>
+<li><strong><a href="/docs/app/models">models</a></strong></li>
+<li><strong><a href="/docs/app/components">components</a></strong></li>
+<li><strong><a href="/docs/app/controllers">controllers</a></strong></li>
+</ul>
+<p>Each item have specific role for building <code>ifnode</code> application. Simple hierarchy of each application elements:</p>
+<p><img src="https://github.com/ilfroloff/ilfroloff.github.io/blob/master/hierarchy.png?raw=true" alt="Application items hierarchy"></p>
+<p>Like presented in picture, each item have specified and direct role in <code>ifnode</code> application. Let&#39;s check each part closer.</p>
+<h3 id="node_modules">node_modules</h3>
+<p><code>node_modules</code> is a fundamental part of each application. <code>npm</code> have a large amount of great and not modules</p>
+<h3 id="extensions-helpers-layer-">extensions (Helpers Layer)</h3>
+<p>Frequently developing application requires some specified module which cannot find in <code>npm</code>. Extensions are the internal application modules. It can be helper&#39;s functions, internal logging system, etc. <code>ifnode</code>&#39;s extension can to extend some <code>npm</code> module and to increase possibilities.</p>
+<p>Also extensions using in <code>ifnode</code>&#39;s <strong><a href="/docs/app/plugins">plugins system</a></strong>, because each <code>ifnode</code>&#39;s plugin is extension (or <code>npm</code> module) in general.</p>
+<p>Notes:</p>
+<ul>
+<li>extension can accessed other extension</li>
+</ul>
+<p><em>P.S. One of &quot;native&quot; <code>npm</code> variant of creating own modules describes <strong><a href="https://blog.risingstack.com/nodejs-at-scale-npm-best-practices/#9developingpackages">here</a></strong>.</em></p>
+<h3 id="models-data-access-layer-">models (Data Access Layer)</h3>
+<p>Most problems requires processing data. Data can be from database or by services, and application must have access point to get or change this data. <code>ifnode</code>&#39;s models part is it.
+Each model build on <code>schema</code> - point to get and work with data. Each <code>schema</code> is <code>npm</code> module or extension, because <code>schema</code> cannot be related of developing application. Frequently <code>schema</code> is a middleware between <code>ifnode</code>&#39;s models system and external data access library (for example, <strong><a href="https://www.npmjs.com/package/ifnode-mongoose">ifnode-mongoose</a></strong>).</p>
+<p>Notes:</p>
+<ul>
+<li>model cannot accessed other model</li>
+</ul>
+<h3 id="components-business-layer-">components (Business Layer)</h3>
+<p>Business Layer resolves two problems:</p>
+<ol>
+<li>How application must work with models data</li>
+<li>How one part of application must to influence to other part</li>
+</ol>
+<p>In general, component has access to such models and relates those models to one functionality part. Also, component can be used for creating independent module from other application parts, but dependent of current application environment configuration.</p>
+<p>Example of component usage: developer wants to create component which generate excel file from some database&#39;s table data - it must be implemented in <code>ifnode</code> components application part.</p>
+<p>Notes:</p>
+<ul>
+<li>component can accessed other component</li>
+</ul>
+<h3 id="controllers-requests-layer-">controllers (Requests Layer)</h3>
+<p>Controllers system of <code>ifnode</code> build on <code>express</code> <code>npm</code> module and extends it possibilities. Each controller is a independent route point with specified behavior. Behavior describes by plugins. For example you want to add possibility to prevent access to some IP&#39;s.
+Controller inherits <code>express.Router</code> and have most of <code>Router</code> class methods.</p>
+
+</section>
+
+        </main>
+        <footer class="centered-content site-footer">
+            <span class="site-footer-owner">
+                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+            </span>
+        </footer>
+    </body>
+</html>
