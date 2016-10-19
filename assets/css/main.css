@@ -78,6 +78,12 @@ a:hover {
     opacity: 0.7;
 }
 
+@media screen and (max-width: 42em) {
+    .project-tagline {
+        display: none;
+    }
+}
+
 .project-buttons {
     display: inline-block;
     right: 1rem;
@@ -173,11 +179,6 @@ a:hover {
     margin-top: 0;
 }
 
-.main-content {
-    /* header + footer */
-    min-height: calc(100% - 5.8rem);
-}
-
 .main-content blockquote {
     padding: 0 1rem;
     margin-left: 0;
@@ -242,19 +243,27 @@ a:hover {
     height: 100%;
 }
 
-#toc ul {
+#toc ul,
+.docs-toc ul {
     list-style-type: none;
     padding-left: 1.6rem;
 }
 
 #toc ul,
-#toc li {
+#toc li,
+.docs-toc ul,
+.docs-toc li {
     line-height: 1.6;
     font-size: 1rem;
 }
 
-#toc > ul {
+#toc > ul,
+.docs-toc > ul {
     padding-left: 0;
+}
+
+#toc-page {
+    display: none;
 }
 
 #docs {
@@ -275,37 +284,88 @@ a:hover {
         font-size: 1.1rem;
     }
 
+    .main-content {
+        min-height: calc(100% - 5.8rem);
+    }
     .main-content.docs {
         max-width: 104rem;
+    }
+
+    #toc {
+        height: calc(100% - 4rem);
+    }
+}
+
+@media screen and (max-width: 74em) {
+    .centered-content {
+        padding: 0;
     }
 }
 
 @media screen and (min-width: 42em) and (max-width: 74em) {
     .centered-content {
-        padding: 2rem 4rem;
+        margin: 1rem 1.5rem;
         font-size: 1.1rem;
+    }
+
+    .main-content {
+        min-height: calc(100% - 7.8rem);
+    }
+
+    #toc {
+        width: 12rem;
+    }
+
+    #toc ul,
+    #toc li {
+        line-height: 1.5;
+        font-size: .9rem;
+    }
+
+    #docs {
+        display: inline-block;
+        margin-left: 12rem;
+        width: calc(100% - 12rem);
     }
 }
 
 @media screen and (max-width: 42em) {
     .centered-content {
-        padding: 2rem 1rem;
+        margin: 1rem 1rem 0;
         font-size: 1rem;
+    }
+
+    .main-content {
+        min-height: calc(100% - 6.8rem);
+    }
+
+    #toc {
+        display: none;
+    }
+    #toc-page {
+        display: block;
+        margin-bottom: .5rem;
+        text-align: center;
+    }
+    #docs {
+        margin-left: 0;
+        width: 100%;
     }
 }
 
-.site-footer {
+.page-footer {
     height: 3rem;
     padding: 1rem 2.5rem;
+    margin: 0 auto;
     border-top: solid 1px #eff0f1;
 }
 
-.site-footer-owner {
+.owner {
     display: block;
     font-weight: bold;
     font-size: .75rem;
 }
 
-.site-footer-credits {
+.page-footer-credits {
     color: #819198;
 }

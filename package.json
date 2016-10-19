@@ -4,8 +4,9 @@
   "scripts": {
     "static": "node app.js",
     "pages:index": "node _bundlers/index",
+    "pages:docs-toc": "node _bundlers/docs-toc",
     "pages:docs": "node _bundlers/docs",
-    "pages:all": "npm run pages:index & npm run pages:docs"
+    "pages": "npm run pages:index & npm run pages:docs-toc & npm run pages:docs"
   },
   "devDependencies": {
     "diread": "0.2.0",
