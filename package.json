@@ -1,6 +1,6 @@
 {
   "name": "ifnode-docs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "static": "node app.js",
     "pages:index": "node _bundlers/index",
