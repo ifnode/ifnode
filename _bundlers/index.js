@@ -1,5 +1,6 @@
 'use strict';
 
+const package_json = require('./../package.json');
 const Path = require('path');
 const convertMDtoHTML = require('./helpers/convertMDtoHTML');
 const read = require('./helpers/readUTF8File');
@@ -17,6 +18,7 @@ Promise
         return write(
             Path.resolve(__dirname, './../index.html'),
             layout
+                .replace(/__SITE_VERSION__/g, package_json.version)
                 .replace('__MAIN_CONTENT_CLASS__', 'index')
                 .replace('__MAIN_CONTENT__', html)
         );

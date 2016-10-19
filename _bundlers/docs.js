@@ -1,5 +1,6 @@
 'use strict';
 
+const package_json = require('./../package.json');
 const Path = require('path');
 const Diread = require('diread');
 const Marked = require('marked');
@@ -20,7 +21,7 @@ Promise
         Promise.all(
             Diread({
                 src: docs_folder,
-                mask: filepath => filepath.search('toc.md') !== -1
+                mask: filepath => filepath.search('toc.md') === -1
             }).map(filepath => read(filepath).then(content => ({
                 filepath,
                 content: Marked(content)
@@ -47,6 +48,7 @@ Promise
                         `.${relive_doc_path.replace('.md', '.html')}`
                     ),
                     default_layout
+                        .replace(/__SITE_VERSION__/g, package_json.version)
                         .replace('__MAIN_CONTENT_CLASS__', 'docs')
                         .replace(
                         '__MAIN_CONTENT__',
