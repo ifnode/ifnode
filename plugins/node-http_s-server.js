@@ -59,7 +59,7 @@ NodeHTTPServer.prototype.listen = function(callback) {
 
     var host = config.host;
 
-    if(host !== '127.0.0.1' || host !== 'localhost') {
+    if(host !== '127.0.0.1' && host !== 'localhost') {
         params.push(config.host);
     }
 
