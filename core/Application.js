@@ -3,7 +3,7 @@
 var Path = require('path');
 var Util = require('util');
 var Express = require('express');
-var UUID = require('node-uuid');
+var UUID = require('uuid');
 var Diread = require('diread');
 
 var toArray = require('./helper/toArray');

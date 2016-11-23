@@ -14,7 +14,7 @@ var addFunctions = require('./helper/pushElements');
 var addSlashToStringEnd = require('./helper/addSlashToStringEnd');
 
 var debug = require('debug')('ifnode:controller');
-var UUID = require('node-uuid');
+var UUID = require('uuid');
 var Express = require('express');
 var Log = require('./extensions/log');
 
