@@ -2,7 +2,13 @@
 
 var _defaults = require('lodash/defaults');
 
-module.exports = function defineProperties(object, properties) {
+/**
+ *
+ * @param   {Object}    object
+ * @param   {Object}    properties
+ * @returns {Object}
+ */
+function defineProperties(object, properties) {
     var prototype_new_properties = {};
 
     Object.keys(properties).forEach(function(property_name) {
@@ -34,4 +40,6 @@ module.exports = function defineProperties(object, properties) {
     Object.freeze(object);
 
     return object;
-};
+}
+
+module.exports = defineProperties;

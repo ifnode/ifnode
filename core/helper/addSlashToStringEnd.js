@@ -1,9 +1,16 @@
 'use strict';
 
-module.exports = function addSlashToStringEnd(str) {
-    if(str[str.length - 1] !== '/') {
-        str += '/';
+/**
+ *
+ * @param   {string}    string
+ * @returns {string}
+ */
+function addSlashToStringEnd(string) {
+    if(string[string.length - 1] !== '/') {
+        string += '/';
     }
 
-    return str;
-};
+    return string;
+}
+
+module.exports = addSlashToStringEnd;

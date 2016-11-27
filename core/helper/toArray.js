@@ -6,7 +6,7 @@
  * @param   {number}    [at=0]
  * @returns {Array.<*>}
  */
-module.exports = function toArray(obj, at) {
+function toArray(obj, at) {
     if(!obj) {
         return [];
     }
@@ -21,4 +21,6 @@ module.exports = function toArray(obj, at) {
     }
 
     return [obj];
-};
+}
+
+module.exports = toArray;
