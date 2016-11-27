@@ -62,11 +62,11 @@
 
 </aside>
 <section id="docs">
-    <h2 id="config-">Config:</h2>
+    <h2 id="config">Config</h2>
 <p>Config is <code>js</code> or <code>json</code> object with all application options. Can contain any and same of options specialized for <code>ifnode</code>.</p>
 <p>Path to config&#39;s folder <code>${project_folder}/config</code></p>
-<h3 id="specialized-ifnode-options-">Specialized ifnode options:</h3>
-<h4 id="site-">site:</h4>
+<h3 id="specialized-ifnode-options">Specialized ifnode options</h3>
+<h4 id="site">site</h4>
 <table>
 <thead>
 <tr>
@@ -145,7 +145,7 @@
 </tr>
 </tbody>
 </table>
-<h5 id="note-">Note:</h5>
+<h5 id="note">Note</h5>
 <p><code>ifnode</code> generate special <code>app.config.site</code> options: .site with options:</p>
 <table>
 <thead>
@@ -204,7 +204,7 @@ Note: ifnode generate config option .site with options:
     .url(pathname: String)    Method for generate link
 ###</span>
 </code></pre>
-<h4 id="application-">application:</h4>
+<h4 id="application">application</h4>
 <table>
 <thead>
 <tr>
@@ -229,7 +229,7 @@ Note: ifnode generate config option .site with options:
 <tr>
 <td style="text-align:left"><code>application.express</code></td>
 <td style="text-align:left">Object</td>
-<td style="text-align:left">Hash of express application settings. List <a href="http://expressjs.com/4x/api.html#app.set">here</a></td>
+<td style="text-align:left">Hash of express application settings. List <a href="https://expressjs.com/4x/api.html#app.set">here</a></td>
 <td style="text-align:left">Predefined options check below</td>
 </tr>
 <tr>
@@ -297,7 +297,7 @@ Note: ifnode generate config option .site with options:
 <p>Raw:</p>
 <pre><code class="lang-coffeescript"><span class="token property" >application</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># Application (and express()) settings</span>
     <span class="token property" >environment</span><span class="token punctuation" >:</span>            <span class="token comment" spellcheck="true"># Name of environment. By default: name of config file (if config by file) or "local"</span>
-    <span class="token property" >express</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># Hash of express application settings (list: http://expressjs.com/4x/api.html#app.set)</span>
+    <span class="token property" >express</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># Hash of express application settings (list: https://expressjs.com/4x/api.html#app.set)</span>
         <span class="token property" >env</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># By default: name of config file (if config by file) or "local"</span>
         <span class="token string" >"view engine"</span><span class="token punctuation" >:</span>      <span class="token comment" spellcheck="true"># By default: jade</span>
         <span class="token property" >views</span><span class="token punctuation" >:</span>              <span class="token comment" spellcheck="true"># By default: ${backend_folder}/views</span>
@@ -309,7 +309,7 @@ Note: ifnode generate config option .site with options:
         <span class="token property" >controllers</span><span class="token punctuation" >:</span>        <span class="token comment" spellcheck="true"># Folder of controllers. By default: ${backend_folder}/controllers</span>
         <span class="token property" >models</span><span class="token punctuation" >:</span>             <span class="token comment" spellcheck="true"># Folder of models.      By default: ${backend_folder}/models</span>
 </code></pre>
-<h4 id="middleware-">middleware:</h4>
+<h4 id="middleware">middleware</h4>
 <table>
 <thead>
 <tr>
@@ -404,14 +404,14 @@ Note: ifnode generate config option .site with options:
                 ...
 ###</span>
 </code></pre>
-<h4 id="db-">db:</h4>
+<h4 id="db">db</h4>
 <p>Raw:</p>
 <pre><code class="lang-coffeescript"><span class="token property" >db</span><span class="token punctuation" >:</span>                                     <span class="token comment" spellcheck="true"># Initialize options of databases (models schemas)</span>
     <span class="token property" >name_of_db</span><span class="token punctuation" >:</span>                         <span class="token comment" spellcheck="true"># Name of database connect</span>
         <span class="token property" >schema</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># name of schema #      # Schema name (for choose of schema)</span>
         <span class="token property" >config</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># schema config #       # Config of database connection</span>
 </code></pre>
-<h4 id="components-">components:</h4>
+<h4 id="components">components</h4>
 <p>Raw:</p>
 <pre><code class="lang-coffeescript"><span class="token property" >components</span><span class="token punctuation" >:</span>                             <span class="token comment" spellcheck="true"># Initialize options for components of ifnode</span>
     <span class="token property" >name_of_component</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># options #</span>

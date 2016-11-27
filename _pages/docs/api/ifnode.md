@@ -1,6 +1,6 @@
 ## ifnode
 
-### Description:
+### Description
 
 Returns instance of `ifnode` by `options`:
 
@@ -8,7 +8,7 @@ Returns instance of `ifnode` by `options`:
 [class Application] ifnode([Object options])
 ```
 
-### Parameters:
+### Parameters
 
 Option | Type | Description | Optional | Default
 :------ | :---- | :----------- | :------- | :-------
@@ -18,7 +18,7 @@ Option | Type | Description | Optional | Default
 **[projectFolder](#alias)** | | Alias of option `.project_folder`
 **[env](#environment)** | | Alias of option `.environment`
 
-### Example:
+### Example
 
 ```javascript
 var app = ifnode({

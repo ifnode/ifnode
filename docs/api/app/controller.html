@@ -67,7 +67,7 @@
 <pre><code class="lang-javascript">app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >[</span>Object options<span class="token punctuation" >]</span><span class="token punctuation" >)</span>
 </code></pre>
 <p>Controller can be extended by external plugins (example: <code>ifnode-auth</code>, <code>ifnode-permissions</code> etc)</p>
-<h3 id="-a-name-options-default-parameters-a-"><a name="options">Default parameters:</a></h3>
+<h3 id="default-parameters">Default parameters</h3>
 <table>
 <thead>
 <tr>
@@ -96,7 +96,7 @@
 <tr>
 <td style="text-align:left">router</td>
 <td style="text-align:left">Object</td>
-<td style="text-align:left"><code>express.Router</code> options. Check <a href="http://expressjs.com/4x/api.html#router">here</a></td>
+<td style="text-align:left"><code>express.Router</code> options. Check <a href="https://expressjs.com/4x/api.html#router">here</a></td>
 <td style="text-align:left">true</td>
 <td style="text-align:left"><code>{}</code></td>
 </tr>
@@ -109,8 +109,8 @@
 </tr>
 </tbody>
 </table>
-<h3 id="controller-instance-">Controller instance:</h3>
-<h4 id="constants-">Constants:</h4>
+<h3 id="controller-instance">Controller instance</h3>
+<h4 id="constants">Constants</h4>
 <table>
 <thead>
 <tr>
@@ -142,7 +142,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="methods-">Methods:</h4>
+<h4 id="methods">Methods</h4>
 <table>
 <thead>
 <tr>
@@ -153,7 +153,7 @@
 <tbody>
 <tr>
 <td style="text-align:left">.param(String param, Function handler)</td>
-<td style="text-align:left">Analog of express<code>s</code>app.param`. Check <a href="http://expressjs.com/4x/api.html#app.param">here</a></td>
+<td style="text-align:left">Analog of express<code>s</code>app.param`. Check <a href="https://expressjs.com/4x/api.html#app.param">here</a></td>
 </tr>
 <tr>
 <td style="text-align:left">[[.method(String method [, String path] [, Object options], Function callback [, Function callback...])</td>
@@ -166,7 +166,7 @@
 </tr>
 <tr>
 <td style="text-align:left">.use([String path,] Function callback [, Function callback...])</td>
-<td style="text-align:left">Check <a href="http://expressjs.com/4x/api.html#app.use">here</a></td>
+<td style="text-align:left">Check <a href="https://expressjs.com/4x/api.html#app.use">here</a></td>
 </tr>
 <tr>
 <td style="text-align:left">.error(Function handler)</td>
@@ -174,9 +174,9 @@
 </tr>
 </tbody>
 </table>
-<h4 id="handler-options-">Handler options:</h4>
+<h4 id="handler-options">Handler options</h4>
 <p>All handlers <code>request</code> and <code>response</code> methods populated by same custom options:</p>
-<h5 id="request-">request:</h5>
+<h5 id="request">request</h5>
 <table>
 <thead>
 <tr>
@@ -191,7 +191,7 @@
 </tr>
 </tbody>
 </table>
-<h5 id="response-">response:</h5>
+<h5 id="response">response</h5>
 <table>
 <thead>
 <tr>
@@ -253,7 +253,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="notes-">Notes:</h4>
+<h4 id="notes">Notes</h4>
 <p>Controller&#39;s filename <code>!.js</code> and <code>~.js</code> are special. Those filenames not participate in forming name and root options.</p>
 <p><code>!.js:</code> always initialize first in folder. Next loaded controllers into folders, and next files
 <code>~.js:</code> always initialize last in folder</p>
@@ -294,7 +294,7 @@ controller<span class="token punctuation" >.</span>root <span class="token comme
 </tbody>
 </table>
 <h3 id="app-controller-method">app.Controller#.method</h3>
-<h4 id="parameters-">Parameters:</h4>
+<h4 id="parameters">Parameters</h4>
 <table>
 <thead>
 <tr>
@@ -311,13 +311,13 @@ controller<span class="token punctuation" >.</span>root <span class="token comme
 </tr>
 <tr>
 <td style="text-align:left">path</td>
-<td style="text-align:left">Next part of url. Check <a href="http://expressjs.com/4x/api.html#router.METHOD">here</a>. Instead of express&#39;s variant of set, cannot be regular expression</td>
+<td style="text-align:left">Next part of url. Check <a href="https://expressjs.com/4x/api.html#router.METHOD">here</a>. Instead of express&#39;s variant of set, cannot be regular expression</td>
 <td style="text-align:left"><code>/</code></td>
 </tr>
 <tr>
 <td style="text-align:left">options</td>
 <td style="text-align:left">Special options for route</td>
-<td style="text-align:left">Equal to <a href="/ilfroloff/ifnode/wiki/docs-api-app-controller#options">controller&#39;s options</a> omit <code>root</code>, <code>name</code> and <code>router</code></td>
+<td style="text-align:left">Equal to <a href="#default-parameters">controller&#39;s options</a> omit <code>root</code>, <code>name</code> and <code>router</code></td>
 </tr>
 <tr>
 <td style="text-align:left">callback</td>

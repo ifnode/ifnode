@@ -8,19 +8,19 @@ app.Controller([Object options])
 
 Controller can be extended by external plugins (example: `ifnode-auth`, `ifnode-permissions` etc)
 
-### <a name="options">Default parameters:</a>
+### Default parameters
 
 Option | Type | Description | Optional | Default
 :------ | :---- | :----------- | :-------- | :-------
 root | String | Root path to request | true | `/path/to/controller/` related `${backend_folder}`
 name | String | Name of controller | true | `path/to/controller` related `${backend_folder}`
-router | Object | `express.Router` options. Check [here](http://expressjs.com/4x/api.html#router) | true | `{}`
+router | Object | `express.Router` options. Check [here](https://expressjs.com/4x/api.html#router) | true | `{}`
 ajax | Undefined &#10072; Boolean | AJAX settings of controller's actions | true | undefined
 
 
-### Controller instance:
+### Controller instance
 
-#### Constants:
+#### Constants
 
 Option | Type | Description
 :------ | :---- | :-----------
@@ -29,28 +29,28 @@ Option | Type | Description
 .name | String | Controller's name
 .router | [Router] | `express.Router()` instance
 
-#### Methods:
+#### Methods
 
 Option | Description
 :------ | :-----------
-.param(String param, Function handler) | Analog of express`s `app.param`. Check [here](http://expressjs.com/4x/api.html#app.param)
+.param(String param, Function handler) | Analog of express`s `app.param`. Check [here](https://expressjs.com/4x/api.html#app.param)
 [[.method(String method [, String path] [, Object options], Function callback [, Function callback...])|docs/api/app/controller/.method]] | Method for creating controller's route
 .end() | End of controller (if request cannot have handler invoke `response.not_found()` method. By default go to next controller to find request handler)
-.use([String path,] Function callback [, Function callback...]) | Check [here](http://expressjs.com/4x/api.html#app.use)
+.use([String path,] Function callback [, Function callback...]) | Check [here](https://expressjs.com/4x/api.html#app.use)
 .error(Function handler) | Invoke `.error()` handler when any request handler's `next()` method of controller get instance of `Error` class. By default try find parent error handler, and if not find throw error in `node.js`
 
-#### Handler options:
+#### Handler options
 
 All handlers `request` and `response` methods populated by same custom options:
 
-##### request:
+##### request
 
 Option | Description
 ------ | -----------
 .data | "Syntax sugar". Return `request.body`, or `request.query` or `null`
 
 
-##### response:
+##### response
 
 Option | Description
 ------ | -----------
@@ -70,7 +70,7 @@ Option | Description
 [.err()](#response-error) | Alias of `.error()`
 [.notFound()](#response-notfound) | Alias of `.not_found()`
 
-#### Notes:
+#### Notes
 
 Controller's filename `!.js` and `~.js` are special. Those filenames not participate in forming name and root options.
 
@@ -103,13 +103,13 @@ Option | Description
 
 ### app.Controller#.method
 
-#### Parameters:
+#### Parameters
 
 Argument | Description | Default
 :-------- | :----------- | :-------
 method | Name of method. Current available: get, post, put, patch, delete | -
-path | Next part of url. Check [here](http://expressjs.com/4x/api.html#router.METHOD). Instead of express's variant of set, cannot be regular expression | `/`
-options | Special options for route | Equal to [controller's options](/ilfroloff/ifnode/wiki/docs-api-app-controller#options) omit `root`, `name` and `router`
+path | Next part of url. Check [here](https://expressjs.com/4x/api.html#router.METHOD). Instead of express's variant of set, cannot be regular expression | `/`
+options | Special options for route | Equal to [controller's options](#default-parameters) omit `root`, `name` and `router`
 callback | Handler(s) of request |
 
 "Syntax sugar" for `.method()`:

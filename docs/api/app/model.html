@@ -66,10 +66,10 @@
 <p>Returns <code>model</code> instance:</p>
 <pre><code class="lang-javascript">app<span class="token punctuation" >.</span><span class="token function" >Model</span><span class="token punctuation" >(</span>Object model_options <span class="token punctuation" >[</span><span class="token punctuation" >,</span> Object schema_options<span class="token punctuation" >]</span><span class="token punctuation" >)</span>
 </code></pre>
-<p>All model&#39;s schemas must be added by plugins (like <a href="/ifnode/mongoose"><code>ifnode-mongoose</code></a>).</p>
-<p>Default schema is <code>virtual</code>. Code of <code>virtual</code> schema is find <a href="/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js">here</a></p>
-<h3 id="parameters-">Parameters:</h3>
-<h4 id="model_options-">model_options:</h4>
+<p>All model&#39;s schemas must be added by plugins (like <a href="https://npmjs.com/package/ifnode-mongoose"><code>ifnode-mongoose</code></a>).</p>
+<p>Default schema is <code>virtual</code>. Code of <code>virtual</code> schema is find <a href="https://github.com/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js">here</a></p>
+<h3 id="parameters">Parameters</h3>
+<h4 id="model_options">model_options</h4>
 <p>Options to create model instance. All options are specified by model&#39;s schema.</p>
 <p>Below recommended options:</p>
 <table>
@@ -103,7 +103,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="schema_options-">schema_options:</h4>
+<h4 id="schema_options">schema_options</h4>
 <p>Options for build model&#39;s schema.</p>
 <table>
 <thead>
@@ -129,7 +129,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="create-own-schema-">Create own Schema:</h3>
+<h3 id="create-own-schema">Create own Schema</h3>
 <p>Example:</p>
 <pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// own-schema.js</span>
 exports<span class="token punctuation" >.</span>schema <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>app<span class="token punctuation" >,</span> Schema<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>

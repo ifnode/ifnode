@@ -8,18 +8,18 @@ app.Component([Object options])
 
 Special module for application. Initialize after `models` and can used by them.
 
-### Parameters:
+### Parameters
 
 Option | Type | Description | Optional | Default
 ------ | ---- | ----------- | -------- | -------
 .name | String | Name of controller | true | id
 
-### Methods:
+### Methods
 
 Option | Description
 ------ | -----------
 .initialize(Object config) | Function to initialize component (get config from `config.components.name`)
 
-### Examples:
+### Examples
 
 Check creating of component [here](/docs/app/components).

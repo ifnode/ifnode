@@ -8,16 +8,16 @@
      /   / /   /    /__/  |__/  \_______/  \_______/ /______/
     /___/ /___/
 
-    Best MVC library for node.js :^)
+    Best MVC Framework for node.js :^)
 
 [![Build Status](https://travis-ci.org/ilfroloff/ifnode.svg?branch=master)](https://travis-ci.org/ilfroloff/ifnode)
 
 ### What is `ifnode`?
 
-+ Simple, light and flexible MVC library for **[node.js](http://nodejs.org/)** and **[io.js](http://iojs.org/)**
-+ Based in **[express.js](http://expressjs.com/)** and other awesome node modules
-+ Inspired by **[Yii](http://yiiframework.com/)**, **[Ruby on Rails](http://rubyonrails.org/)**, etc
-    
++ Simple, light and flexible MVC Framework for **[node.js](https://nodejs.org)** and **[io.js](https://iojs.org)**
++ Based in **[express.js](https://expressjs.com)** and other awesome node modules
++ Inspired by **[Yii](http://yiiframework.com)**, **[Ruby on Rails](http://rubyonrails.org)**, etc
+
 ### Installation
 
 For install `ifnode` type command:

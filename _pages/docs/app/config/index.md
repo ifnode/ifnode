@@ -1,12 +1,12 @@
-## Config:
+## Config
 
 Config is `js` or `json` object with all application options. Can contain any and same of options specialized for `ifnode`.
 
 Path to config's folder `${project_folder}/config`
 
-### Specialized ifnode options:
+### Specialized ifnode options
 
-#### site:
+#### site
 
 Option | Type | Description | Default
 :------ | :----- | :----------- | :-------
@@ -22,7 +22,7 @@ Option | Type | Description | Default
 `site.ssl.cert` | String &#10072; Undefined | Full or relative (at `${project_folder}`) path to `cert.pem` (just path, not need read as file) | `undefined`
 `site.ssl.pfx` | String &#10072; Undefined | Full or relative (at `${project_folder}`) path to `pfx.pem` (just path, not need read as file) | `undefined`
 
-##### Note:
+##### Note
 
 `ifnode` generate special `app.config.site` options: .site with options:
 
@@ -74,13 +74,13 @@ Note: ifnode generate config option .site with options:
     .url(pathname: String)    Method for generate link
 ###
 ```
-#### application:
+#### application
 
 Option | Type | Description | Default
 :------ | :----- | :----------- | :-------
 `application` | Object | Application and `express()` settings | -
 `application.environment` | Name of environment | Name of config file (if config by file) or `'local'`
-`application.express` | Object | Hash of express application settings. List [here](http://expressjs.com/4x/api.html#app.set) | Predefined options check below
+`application.express` | Object | Hash of express application settings. List [here](https://expressjs.com/4x/api.html#app.set) | Predefined options check below
 `application.express.env` | String | `env` option | Same as `application.environment`
 `application.express['view engine']` | String | Template | `'jade'`
 `application.express.views` | String | Path to application views | `${backend_folder}/views`
@@ -96,7 +96,7 @@ Raw:
 ```coffeescript
 application:                # Application (and express()) settings
     environment:            # Name of environment. By default: name of config file (if config by file) or "local"
-    express:                # Hash of express application settings (list: http://expressjs.com/4x/api.html#app.set)
+    express:                # Hash of express application settings (list: https://expressjs.com/4x/api.html#app.set)
         env:                # By default: name of config file (if config by file) or "local"
         "view engine":      # By default: jade
         views:              # By default: ${backend_folder}/views
@@ -108,7 +108,7 @@ application:                # Application (and express()) settings
         controllers:        # Folder of controllers. By default: ${backend_folder}/controllers
         models:             # Folder of models.      By default: ${backend_folder}/models
 ```
-#### middleware:
+#### middleware
 
 Option | Type | Description
 :------ | :----- | :-----------
@@ -169,7 +169,7 @@ middleware:                            # External middleware modules (examples: 
 ###
 ```
 
-#### db:
+#### db
 
 Raw:
 ```coffeescript
@@ -179,7 +179,7 @@ db:                                     # Initialize options of databases (model
         config: # schema config #       # Config of database connection
 ```
 
-#### components:
+#### components
 
 Raw:
 ```coffeescript

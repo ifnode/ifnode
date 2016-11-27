@@ -6,12 +6,13 @@ Returns `model` instance:
 app.Model(Object model_options [, Object schema_options])
 ```
 
-All model's schemas must be added by plugins (like [`ifnode-mongoose`](/ifnode/mongoose)).
+All model's schemas must be added by plugins (like [`ifnode-mongoose`](https://npmjs.com/package/ifnode-mongoose)).
 
-Default schema is `virtual`. Code of `virtual` schema is find [here](/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js)
-### Parameters:
+Default schema is `virtual`. Code of `virtual` schema is find [here](https://github.com/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js)
 
-#### model_options:
+### Parameters
+
+#### model_options
 
 Options to create model instance. All options are specified by model's schema.
 
@@ -24,7 +25,7 @@ Option | Type | Description
 .collection | String | Name of collection (for NoSQL databases: mongodb, redis, etc)
 .columns | Object | Describe table or collection columns (example: `mongoose` options `columns`)
 
-#### schema_options:
+#### schema_options
 
 Options for build model's schema.
 
@@ -33,7 +34,7 @@ Option | Type | Description | Default
 .db | String | Name of database (one of keys in `config.db`) | First in `config.db` or `virtual`
 .alias | String &#10072; Array | Aliases of model (in `app.models`) | -
 
-### Create own Schema:
+### Create own Schema
 
 Example:
 

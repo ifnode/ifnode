@@ -75,7 +75,7 @@ site.global.url('u/2'); // https://nicedomainname.io/u/2
 ```
     
 ### application
-Application field contains settings for express.js core (list check **[here](http://expressjs.com/4x/api.html#app.set)**), path to application components folders and **[middleware](/docs/app/config/middleware)**.
+Application field contains settings for express.js core (list check **[here](https://expressjs.com/4x/api.html#app.set)**), path to application components folders and **[middleware](/docs/app/config/middleware)**.
 
 ### components
 Any config has special property `components`, where set data for components. For example **[ifnode-auth](https://www.npmjs.com/package/ifnode-auth)**:
