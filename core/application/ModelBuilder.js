@@ -12,17 +12,9 @@ var Log = require('./../extensions/log');
  * @constructor
  */
 function ModelBuilder(dao_list) {
-    this._constructor(dao_list);
-}
-
-/**
- *
- * @param {DAOList} dao_list
- */
-ModelBuilder.prototype._constructor = function _constructor(dao_list) {
     this._dao_list = dao_list;
     this._model_prototypes = {};
-};
+}
 
 /**
  *
