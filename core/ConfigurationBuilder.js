@@ -256,7 +256,7 @@ var ConfigPrototype = {
  * @param   options
  * @returns {Object}
  */
-module.exports = function initialize_config(options) {
+function ConfigurationBuilder(options) {
     var default_config = initialize_default_config(options);
 
     if(!options.config_path) {
@@ -274,4 +274,6 @@ module.exports = function initialize_config(options) {
     initialize_db_config(config, default_config);
 
     return config;
-};
+}
+
+module.exports = ConfigurationBuilder;
