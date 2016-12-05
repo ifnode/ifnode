@@ -1,23 +1,14 @@
 /**
  *
  * @class SchemasList
- * @constructor
  */
 function SchemasList() {
-    this._constructor();
+    this._schemas_drivers = {};
 }
 
 /**
  *
- * @private
- */
-SchemasList.prototype._constructor = function() {
-    this._schemas_drivers = {};
-};
-
-/**
- *
- * @param {SchemaInterface} Schema
+ * @param {ISchema} Schema
  */
 SchemasList.prototype.attach_schema = function attach_schema(Schema) {
     this._schemas_drivers[Schema.schema] = Schema;
@@ -26,7 +17,7 @@ SchemasList.prototype.attach_schema = function attach_schema(Schema) {
 /**
  *
  * @param   {string}    name
- * @returns {?SchemaInterface}
+ * @returns {?ISchema}
  */
 SchemasList.prototype.get_schema = function get_schema(name) {
     return this._schemas_drivers[name] || null;
