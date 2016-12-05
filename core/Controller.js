@@ -195,10 +195,6 @@ var _initialize = function(controller_config) {
  * @constructor
  */
 function Controller(config) {
-    if(!(this instanceof Controller)) {
-        return new Controller(config);
-    }
-
     _initialize.call(this, config);
 }
 
