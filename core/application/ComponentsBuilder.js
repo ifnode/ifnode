@@ -67,6 +67,10 @@ ComponentsBuilder.prototype.compile = function compile(app) {
     var components = this.components;
 
     Object.keys(components).forEach(function(unique_name) {
+        if(unique_name in app) {
+            Log.error('application', 'Alias [' + unique_name + '] already busy in application instance.');
+        }
+
         var component = components[unique_name];
         app[unique_name] = component;
 
@@ -77,6 +81,10 @@ ComponentsBuilder.prototype.compile = function compile(app) {
         toArray(component.alias).forEach(function(alias) {
             if(alias in components) {
                 Log.error('components', 'Alias [' + alias + '] already busy in components.');
+            }
+
+            if(alias in app) {
+                Log.error('application', 'Alias [' + alias + '] already busy in application instance.');
             }
 
             components[alias] = component;

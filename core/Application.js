@@ -7,18 +7,23 @@ var UUID = require('uuid');
 var Diread = require('diread');
 
 var toArray = require('./helper/toArray');
-var defineProperties = require('./helper/defineProperties');
+var pathWithoutExtension = require('./helper/pathWithoutExtension');
+var tryCatch = require('./helper/tryCatch');
 
 var debug = require('debug')('ifnode:application');
 var Log = require('./extensions/log');
 
 var Extension = require('./application/Extension');
+var PLUGIN_TYPES = require('./PLUGIN_TYPES');
 var SchemaFactory = require('./SchemaFactory');
 var ConfigurationBuilder = require('./ConfigurationBuilder');
 
 var SchemasList = require('./application/SchemasList');
 var DAOList = require('./application/DAOList');
 var ModelBuilder = require('./application/ModelBuilder');
+
+var ComponentsBuilder = require('./application/ComponentsBuilder');
+var ControllersBuilder = require('./application/ControllersBuilder');
 
 var Controller = require('./Controller');
 var RestMiddleware = require('./middleware/rest');
@@ -29,17 +34,49 @@ var NodeHTTPServer = require('./../plugins/node-http_s-server');
 /**
  * Creates a new Application instance
  *
- * @class
+ * @class Application
  *
- * @param {ApplicationOptions}  [options={}]
+ * @param {ApplicationOptions}  options
  */
 function Application(options) {
-    this._constructor(options || {});
+    if(options.alias && typeof options.alias !== 'string') {
+        Log.error('application', 'Alias must be String');
+    }
+
+    this._require_cache = {};
+    this._extensions_cache = {};
+    this._project_folder = options.project_folder || options.projectFolder || Path.dirname(process.argv[1]);
+    this._backend_folder = Path.resolve(this._project_folder, 'protected/');
+
+    this._modules = [
+        IFNodeVirtualSchema
+    ];
+    this._models_builder = null;
+    this._components_builder = null;
+    this._controllers_builder = null;
+
+    this.id = UUID.v4();
+    this.alias = options.alias || this.id;
+    this.project_folder = this.projectFolder = this._project_folder;
+    this.backend_folder = this.backendFolder = this._backend_folder;
+
+    this.config = this._initialize_config(options.env || options.environment);
+
+    this.listener = this._initialize_listener();
+    this.connection = this._initialize_connection_server();
+
+    /**
+     * @deprecated      Deprecated from 2.0.0 version. Connection server will be presented by app.connection
+     * @type {http.Server}
+     */
+    this.server = this.connection.server;
+
+    this.models = null;
+    this.components = null;
+    this.controllers = null;
 }
 
 require('./application/middleware')(Application);
-require('./application/components')(Application);
-require('./application/controllers')(Application);
 
 /**
  * Require module from start point like application project folder
@@ -58,21 +95,29 @@ Application.prototype.require = function(id) {
 /**
  * Registered plugin(s) for application instance
  *
- * @param   {string|Extension|Array.<string|Extension>} plugin
+ * @param   {string|Extension|Array.<string|Extension>} module
  * @returns {Application}
  */
-Application.prototype.register = function(plugin) {
-    var type_of = typeof plugin;
+Application.prototype.register = function(module) {
+    var type_of = typeof module;
 
     if(!(
         type_of === 'string' ||
-        Array.isArray(plugin) ||
+        Array.isArray(module) ||
         (type_of !== 'undefined' && type_of !== 'number')
     )) {
         Log.error('plugins', 'Wrong plugin type');
     }
 
-    this._modules = toArray(plugin);
+    var self = this;
+    var modules = this._modules;
+
+    toArray(module).forEach(function(module) {
+        modules.push(typeof module === 'string' ?
+            self._require_module(module) :
+            module
+        );
+    });
 
     return this;
 };
@@ -83,115 +128,14 @@ Application.prototype.register = function(plugin) {
  * @returns {Application}
  */
 Application.prototype.load = function() {
-    /**
-     *
-     * @param {Application} app
-     */
-    function initialize_modules(app) {
-        var modules = app._modules;
+    this.models = this._initialize_models();
+    Object.freeze(this.models);
 
-        modules = toArray(modules).map(function(module) {
-            return typeof module === 'string'?
-                app._require_module(module) :
-                module;
-        });
+    this.components = this._initialize_components();
+    // Object.freeze(this.components);
 
-        modules.push(IFNodeVirtualSchema);
-
-        app._modules = modules;
-    }
-
-    /**
-     *
-     * @param {Application} app
-     */
-    function initialize_models(app) {
-        var db = app.config.db;
-
-        if(!(db && Object.keys(db).length)) {
-            return;
-        }
-
-        var type = 'schema';
-        var modules = app._modules;
-        var schemas_list = new SchemasList;
-
-        for(var i = 0; i < modules.length; ++i) {
-            var module = modules[i][type];
-
-            if(module) {
-                var schema = SchemaFactory();
-
-                module(app, schema);
-                schemas_list.attach_schema(schema);
-            }
-        }
-
-        app._models_builder = new ModelBuilder(
-            new DAOList(schemas_list, db)
-        );
-
-        Diread({
-            src: app.config.application.folders.models
-        }).each(function(model_file_path) {
-            require(model_file_path);
-        });
-
-        app.models = app._models_builder.compile_models();
-        
-        Object.freeze(app.models);
-    }
-
-    /**
-     *
-     * @param {Application} app
-     */
-    function initialize_components(app) {
-        var type = 'component',
-            Component = app.Component.bind(app),
-            modules = app._modules,
-
-            i, module;
-
-        app._components = {};
-        app._initialize_components();
-
-        for(i = 0; i < modules.length; ++i) {
-            module = modules[i][type];
-
-            if(module) {
-                module(app, Component);
-            }
-        }
-
-        app._attach_components();
-    }
-
-    /**
-     *
-     * @param {Application} app
-     */
-    function initialize_controllers(app) {
-        var type = 'controller',
-            modules = app._modules,
-
-            i, module;
-
-        for(i = 0; i < modules.length; ++i) {
-            module = modules[i][type];
-
-            if(module) {
-                module(app, Controller);
-            }
-        }
-
-        app._init_controllers();
-    }
-
-    initialize_modules(this);
-    initialize_models(this);
-    initialize_components(this);
-    initialize_controllers(this);
+    this.controllers = this._initialize_controllers();
+    Object.freeze(this.controllers);
 
     this._is_loaded = true;
 
@@ -216,12 +160,34 @@ Application.prototype.extension = function(id) {
 
     return cache[id];
 };
-Application.prototype.ext = Application.prototype.extension;
+
+/**
+ *
+ * @param   {string}    id
+ * @returns {*}
+ */
+Application.prototype.ext = Util.deprecate(
+    Application.prototype.extension,
+    'Deprecated from 2.0.0 version. Needs to use app.extension() method'
+);
+
+/**
+ *
+ * @param   {string}    id
+ * @returns {Object}
+ */
+Application.prototype.component = function(id) {
+    if(!(id in this.components)) {
+        this.components[id] = require(Path.resolve(this.config.application.folders.components, id));
+    }
+
+    return this.components[id];
+};
 
 /**
  *
  * @param   {Object}    model_config
- * @param   {Object}    options
+ * @param   {Object}    [options]
  * @returns {Function}
  * @constructor
  */
@@ -230,8 +196,27 @@ Application.prototype.Model = function(model_config, options) {
 };
 
 /**
+ *
+ * @param   {Object}    component_config
+ * @returns {Component}
+ */
+Application.prototype.Component = function(component_config) {
+    return this._components_builder.make(component_config, this.config.components);
+};
+
+/**
+ *
+ * @param   {Object}    controller_config
+ * @returns {Controller}
+ */
+Application.prototype.Controller = function(controller_config) {
+    return this._controllers_builder.make(controller_config);
+};
+
+/**
  * Start web-server
  *
+ * @deprecated
  * @param {function}    callback
  */
 Application.prototype.run = Util.deprecate(function(callback) {
@@ -254,40 +239,12 @@ Application.prototype.run = Util.deprecate(function(callback) {
 /**
  * Stop web-server
  *
+ * @deprecated
  * @param {function}    callback
  */
 Application.prototype.down = Util.deprecate(function(callback) {
     this.connection.close(callback);
 }, 'Deprecated from 2.0.0 version. Server will be stopped by app.connection.close()');
-
-/**
- * Initializes application instance
- *
- * @param {ApplicationOptions}  [app_config]
- * @private
- */
-Application.prototype._constructor = function(app_config) {
-    if(app_config.alias && typeof app_config.alias !== 'string') {
-        Log.error('application', 'Alias must be String');
-    }
-
-    this.id = UUID.v4();
-    this.alias = app_config.alias || this.id;
-
-    this._require_cache = {};
-    this._extensions_cache = {};
-    this._project_folder = app_config.project_folder || app_config.projectFolder || Path.dirname(process.argv[1]);
-    this._backend_folder = Path.resolve(this._project_folder, 'protected/');
-
-    this._models_builder = null;
-
-    this._initialize_config(app_config.env || app_config.environment);
-
-    this.listener = this._initialize_listener();
-
-    this.connection = this._initialize_connection_server();
-    this.server = this.connection.server;
-};
 
 /**
  * Initialize application instance configuration
@@ -302,7 +259,7 @@ Application.prototype._initialize_config = function(environment) {
         config_path = Path.resolve(this._project_folder, 'config/', environment);
     }
 
-    this.config = ConfigurationBuilder({
+    return ConfigurationBuilder({
         environment: environment,
         project_folder: this._project_folder,
         backend_folder: this._backend_folder,
@@ -364,6 +321,123 @@ Application.prototype._initialize_connection_server = function() {
 };
 
 /**
+ *
+ * @private
+ */
+Application.prototype._initialize_models = function _initialize_models() {
+    var db = this.config.db;
+
+    if(!(db && Object.keys(db).length)) {
+        return;
+    }
+
+    var modules = this._modules;
+    var schemas_list = new SchemasList;
+
+    for(var i = 0; i < modules.length; ++i) {
+        var module = modules[i][PLUGIN_TYPES.SCHEMA];
+
+        if(module) {
+            var schema = SchemaFactory();
+
+            module(this, schema);
+            schemas_list.attach_schema(schema);
+        }
+    }
+
+    var models_builder = this._models_builder = new ModelBuilder(
+        new DAOList(schemas_list, db)
+    );
+
+    Diread({
+        src: this.config.application.folders.models
+    }).each(function(model_file_path) {
+        require(model_file_path);
+    });
+
+    this.models = {};
+
+    return models_builder.compile_models(this);
+};
+
+/**
+ *
+ * @returns {Object.<string, Component>}
+ * @private
+ */
+Application.prototype._initialize_components = function _initialize_components()  {
+    var components_builder = this._components_builder = new ComponentsBuilder;
+    var Component = this.Component.bind(this);
+    var modules = this._modules;
+
+    for(var i = 0; i < modules.length; ++i) {
+        var module = modules[i][PLUGIN_TYPES.COMPONENT];
+
+        if(module) {
+            module(this, Component);
+        }
+    }
+
+    Diread({
+        src: this.config.application.folders.components,
+        directories: true,
+        level: 1,
+        mask: function(path) {
+            return path === pathWithoutExtension(path) ||
+                path.indexOf('.js') !== -1;
+        }
+    }).each(function(component_path) {
+        var autoformed_config;
+
+        try {
+            autoformed_config = components_builder.build_and_memorize_config(component_path);
+            require(component_path);
+        } catch(error) {
+            /**
+             * Errors inside component will not catch by this handle
+             */
+            if(error.message.indexOf(component_path) === -1) {
+                throw error;
+            } else {
+                Log.warning(
+                    'components',
+                    'Cannot load component [' + autoformed_config.name + '] by path [' + component_path + ']'
+                );
+            }
+        }
+    });
+
+    this.components = {};
+
+    return components_builder.compile(this);
+};
+
+/**
+ *
+ * @private
+ */
+Application.prototype._initialize_controllers = function _initialize_controllers() {
+    var controllers_builder = this._controllers_builder = new ControllersBuilder();
+    var modules = this._modules;
+
+    for(var i = 0; i < modules.length; ++i) {
+        var module = modules[i][PLUGIN_TYPES.CONTROLLER];
+
+        if(module) {
+            module(this, Controller);
+        }
+    }
+
+    this.controllers = {};
+
+    controllers_builder.read_and_initialize_controllers(
+        this.config.application.folders.controllers, this
+    );
+
+    return controllers_builder.compile(this.listener);
+};
+
+/**
  * Require node_module or application extension
  *
  * @returns {*}
@@ -372,21 +446,25 @@ Application.prototype._initialize_connection_server = function() {
 Application.prototype._require_module = function(module_name) {
     var Module;
 
-    try {
-        Module = require(module_name);
-    } catch(e) {
-        Module = this.extension(module_name);
+    Module = tryCatch(function() {
+        return require(module_name);
+    });
+
+    if(Module) {
+        return Module;
     }
 
-    return Module;
+    var self = this;
+
+    Module = tryCatch(function() {
+        return self.extension(module_name);
+    });
+
+    if(Module) {
+        return Module;
+    }
+
+    Log.error('application', 'Cannot find node module or extension [' + module_name + '].');
 };
-
-defineProperties(Application.prototype, {
-    'project_folder, projectFolder': function() { return this._project_folder; },
-    'backend_folder, backendFolder': function() { return this._backend_folder; },
-
-    'components':  function() { return this._components || {}; },
-    'controllers': function() { return this._controllers || {}; }
-});
 
 module.exports = Application;
