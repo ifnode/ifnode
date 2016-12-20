@@ -1,0 +1,7 @@
+.idea
+*.sublime-project
+*.sublime-workspace
+**/*.DS_store
+
+ideas
+manual.txt
