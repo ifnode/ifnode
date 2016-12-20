@@ -6,7 +6,7 @@
  */
 
 
-var UUID = require('node-uuid');
+var UUID = require('uuid');
 
 module.exports = function SchemaFactory() {
     /**

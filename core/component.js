@@ -1,6 +1,6 @@
 'use strict';
 
-var UUID = require('node-uuid');
+var UUID = require('uuid');
 var toArray = require('./helper/toArray');
 
 /**
