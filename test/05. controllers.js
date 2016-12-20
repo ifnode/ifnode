@@ -1,28 +1,22 @@
 'use strict';
 
-var ifnode = require('../'),
-    path = require('path'),
-    should = require('should'),
-    request = require('supertest'),
+var IFNode = require('../');
+var Path = require('path');
+var Should = require('should');
+var SuperTest = require('supertest');
 
-    app = ifnode({
-        project_folder: path.resolve(__dirname, '../examples/controllers'),
-        alias: 'cntllrs'
-    }).load(),
+var app = IFNode({
+    project_folder: Path.resolve(__dirname, '../examples/controllers'),
+    alias: 'cntllrs'
+}).load();
 
-    app_map = ifnode({
-        project_folder: path.resolve(__dirname, '../examples/controller_map'),
-        alias: 'cntllrs_map'
-    }).load();
+var app_map = IFNode({
+    project_folder: Path.resolve(__dirname, '../examples/controller_map'),
+    alias: 'cntllrs_map'
+}).load();
 
 describe('Controllers', function() {
-    describe('app.Controller([options: Object])', function() {
-        it('should exists', function() {
-            var app = ifnode();
-
-            app.Controller.should.be.an.Function;
-        });
-
+    describe('app.Controller(options?: Object)', function() {
         it('default options', function() {
             app.controllers.main.root.should.be.equal('/');
             app.controllers.main.name.should.be.equal('main');
@@ -36,101 +30,98 @@ describe('Controllers', function() {
     });
 
     describe('Controller instance', function() {
-        describe('.param(name:String, expression:Function)', function() {
-            it('shoes exists', function() {
-                app.controllers.main.param.should.be.an.Function;
+        describe('.param(name: string, expression: function)', function() {
+            it('should get correct params', function() {
+                (function() {
+                    app.controllers.main.param('abc', /test/);
+                }).should.throw();
+                (function() {
+                    app.controllers.main.param(/bad-name/, function() {});
+                }).should.throw();
             });
 
-            it('throw error', function() {
-                (function() {
-                    app.controllers.main.param(function() {});
-                }).should.throw();
-                (function() {
-                    app.controllers.main.param('abc');
-                }).should.throw();
-            });
+            it('should create param checker', function() {
+                app.controllers.main.param('param-checker', function() {
+                });
+            })
         });
 
         describe('options', function() {
             it('.before', function(done) {
-                request(app.listener)
+                SuperTest(app.listener)
                     .get('/check_before')
                     .expect({ with_user: 'no' }, done);
             });
 
             it('permanent', function(done) {
-                request(app.listener)
+                SuperTest(app.listener)
                     .get('/check_permanent_options')
                     .expect({ permanent: 'yes' }, done);
             });
             it('custom', function(done) {
-                request(app.listener)
+                SuperTest(app.listener)
                     .get('/check_custom_options')
                     .expect({ custom: 'yes' }, done);
             });
 
             describe('.map', function() {
                 it('get /', function(done) {
-                    request(app_map.listener)
+                    SuperTest(app_map.listener)
                         .get('/')
                         .expect('simple route', done);
                 });
                 it('get /:param', function(done) {
-                    request(app_map.listener)
+                    SuperTest(app_map.listener)
                         .get('/1')
                         .expect({ id: 1, name: 'ilfroloff' }, done);
                 });
                 it('post /', function(done) {
-                    request(app_map.listener)
+                    SuperTest(app_map.listener)
                         .post('/')
                         .expect({ permanent: 'yes' }, done);
                 });
                 it('put /:id', function(done) {
-                    request(app_map.listener)
+                    SuperTest(app_map.listener)
                         .put('/1')
                         .expect('updated', done);
                 });
                 it('delete /:id', function(done) {
-                    request(app_map.listener)
+                    SuperTest(app_map.listener)
                         .delete('/1')
                         .expect({ custom: 'yes' }, done);
                 });
             });
         });
 
-        describe('.method(method: String|Array, [route: String], [options: Object], handler: Function)', function() {
-            it('shoes exists', function() {
-                app.controllers.main.method.should.be.an.Function;
-            });
-
+        describe('.method(method: string|Array, route?: string, options?: Object, handler: function)', function() {
             describe('map of methods', function() {
                 it('default', function(done) {
-                    request(app.listener)
+                    SuperTest(app.listener)
                         .get('/')
                         .expect({ default: true }, done);
                 });
 
                 it('get', function(done) {
-                    request(app.listener)
+                    SuperTest(app.listener)
                         .get('/10')
                         .expect({ id: 10 }, done);
                 });
                 it('post', function(done) {
-                    request(app.listener)
+                    SuperTest(app.listener)
                         .post('/11')
                         .expect({ id: 11 }, done);
                 });
                 it('put', function(done) {
-                    request(app.listener)
+                    SuperTest(app.listener)
                         .put('/a')
                         .expect({ id: 0 }, done);
                 });
             });
         });
 
-        describe('.error(handler: Function)', function() {
+        describe('.error(handler: function)', function() {
             it('fire', function(done) {
-                request(app.listener)
+                SuperTest(app.listener)
                     .get('/error/fire')
                     .expect({ error: 'fire' }, done);
             });

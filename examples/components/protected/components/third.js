@@ -4,3 +4,5 @@ var app = require('../../../../')('cmpts'),
 third.custom = function() {
     return 'is_custom';
 };
+
+module.exports = third;
