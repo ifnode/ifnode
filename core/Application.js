@@ -177,11 +177,19 @@ Application.prototype.ext = Util.deprecate(
  * @returns {Object}
  */
 Application.prototype.component = function(id) {
-    if(!(id in this.components)) {
-        this.components[id] = require(Path.resolve(this.config.application.folders.components, id));
+    if(id in this.components) {
+        return this.components[id];
     }
 
-    return this.components[id];
+    var full_path = Path.resolve(this.config.application.folders.components, id);
+
+    if(!(full_path in this.components)) {
+        this.components[full_path] = this._components_builder.read_and_build_component(full_path, {
+            name: id
+        });
+    }
+
+    return this.components[full_path];
 };
 
 /**
@@ -197,11 +205,15 @@ Application.prototype.Model = function(model_config, options) {
 
 /**
  *
- * @param   {Object}    component_config
+ * @param   {Object}    [custom_component_config]
  * @returns {Component}
  */
-Application.prototype.Component = function(component_config) {
-    return this._components_builder.make(component_config, this.config.components);
+Application.prototype.Component = function(custom_component_config) {
+    var builder = this._components_builder;
+
+    return builder.make(
+        builder.build_component_config(custom_component_config || {}, this.config.components)
+    );
 };
 
 /**
@@ -378,6 +390,8 @@ Application.prototype._initialize_components = function _initialize_components()
         }
     }
 
+    var components_config = this.config.components;
+
     Diread({
         src: this.config.application.folders.components,
         directories: true,
@@ -387,11 +401,13 @@ Application.prototype._initialize_components = function _initialize_components()
                 path.indexOf('.js') !== -1;
         }
     }).each(function(component_path) {
-        var autoformed_config;
+        var autoformed_config = components_builder.build_and_memorize_config(component_path);
 
         try {
-            autoformed_config = components_builder.build_and_memorize_config(component_path);
-            require(component_path);
+            components_builder.read_and_build_component(
+                component_path,
+                components_builder.build_component_config({}, components_config)
+            );
         } catch(error) {
             /**
              * Errors inside component will not catch by this handle

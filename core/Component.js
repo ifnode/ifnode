@@ -17,8 +17,8 @@ function Component(options) {
 
     this.id = UUID.v4();
     this.name = options.name || this.constructor.name;
+    this.config = options.config || {};
     this.alias = toArray(options.alias);
-    this.config = options.config;
 }
 
 module.exports = Component;

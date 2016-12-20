@@ -2,7 +2,7 @@
 
 var _defaults = require('lodash/defaults');
 var Path = require('path');
-var toArray = require('./../helper/toArray');
+var isInheritsFrom = require('./../helper/isInheritsFrom');
 var pathWithoutExtension = require('./../helper/pathWithoutExtension');
 
 var Log = require('./../extensions/log');
@@ -23,6 +23,19 @@ function ComponentsBuilder() {
 
 /**
  *
+ * @param   {Object}    custom_config
+ * @param   {Object}    [components_configs]
+ * @returns {Object}
+ */
+ComponentsBuilder.prototype.build_component_config = function build_component_config(custom_config, components_configs) {
+    custom_config = _defaults(custom_config || {}, this._autoformed_config);
+    custom_config.config = (components_configs && components_configs[custom_config.name]) || {};
+
+    return custom_config;
+};
+
+/**
+ *
  * @param   {string}    component_path
  * @returns {{ name: string }}
  */
@@ -38,24 +51,28 @@ ComponentsBuilder.prototype.build_and_memorize_config = function build_and_memor
 
 /**
  *
- * @param   {Object}    custom_config
- * @param   {Object}    [components_configs]
+ * @param {string}  component_path
+ * @param {Object}  component_config
+ */
+ComponentsBuilder.prototype.read_and_build_component = function read_and_build_component(component_path, component_config) {
+    var component = require(component_path);
+
+    if (component instanceof Component) {
+        return this._save_component(component, component.name);
+    } else if(typeof component === 'function' && isInheritsFrom(component, Component)) {
+        return this._save_component(new component(component_config), component_config.name);
+    } else {
+        return component;
+    }
+};
+
+/**
+ *
+ * @param   {Object}    component_config
  * @returns {Component}
  */
-ComponentsBuilder.prototype.make = function make(custom_config, components_configs) {
-    custom_config = _defaults(custom_config || {}, this._autoformed_config);
-
-    var unique_name = custom_config.name;
-
-    if(unique_name in this.components) {
-        Log.error('components', 'Name [' + unique_name + '] already busy.');
-    }
-
-    custom_config.config = (components_configs && components_configs[unique_name]) || {};
-
-    this.components[unique_name] = new Component(custom_config);
-
-    return this.components[unique_name];
+ComponentsBuilder.prototype.make = function make(component_config) {
+    return this._save_component(new Component(component_config), component_config.name);
 };
 
 /**
@@ -64,6 +81,7 @@ ComponentsBuilder.prototype.make = function make(custom_config, components_confi
  * @returns {Object.<string, Component>}
  */
 ComponentsBuilder.prototype.compile = function compile(app) {
+    var self = this;
     var components = this.components;
 
     Object.keys(components).forEach(function(unique_name) {
@@ -78,21 +96,37 @@ ComponentsBuilder.prototype.compile = function compile(app) {
             component.initialize(component.config);
         }
 
-        toArray(component.alias).forEach(function(alias) {
-            if(alias in components) {
-                Log.error('components', 'Alias [' + alias + '] already busy in components.');
-            }
+        component.alias.forEach(function(alias) {
+            self._save_component(component, alias);
 
             if(alias in app) {
                 Log.error('application', 'Alias [' + alias + '] already busy in application instance.');
             }
 
-            components[alias] = component;
             app[alias] = component;
         });
     });
 
     return components;
+};
+
+/**
+ *
+ * @private
+ * @param   {Component} component
+ * @param   {string}    key
+ * @returns {Component}
+ */
+ComponentsBuilder.prototype._save_component = function(component, key) {
+    var saved_component = this.components[key];
+
+    if(!saved_component) {
+        return this.components[key] = component;
+    } else if (saved_component === component) {
+        return saved_component;
+    }
+
+    Log.error('components', 'Name [' + key + '] is already busy.');
 };
 
 module.exports = ComponentsBuilder;
