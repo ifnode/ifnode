@@ -12,22 +12,14 @@ var Log = require('./../extensions/log');
  * @constructor
  */
 function ModelBuilder(dao_list) {
-    this._constructor(dao_list);
+    this._dao_list = dao_list;
+    this._model_prototypes = {};
 }
 
 /**
  *
- * @param {DAOList} dao_list
- */
-ModelBuilder.prototype._constructor = function _constructor(dao_list) {
-    this._dao_list = dao_list;
-    this._model_prototypes = {};
-};
-
-/**
- *
  * @param   {Object}    model_config
- * @param   {Object}    options
+ * @param   {Object}    [options]
  * @returns {Function}
  */
 ModelBuilder.prototype.make = function make(model_config, options) {
@@ -57,9 +49,10 @@ ModelBuilder.prototype.make = function make(model_config, options) {
 
 /**
  *
+ * @param   {Application}   app
  * @returns {Object.<string, Function>}
  */
-ModelBuilder.prototype.compile_models = function compile_models() {
+ModelBuilder.prototype.compile_models = function compile_models(app) {
     var model_prototypes = this._model_prototypes;
 
     return Object.keys(model_prototypes).reduce(function(models, model_unique_name) {
@@ -68,6 +61,7 @@ ModelBuilder.prototype.compile_models = function compile_models() {
         var options = model_prototype.options;
 
         models[model_unique_name] = compiled_model;
+        app.models[model_unique_name] = compiled_model;
 
         if(options.alias) {
             toArray(options.alias).forEach(function(alias) {
@@ -76,6 +70,7 @@ ModelBuilder.prototype.compile_models = function compile_models() {
                 }
 
                 models[alias] = compiled_model;
+                app.models[alias] = compiled_model;
             });
         }
 

@@ -1,19 +1,18 @@
 'use strict';
 
-/**
- *
- * @interface SchemaInterface
- */
-
-
 var UUID = require('uuid');
 
-module.exports = function SchemaFactory() {
+/**
+ *
+ * @returns {ISchema}
+ * @constructor
+ */
+function SchemaFactory() {
     /**
      *
+     * @class Schema
+     *
      * @param   {Object}    model_config
-     * @returns {Schema}
-     * @constructor
      */
     function Schema(model_config) {
         if(!(this instanceof Schema)) {
@@ -32,4 +31,6 @@ module.exports = function SchemaFactory() {
     Schema.fn = Schema.prototype;
 
     return Schema;
-};
+}
+
+module.exports = SchemaFactory;
