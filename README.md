@@ -10,37 +10,37 @@
 
     Best MVC framework for node.js :^)
 
-[![Build Status](https://travis-ci.org/ilfroloff/ifnode.svg?branch=master)](https://travis-ci.org/ilfroloff/ifnode)
+[![Build Status](https://travis-ci.org/ilfroloff/ifnode.svg?branch=master)](https://travis-ci.org/ilfroloff/ifnode) [![NSP Status](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084/badge)](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084)
 
-## What is ifnode?
+### What is `ifnode`?
 
-+ Simple, light and flexible MVC Framework for **[node.js](http://nodejs.org/)** and **[io.js](http://iojs.org/)**
-+ Based in **[express.js](http://expressjs.com/)** and other awesome node modules
-+ Inspired by **[Yii](http://yiiframework.com/)**, **[Ruby on Rails](http://rubyonrails.org/)**, etc
++ Simple, light and flexible MVC Framework for **[node.js](https://nodejs.org)** and **[io.js](https://iojs.org)**
++ Based in **[express.js](https://expressjs.com)** and other awesome node modules
++ Inspired by **[Yii](http://yiiframework.com)**, **[Ruby on Rails](http://rubyonrails.org)**, etc
 
-## Installation
+### Installation
 
 For install `ifnode` type command:
 
-    npm install ifnode --save
+```bash
+npm install -S ifnode
+```
 
-## Ideology
+### Ideology
 
 * `ifnode`'s main idea is not dictate for developer what need to do but make all for simplification work
 * `ifnode` is simple, understandable and light
 * `ifnode` build on `express.js`: get all possibilities of module (routes, middleware) and extends opportunities
 * `ifnode` have the four build items:
-  * **[extensions](https://github.com/ilfroloff/ifnode/wiki/docs-app-extensions)**
-  * **[models](https://github.com/ilfroloff/ifnode/wiki/docs-app-models)**
-  * **[components](https://github.com/ilfroloff/ifnode/wiki/docs-app-components)**
-  * **[controllers](https://github.com/ilfroloff/ifnode/wiki/docs-app-controllers)**
-* `ifnode` have a **[plugins system](https://github.com/ilfroloff/ifnode/wiki/docs-app-plugins)**
+  * **[extensions](https://ifnode.com/docs/app/extensions)**
+  * **[models](https://ifnode.com/docs/app/models)**
+  * **[components](https://ifnode.com/docs/app/components)**
+  * **[controllers](https://ifnode.com/docs/app/controllers)**
+* `ifnode` have a **[plugins system](https://ifnode.com/docs/app/plugins)**
 * `ifnode` use **[Service Locator Pattern](https://en.wikipedia.org/wiki/Service_locator_pattern)**
 
-## Documentation
+### Documentation
 
-Now can read wiki [documentation](https://github.com/ilfroloff/ifnode/wiki/docs). Also can check [examples](https://github.com/ifnode/examples).
+You can explore the [documentation](https://ifnode.com/docs/intro) section in official [ifnode website](https://ifnode.com). Also you can check [examples](https://github.com/ifnode/examples).
 
-Coming soon [ifnode site](http://ifnode.com/) will be released with pretty documentation.
-
-© **[ifnode](http://ifnode.com/)**
+© **[ifnode](https://ifnode.com/)**
