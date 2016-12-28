@@ -1,9 +1,11 @@
 'use strict';
 
-const package_json = require('./../package.json');
 const Path = require('path');
 const Diread = require('diread');
 const Marked = require('marked');
+const { minify } = require('html-minifier');
+
+const package_json = require('./../package.json');
 
 const convertMDtoHTML = require('./helpers/convertMDtoHTML');
 const read = require('./helpers/readUTF8File');
@@ -42,25 +44,23 @@ Promise
                 .replace(/\//g, '\\/')
                 }\\)`;
 
-            return write(
-                    Path.resolve(
-                        docs_output,
-                        `.${relive_doc_path.replace('.md', '.html')}`
-                    ),
-                    default_layout
-                        .replace(/__SITE_VERSION__/g, package_json.version)
-                        .replace('__MAIN_CONTENT_CLASS__', 'docs')
-                        .replace(
-                        '__MAIN_CONTENT__',
-                        doc_layout
-                            .replace('__TOC__', Marked(markdown_toc.replace(
-                                new RegExp(resolve_current_page_from_toc_regexp_string),
-                                '**$1**'
-                            )))
-                            .replace('__DOC_PAGE__', doc.content)
-                    ))
-            }
-        ));
+            const html = default_layout
+                .replace(/__SITE_VERSION__/g, package_json.version)
+                .replace('__MAIN_CONTENT_CLASS__', 'docs')
+                .replace(
+                    '__MAIN_CONTENT__',
+                    doc_layout
+                        .replace('__TOC__', Marked(markdown_toc.replace(
+                            new RegExp(resolve_current_page_from_toc_regexp_string),
+                            '**$1**'
+                        )))
+                        .replace('__DOC_PAGE__', doc.content)
+                );
+
+            return write(Path.resolve(docs_output, `.${relive_doc_path.replace('.md', '.html')}` ), minify(html, {
+                html5: true
+            }));
+        }));
     })
     .catch(err => console.error(err));
 

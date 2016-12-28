@@ -1,21 +1,19 @@
 {
-  "name": "ifnode-docs",
-  "version": "1.0.1",
-  "scripts": {
-    "static": "node app.js",
-    "pages:index": "node _bundlers/index",
-    "pages:docs-toc": "node _bundlers/docs-toc",
-    "pages:docs": "node _bundlers/docs",
-    "pages": "npm run pages:index & npm run pages:docs-toc & npm run pages:docs"
-  },
-  "devDependencies": {
-    "diread": "0.2.0",
-    "highlight.js": "9.7.0",
-    "marked": "0.3.6",
-    "mkpath": "1.0.0",
-    "ifnode": "1.5.0"
-  },
-  "dependencies": {
-    "prismjs": "1.5.1"
-  }
+    "name": "ifnode-docs",
+    "version": "1.5.1",
+    "scripts": {
+        "static": "DEBUG=ifnode:* node app.js",
+        "pages:index": "node _bundlers/index",
+        "pages:docs-toc": "node _bundlers/docs-toc",
+        "pages:docs": "node _bundlers/docs",
+        "pages": "npm run pages:index & npm run pages:docs-toc & npm run pages:docs"
+    },
+    "devDependencies": {
+        "diread": "0.2.0",
+        "html-minifier": "3.2.3",
+        "ifnode": "1.5.1",
+        "marked": "0.3.6",
+        "mkpath": "1.0.0",
+        "prismjs": "1.6.0"
+    }
 }

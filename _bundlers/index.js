@@ -1,7 +1,10 @@
 'use strict';
 
-const package_json = require('./../package.json');
 const Path = require('path');
+const { minify } = require('html-minifier');
+
+const package_json = require('./../package.json');
+
 const convertMDtoHTML = require('./helpers/convertMDtoHTML');
 const read = require('./helpers/readUTF8File');
 const write = require('./helpers/writeUTF8File');
@@ -20,7 +23,9 @@ Promise
             layout
                 .replace(/__SITE_VERSION__/g, package_json.version)
                 .replace('__MAIN_CONTENT_CLASS__', 'index')
-                .replace('__MAIN_CONTENT__', html)
+                .replace('__MAIN_CONTENT__', minify(html, {
+                    html5: true
+                }))
         );
     })
     .catch(err => console.error(err));
