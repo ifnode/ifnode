@@ -90,5 +90,5 @@ app.models.users.get_all(); // [{ id: 1, name: 'ilfroloff' }]
 ```
 
 ## Real examples
-* **[ifnode-virtual](https://github.com/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js)**
+* **[ifnode-virtual](https://github.com/ifnode/ifnode/blob/master/plugins/ifnode-virtual/index.js)**
 * **[ifnode-mongoose](https://github.com/ifnode/mongoose)**

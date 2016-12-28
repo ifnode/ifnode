@@ -8,7 +8,7 @@ app.Model(Object model_options [, Object schema_options])
 
 All model's schemas must be added by plugins (like [`ifnode-mongoose`](https://npmjs.com/package/ifnode-mongoose)).
 
-Default schema is `virtual`. Code of `virtual` schema is find [here](https://github.com/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js)
+Default schema is `virtual`. Code of `virtual` schema is find [here](https://github.com/ifnode/ifnode/blob/master/plugins/ifnode-virtual/index.js)
 
 ### Parameters
 

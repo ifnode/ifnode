@@ -10,7 +10,7 @@ Like was **[said before](/docs/intro/ideology)**, `ifnode` contains four build i
 
 Each item have specific role for building `ifnode` application. Simple hierarchy of each application elements:
 
-![Application items hierarchy](https://github.com/ilfroloff/ilfroloff.github.io/blob/master/hierarchy.png?raw=true)
+![Application items hierarchy](/assets/img/hierarchy.png)
 
 Like presented in picture, each item have specified and direct role in `ifnode` application. Let's check each part closer.
 

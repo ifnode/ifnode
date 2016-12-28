@@ -7,7 +7,7 @@ You can create you awesome application on
     iojs => 1.0.0
     node.js => 0.10.0
 
-*Note: for install node.js or iojs you can use simple and great [nvm](https://github.com/creationix/nvm)*
+*Note: for install node.js or iojs you can use simple and great __[nvm](https://github.com/creationix/nvm)__*
 
 ### Install
 

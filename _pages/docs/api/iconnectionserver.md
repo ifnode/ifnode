@@ -16,7 +16,7 @@ Methods | Description
 
 ### Examples
 
-1. Internal `ifnode` realization under `http` and `https` node.js's modules can find **[here](https://github.com/ilfroloff/ifnode/blob/master/plugins/node-http_s-server.js)**
+1. Internal `ifnode` realization under `http` and `https` node.js's modules can find **[here](https://github.com/ifnode/ifnode/blob/master/plugins/node-http_s-server.js)**
 2. Realization of `spdy` and `http2` connection server (based on **[`spdy`](https://www.npmjs.com/package/spdy)** module):
     1. Added connection server like extension:
   
