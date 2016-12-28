@@ -3,12 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>ifnode - Excellent Node.js Framework</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application after few seconds of "npm install"'>
-        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.0.1" media="screen">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application right after of "npm install"'>
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.5.1" media="screen">
     </head>
     <body>
         <header class="page-header">
@@ -17,7 +17,7 @@
             </div>
             <div class="project-tagline">Simple, flexible, super-light and pluginnable framework</div>
             <div class="project-buttons">
-                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
         <main class="centered-content main-content docs">
@@ -67,15 +67,15 @@
 <ol>
 <li><p>Create folder for you awesome application:</p>
 <p> macOS / Linux:</p>
-<pre><code class="lang-bash"> <span class="token function" >mkdir</span> awesome_application
- <span class="token function" >cd</span> awesome_application
+<pre><code class="lang-bash"> <span class="token function">mkdir</span> awesome_application
+ <span class="token function">cd</span> awesome_application
 </code></pre>
 <p> Windows:</p>
 <pre><code> To create folder manualy
 </code></pre></li>
 <li><p>Make <code>package.json</code> file:</p>
 <p> 2.1 Type command:</p>
-<pre><code class="lang-bash"> npm init
+<pre><code class="lang-bash"> <span class="token function">npm</span> init
 </code></pre>
 <p> 2.2 Fill information about you awesome application:</p>
 <pre><code> name: (awesome_application) Awesome Application!
@@ -91,20 +91,20 @@
 <li><p>Install <code>ifnode</code>:</p>
 </li>
 </ol>
-<pre><code class="lang-bash">npm <span class="token function" >install</span> ifnode --save
+<pre><code class="lang-bash"><span class="token function">npm</span> <span class="token function">install</span> ifnode --save
 </code></pre>
 <ol>
 <li>Create <code>app.js</code> file:</li>
 </ol>
-<pre><code class="lang-javascript"><span class="token keyword" >var</span> ifnode <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
-    awesome <span class="token operator" >=</span> <span class="token function" >ifnode</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
-        name<span class="token punctuation" >:</span> <span class="token string" >'Awesome Application'</span><span class="token punctuation" >,</span>
-        alias<span class="token punctuation" >:</span> <span class="token string" >'awesome'</span>
-    <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<pre><code class="lang-javascript"><span class="token keyword">var</span> ifnode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    awesome <span class="token operator">=</span> <span class="token function">ifnode</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        name<span class="token punctuation">:</span> <span class="token string">'Awesome Application'</span><span class="token punctuation">,</span>
+        alias<span class="token punctuation">:</span> <span class="token string">'awesome'</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-awesome<span class="token punctuation" >.</span><span class="token function" >run</span><span class="token punctuation" >(</span><span class="token keyword" >function</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-    console<span class="token punctuation" >.</span><span class="token function" >log</span><span class="token punctuation" >(</span><span class="token string" >"I'm running! Check http://localhost:8080"</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-<span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+awesome<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"I'm running! Check http://localhost:8080"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <ol>
 <li><p>Go to <a href="http://localhost:8080">http://localhost:8080</a> - and you see working application!</p>
@@ -121,7 +121,7 @@ awesome<span class="token punctuation" >.</span><span class="token function" >ru
         </main>
         <footer class="page-footer">
             <span class="owner">
-                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+                <a href="https://github.com/ifnode/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">Ilya Frolov</a> ©
             </span>
         </footer>
     </body>

@@ -3,12 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>ifnode - Excellent Node.js Framework</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application after few seconds of "npm install"'>
-        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.0.1" media="screen">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application right after of "npm install"'>
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.5.1" media="screen">
     </head>
     <body>
         <header class="page-header">
@@ -17,7 +17,7 @@
             </div>
             <div class="project-tagline">Simple, flexible, super-light and pluginnable framework</div>
             <div class="project-buttons">
-                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
         <main class="centered-content main-content docs">
@@ -65,31 +65,32 @@
 <section id="docs">
     <h2 id="extensions">Extensions</h2>
 <p>When application requires special and independent from system module it is Extension. Extensions are similar to <code>npm</code> module. Extension&#39;s load have <a href="https://nodejs.org/api/modules.html#modules_all_together">same rules of initializing</a> and usage as <code>npm</code> modules.</p>
-<p>Extension loads by application&#39;s instance method <code>app.extension</code> (or alias <code>app.ext</code>)</p>
+<p>Extension loads by application&#39;s instance method <code>app.extension</code> (or alias <code>app.ext</code> (deprecated))</p>
 <h3 id="example">Example</h3>
 <p>Simple extension file:</p>
 <pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// extensions/error/index.js</span>
-module<span class="token punctuation" >.</span>exports<span class="token punctuation" >.</span>err <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'./err'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-module<span class="token punctuation" >.</span>exports<span class="token punctuation" >.</span><span class="token keyword" >throw</span> <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'./throw'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+module<span class="token punctuation">.</span>exports<span class="token punctuation">.</span>err <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./err'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+module<span class="token punctuation">.</span>exports<span class="token punctuation">.</span><span class="token keyword">throw</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./throw'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token comment" spellcheck="true">// extensions/error/throw.js</span>
-<span class="token keyword" >var</span> err <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'./err'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token keyword">var</span> err <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./err'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-module<span class="token punctuation" >.</span>exports <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>error_message<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-    <span class="token keyword" >throw</span> <span class="token function" >err</span><span class="token punctuation" >(</span>error_message<span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-<span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>error_message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token function">err</span><span class="token punctuation">(</span>error_message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
 <span class="token comment" spellcheck="true">// extensions/error/err.js</span>
-module<span class="token punctuation" >.</span>exports <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>error_message<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-    <span class="token keyword" >return</span> <span class="token keyword" >new</span> <span class="token class-name" >Error</span><span class="token punctuation" >(</span>error_message<span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-<span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>error_message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span>error_message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <p>Application file:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// app.js    </span>
-<span class="token keyword" >var</span> ifnode <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'ifnode'</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
-    app <span class="token operator" >=</span> <span class="token function" >ifnode</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// app.js</span>
+<span class="token keyword">var</span> IFNode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    app <span class="token operator">=</span> <span class="token function">IFNode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-app<span class="token punctuation" >.</span><span class="token function" >ext</span><span class="token punctuation" >(</span><span class="token string" >'error-throw'</span><span class="token punctuation" >)</span><span class="token punctuation" >.</span><span class="token keyword" >throw</span><span class="token punctuation" >(</span><span class="token string" >'boom'</span><span class="token punctuation" >)</span> <span class="token comment" spellcheck="true">// throw error boom</span>
-app<span class="token punctuation" >.</span><span class="token function" >ext</span><span class="token punctuation" >(</span><span class="token string" >'error-throw/err'</span><span class="token punctuation" >)</span><span class="token punctuation" >(</span><span class="token string" >'boom'</span><span class="token punctuation" >)</span> <span class="token comment" spellcheck="true">// returns Error instance boom</span>
+app<span class="token punctuation">.</span><span class="token function">extension</span><span class="token punctuation">(</span><span class="token string">'error-throw'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">throw</span><span class="token punctuation">(</span><span class="token string">'boom'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// throw error boom</span>
+app<span class="token punctuation">.</span><span class="token function">extension</span><span class="token punctuation">(</span><span class="token string">'error-throw/err'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token string">'boom'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// returns Error instance boom</span>
 </code></pre>
 
 </section>
@@ -100,7 +101,7 @@ app<span class="token punctuation" >.</span><span class="token function" >ext</s
         </main>
         <footer class="page-footer">
             <span class="owner">
-                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+                <a href="https://github.com/ifnode/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">Ilya Frolov</a> ©
             </span>
         </footer>
     </body>

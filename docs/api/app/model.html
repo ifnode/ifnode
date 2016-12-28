@@ -3,12 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>ifnode - Excellent Node.js Framework</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application after few seconds of "npm install"'>
-        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.0.1" media="screen">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application right after of "npm install"'>
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.5.1" media="screen">
     </head>
     <body>
         <header class="page-header">
@@ -17,7 +17,7 @@
             </div>
             <div class="project-tagline">Simple, flexible, super-light and pluginnable framework</div>
             <div class="project-buttons">
-                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
         <main class="centered-content main-content docs">
@@ -65,10 +65,10 @@
 <section id="docs">
     <h2 id="app-model">app.Model</h2>
 <p>Returns <code>model</code> instance:</p>
-<pre><code class="lang-javascript">app<span class="token punctuation" >.</span><span class="token function" >Model</span><span class="token punctuation" >(</span>Object model_options <span class="token punctuation" >[</span><span class="token punctuation" >,</span> Object schema_options<span class="token punctuation" >]</span><span class="token punctuation" >)</span>
+<pre><code class="lang-javascript">app<span class="token punctuation">.</span><span class="token function">Model</span><span class="token punctuation">(</span>Object model_options <span class="token punctuation">[</span><span class="token punctuation">,</span> Object schema_options<span class="token punctuation">]</span><span class="token punctuation">)</span>
 </code></pre>
 <p>All model&#39;s schemas must be added by plugins (like <a href="https://npmjs.com/package/ifnode-mongoose"><code>ifnode-mongoose</code></a>).</p>
-<p>Default schema is <code>virtual</code>. Code of <code>virtual</code> schema is find <a href="https://github.com/ilfroloff/ifnode/blob/master/plugins/ifnode-virtual/index.js">here</a></p>
+<p>Default schema is <code>virtual</code>. Code of <code>virtual</code> schema is find <a href="https://github.com/ifnode/ifnode/blob/master/plugins/ifnode-virtual/index.js">here</a></p>
 <h3 id="parameters">Parameters</h3>
 <h4 id="model_options">model_options</h4>
 <p>Options to create model instance. All options are specified by model&#39;s schema.</p>
@@ -133,44 +133,44 @@
 <h3 id="create-own-schema">Create own Schema</h3>
 <p>Example:</p>
 <pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// own-schema.js</span>
-exports<span class="token punctuation" >.</span>schema <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>app<span class="token punctuation" >,</span> Schema<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-    Schema<span class="token punctuation" >.</span>schema <span class="token operator" >=</span> <span class="token string" >'name-of-schema'</span><span class="token punctuation" >;</span>
-    Schema<span class="token punctuation" >.</span>driver <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>db_config<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+exports<span class="token punctuation">.</span>schema <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>app<span class="token punctuation">,</span> Schema<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Schema<span class="token punctuation">.</span>schema <span class="token operator">=</span> <span class="token string">'name-of-schema'</span><span class="token punctuation">;</span>
+    Schema<span class="token punctuation">.</span>driver <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>db_config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// driver initaialize</span>
-        <span class="token keyword" >return</span> driver<span class="token punctuation" >;</span>
-    <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+        <span class="token keyword">return</span> driver<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-    Schema<span class="token punctuation" >.</span>fn<span class="token punctuation" >.</span>initialize <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>model_config<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    Schema<span class="token punctuation">.</span>fn<span class="token punctuation">.</span>initialize <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>model_config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// model instance initialize</span>
-    <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
-    Schema<span class="token punctuation" >.</span>fn<span class="token punctuation" >.</span>compile <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    Schema<span class="token punctuation">.</span>fn<span class="token punctuation">.</span>compile <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// returns model instance which accessed by app.models[name]</span>
-        <span class="token keyword" >return</span> model<span class="token punctuation" >;</span>
-    <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
-<span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+        <span class="token keyword">return</span> model<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <p>Real schema <code>ifnode-knex.js</code>:</p>
 <pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// knex.js</span>
-<span class="token keyword" >var</span> knex <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'knex'</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<span class="token keyword">var</span> knex <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'knex'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-exports<span class="token punctuation" >.</span>schema <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>app<span class="token punctuation" >,</span> KnexSchema<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-    KnexSchema<span class="token punctuation" >.</span>schema <span class="token operator" >=</span> <span class="token string" >'knex'</span><span class="token punctuation" >;</span>
-    KnexSchema<span class="token punctuation" >.</span>driver <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>db_config<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-        <span class="token keyword" >return</span> <span class="token function" >knex</span><span class="token punctuation" >(</span>db_config<span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-    <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+exports<span class="token punctuation">.</span>schema <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>app<span class="token punctuation">,</span> KnexSchema<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    KnexSchema<span class="token punctuation">.</span>schema <span class="token operator">=</span> <span class="token string">'knex'</span><span class="token punctuation">;</span>
+    KnexSchema<span class="token punctuation">.</span>driver <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>db_config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">knex</span><span class="token punctuation">(</span>db_config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-    KnexSchema<span class="token punctuation" >.</span>fn<span class="token punctuation" >.</span>initialize <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>model_config<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-        <span class="token keyword" >this</span><span class="token punctuation" >.</span>table <span class="token operator" >=</span> model_config<span class="token punctuation" >.</span>table<span class="token punctuation" >;</span>
-        <span class="token keyword" >this</span><span class="token punctuation" >.</span>driver <span class="token operator" >=</span> <span class="token keyword" >this</span><span class="token punctuation" >.</span>_driver<span class="token punctuation" >;</span>
+    KnexSchema<span class="token punctuation">.</span>fn<span class="token punctuation">.</span>initialize <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>model_config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>table <span class="token operator">=</span> model_config<span class="token punctuation">.</span>table<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>driver <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_driver<span class="token punctuation">;</span>
 
-        <span class="token keyword" >this</span><span class="token punctuation" >.</span>all <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-            <span class="token keyword" >return</span> <span class="token keyword" >this</span><span class="token punctuation" >.</span><span class="token function" >driver</span><span class="token punctuation" >(</span><span class="token keyword" >this</span><span class="token punctuation" >.</span>table<span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-        <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
-    <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
-    KnexSchema<span class="token punctuation" >.</span>fn<span class="token punctuation" >.</span>compile <span class="token operator" >=</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-        <span class="token keyword" >return</span> <span class="token keyword" >this</span><span class="token punctuation" >;</span>
-    <span class="token punctuation" >}</span><span class="token punctuation" >;</span>
-<span class="token punctuation" >}</span><span class="token punctuation" >;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>all <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">driver</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>table<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    KnexSchema<span class="token punctuation">.</span>fn<span class="token punctuation">.</span>compile <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <p>Description of field:</p>
 <table>
@@ -237,7 +237,7 @@ exports<span class="token punctuation" >.</span>schema <span class="token operat
         </main>
         <footer class="page-footer">
             <span class="owner">
-                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+                <a href="https://github.com/ifnode/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">Ilya Frolov</a> ©
             </span>
         </footer>
     </body>

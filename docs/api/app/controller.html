@@ -3,12 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>ifnode - Excellent Node.js Framework</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application after few seconds of "npm install"'>
-        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.0.1" media="screen">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application right after of "npm install"'>
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.5.1" media="screen">
     </head>
     <body>
         <header class="page-header">
@@ -17,7 +17,7 @@
             </div>
             <div class="project-tagline">Simple, flexible, super-light and pluginnable framework</div>
             <div class="project-buttons">
-                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
         <main class="centered-content main-content docs">
@@ -65,7 +65,7 @@
 <section id="docs">
     <h2 id="app-controller">app.Controller</h2>
 <p>Returns controller instance:</p>
-<pre><code class="lang-javascript">app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >[</span>Object options<span class="token punctuation" >]</span><span class="token punctuation" >)</span>
+<pre><code class="lang-javascript">app<span class="token punctuation">.</span><span class="token function">Controller</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Object options<span class="token punctuation">]</span><span class="token punctuation">)</span>
 </code></pre>
 <p>Controller can be extended by external plugins (example: <code>ifnode-auth</code>, <code>ifnode-permissions</code> etc)</p>
 <h3 id="default-parameters">Default parameters</h3>
@@ -260,16 +260,16 @@
 <code>~.js:</code> always initialize last in folder</p>
 <p>Example:</p>
 <pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// /protected/controllers/api/v1/!.js</span>
-<span class="token keyword" >var</span> controller <span class="token operator" >=</span> app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-controller<span class="token punctuation" >.</span>name <span class="token comment" spellcheck="true">// api/v1</span>
-controller<span class="token punctuation" >.</span>root <span class="token comment" spellcheck="true">// /api/v1/</span>
+<span class="token keyword">var</span> controller <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Controller</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+controller<span class="token punctuation">.</span>name <span class="token comment" spellcheck="true">// api/v1</span>
+controller<span class="token punctuation">.</span>root <span class="token comment" spellcheck="true">// /api/v1/</span>
 
 <span class="token comment" spellcheck="true">// /protected/controllers/api/v1/user.js</span>
-<span class="token keyword" >var</span> controller <span class="token operator" >=</span> app<span class="token punctuation" >.</span><span class="token function" >Controller</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
-    root<span class="token punctuation" >:</span> <span class="token string" >'/user'</span>
-<span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-controller<span class="token punctuation" >.</span>name <span class="token comment" spellcheck="true">// api/v1/user</span>
-controller<span class="token punctuation" >.</span>root <span class="token comment" spellcheck="true">// /user</span>
+<span class="token keyword">var</span> controller <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Controller</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    root<span class="token punctuation">:</span> <span class="token string">'/user'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+controller<span class="token punctuation">.</span>name <span class="token comment" spellcheck="true">// api/v1/user</span>
+controller<span class="token punctuation">.</span>root <span class="token comment" spellcheck="true">// /user</span>
 </code></pre>
 <p>Static methods (use for creating controller&#39;s plugin):</p>
 <table>
@@ -328,12 +328,12 @@ controller<span class="token punctuation" >.</span>root <span class="token comme
 </tbody>
 </table>
 <p>&quot;Syntax sugar&quot; for <code>.method()</code>:</p>
-<pre><code class="lang-javascript"><span class="token punctuation" >.</span><span class="token keyword" >get</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
-<span class="token punctuation" >.</span><span class="token function" >post</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
-<span class="token punctuation" >.</span><span class="token function" >put</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
-<span class="token punctuation" >.</span><span class="token function" >patch</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
-<span class="token punctuation" >.</span><span class="token keyword" >delete</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
-<span class="token punctuation" >.</span><span class="token function" >del</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span>
+<pre><code class="lang-javascript"><span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">patch</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token keyword">delete</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">del</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 </code></pre>
 
 </section>
@@ -344,7 +344,7 @@ controller<span class="token punctuation" >.</span>root <span class="token comme
         </main>
         <footer class="page-footer">
             <span class="owner">
-                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+                <a href="https://github.com/ifnode/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">Ilya Frolov</a> ©
             </span>
         </footer>
     </body>

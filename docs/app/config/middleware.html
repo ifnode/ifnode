@@ -3,12 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>ifnode - Excellent Node.js Framework</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application after few seconds of "npm install"'>
-        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.0.1" media="screen">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application right after of "npm install"'>
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.5.1" media="screen">
     </head>
     <body>
         <header class="page-header">
@@ -17,7 +17,7 @@
             </div>
             <div class="project-tagline">Simple, flexible, super-light and pluginnable framework</div>
             <div class="project-buttons">
-                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
         <main class="centered-content main-content docs">
@@ -80,56 +80,56 @@
 <p>Order of middleware load is <code>natural</code> (first key - first load, second key - second load, etc)</p>
 <h3 id="by-object">by object</h3>
 <p>For middleware where options is one object. For example, <em><a href="https://www.npmjs.com/package/connect-multiparty">connect-multiparty</a></em>:</p>
-<pre><code class="lang-javascript"><span class="token punctuation" >{</span>
-    application<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-        middleware<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-            <span class="token string" >'connect-multiparty'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-                maxFilesSize<span class="token punctuation" >:</span> <span class="token number" >10</span> <span class="token operator" >*</span> <span class="token number" >1024</span> <span class="token operator" >*</span> <span class="token number" >1024</span> <span class="token comment" spellcheck="true">// '10mb'</span>
-            <span class="token punctuation" >}</span>
-        <span class="token punctuation" >}</span>
-    <span class="token punctuation" >}</span>
-<span class="token punctuation" >}</span>
+<pre><code class="lang-javascript"><span class="token punctuation">{</span>
+    application<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        middleware<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token string">'connect-multiparty'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+                maxFilesSize<span class="token punctuation">:</span> <span class="token number">10</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token comment" spellcheck="true">// '10mb'</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h3 id="by-array">by array</h3>
 <p>For middleware where options is several agruments. For example, <em><a href="https://www.npmjs.com/package/serve-static">serve-static</a></em>:</p>
-<pre><code class="lang-javascript"><span class="token punctuation" >{</span>
-    application<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-        middleware<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-            <span class="token string" >'serve-static'</span><span class="token punctuation" >:</span> <span class="token punctuation" >[</span><span class="token string" >'public/'</span><span class="token punctuation" >,</span> <span class="token punctuation" >{</span> extensions<span class="token punctuation" >:</span> <span class="token punctuation" >[</span><span class="token string" >'js'</span><span class="token punctuation" >,</span> <span class="token string" >'css'</span><span class="token punctuation" >]</span> <span class="token punctuation" >}</span><span class="token punctuation" >]</span>
-        <span class="token punctuation" >}</span>
-    <span class="token punctuation" >}</span>
-<span class="token punctuation" >}</span>
+<pre><code class="lang-javascript"><span class="token punctuation">{</span>
+    application<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        middleware<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token string">'serve-static'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'public/'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> extensions<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'js'</span><span class="token punctuation">,</span> <span class="token string">'css'</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h3 id="by-function">by function</h3>
 <p>&quot;Raw&quot; set of middleware. Possibility to create own middleware or attach any external middleware:</p>
-<pre><code class="lang-javascript"><span class="token keyword" >var</span> session <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'express-session'</span><span class="token punctuation" >)</span><span class="token punctuation" >,</span>
-    connect_mongo <span class="token operator" >=</span> <span class="token function" >require</span><span class="token punctuation" >(</span><span class="token string" >'connect-mongo'</span><span class="token punctuation" >)</span><span class="token punctuation" >(</span>session<span class="token punctuation" >)</span><span class="token punctuation" >;</span>
+<pre><code class="lang-javascript"><span class="token keyword">var</span> session <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'express-session'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    connect_mongo <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'connect-mongo'</span><span class="token punctuation">)</span><span class="token punctuation">(</span>session<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token punctuation" >{</span>
-    application<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-        middleware<span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-            <span class="token string" >'own-middleware'</span><span class="token punctuation" >:</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>app<span class="token punctuation" >,</span> express<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-                app<span class="token punctuation" >.</span><span class="token function" >use</span><span class="token punctuation" >(</span><span class="token keyword" >function</span><span class="token punctuation" >(</span>request<span class="token punctuation" >,</span> response<span class="token punctuation" >,</span> next<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
+<span class="token punctuation">{</span>
+    application<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        middleware<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token string">'own-middleware'</span><span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>app<span class="token punctuation">,</span> express<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> response<span class="token punctuation">,</span> next<span class="token punctuation">)</span> <span class="token punctuation">{</span>
                     <span class="token comment" spellcheck="true">// do something</span>
-                    <span class="token function" >next</span><span class="token punctuation" >(</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-                <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-            <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
-            <span class="token string" >'attach-session'</span><span class="token punctuation" >:</span> <span class="token keyword" >function</span><span class="token punctuation" >(</span>app<span class="token punctuation" >)</span> <span class="token punctuation" >{</span>
-                app<span class="token punctuation" >.</span><span class="token function" >use</span><span class="token punctuation" >(</span><span class="token function" >session</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
-                    resave<span class="token punctuation" >:</span> <span class="token boolean" >false</span><span class="token punctuation" >,</span>
-                    saveUninitialized<span class="token punctuation" >:</span> <span class="token boolean" >true</span><span class="token punctuation" >,</span>
-                    cookie<span class="token punctuation" >:</span> <span class="token punctuation" >{</span><span class="token punctuation" >}</span><span class="token punctuation" >,</span>
+                    <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token string">'attach-session'</span><span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span>app<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token function">session</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+                    resave<span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+                    saveUninitialized<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+                    cookie<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
 
-                    store<span class="token punctuation" >:</span> <span class="token keyword" >new</span> <span class="token class-name" >connect_mongo</span><span class="token punctuation" >(</span><span class="token punctuation" >{</span>
-                        db<span class="token punctuation" >:</span> <span class="token string" >'database'</span><span class="token punctuation" >,</span>
-                        host<span class="token punctuation" >:</span> <span class="token string" >'localhost'</span><span class="token punctuation" >,</span>
-                        port<span class="token punctuation" >:</span> <span class="token number" >27017</span>
-                    <span class="token punctuation" >}</span><span class="token punctuation" >)</span>
-                <span class="token punctuation" >}</span><span class="token punctuation" >)</span><span class="token punctuation" >)</span><span class="token punctuation" >;</span>
-            <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
-        <span class="token punctuation" >}</span>
-    <span class="token punctuation" >}</span>
-<span class="token punctuation" >}</span>
+                    store<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">connect_mongo</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+                        db<span class="token punctuation">:</span> <span class="token string">'database'</span><span class="token punctuation">,</span>
+                        host<span class="token punctuation">:</span> <span class="token string">'localhost'</span><span class="token punctuation">,</span>
+                        port<span class="token punctuation">:</span> <span class="token number">27017</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 
 </section>
@@ -140,7 +140,7 @@
         </main>
         <footer class="page-footer">
             <span class="owner">
-                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+                <a href="https://github.com/ifnode/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">Ilya Frolov</a> ©
             </span>
         </footer>
     </body>

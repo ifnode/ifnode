@@ -3,12 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>ifnode - Excellent Node.js Framework</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application after few seconds of "npm install"'>
-        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.0.1" media="screen">
-        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.0.1" media="screen">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content='The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application right after of "npm install"'>
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.5.1" media="screen">
     </head>
     <body>
         <header class="page-header">
@@ -17,7 +17,7 @@
             </div>
             <div class="project-tagline">Simple, flexible, super-light and pluginnable framework</div>
             <div class="project-buttons">
-                <a href="https://github.com/ilfroloff/ifnode" class="btn">View on GitHub</a>
+                <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
         <main class="centered-content main-content docs">
@@ -168,38 +168,38 @@
 </table>
 <p>Example (<code>coffeescript</code>):</p>
 <pre><code class="lang-coffeescript"><span class="token comment" spellcheck="true"># config/dev.js</span>
-<span class="token property" >site</span><span class="token punctuation" >:</span>
-    <span class="token property" >local</span><span class="token punctuation" >:</span>
-        <span class="token property" >port</span><span class="token punctuation" >:</span> <span class="token number" >1010</span>
-<span class="token property" >global</span><span class="token punctuation" >:</span>
-    <span class="token property" >host</span><span class="token punctuation" >:</span> <span class="token string" >'nicedomainname.io'</span>
-<span class="token property" >ssl</span><span class="token punctuation" >:</span>
-    <span class="token property" >key</span><span class="token punctuation" >:</span> <span class="token string" >'ssl/key.pem'</span>
-    <span class="token property" >cert</span><span class="token punctuation" >:</span> <span class="token string" >'ssl/cert.pem'</span>
+<span class="token property">site</span><span class="token punctuation">:</span>
+    <span class="token property">local</span><span class="token punctuation">:</span>
+        <span class="token property">port</span><span class="token punctuation">:</span> <span class="token number">1010</span>
+<span class="token property">global</span><span class="token punctuation">:</span>
+    <span class="token property">host</span><span class="token punctuation">:</span> <span class="token string">'nicedomainname.io'</span>
+<span class="token property">ssl</span><span class="token punctuation">:</span>
+    <span class="token property">key</span><span class="token punctuation">:</span> <span class="token string">'ssl/key.pem'</span>
+    <span class="token property">cert</span><span class="token punctuation">:</span> <span class="token string">'ssl/cert.pem'</span>
 
 <span class="token comment" spellcheck="true"># app.js</span>
-app <span class="token operator" >=</span> <span class="token function" >ifnode</span><span class="token punctuation" >(</span> <span class="token property" >env</span><span class="token punctuation" >:</span> <span class="token string" >'dev'</span> <span class="token punctuation" >)</span>
-site <span class="token operator" >=</span> app<span class="token punctuation" >.</span>config<span class="token punctuation" >.</span>site<span class="token punctuation" >;</span>
+app <span class="token operator">=</span> <span class="token function">ifnode</span><span class="token punctuation">(</span> <span class="token property">env</span><span class="token punctuation">:</span> <span class="token string">'dev'</span> <span class="token punctuation">)</span>
+site <span class="token operator">=</span> app<span class="token punctuation">.</span>config<span class="token punctuation">.</span>site<span class="token punctuation">;</span>
 
-site<span class="token punctuation" >.</span>local<span class="token punctuation" >.</span>origin <span class="token comment" spellcheck="true"># https://localhost:1010</span>
-site<span class="token punctuation" >.</span>local<span class="token punctuation" >.</span>url <span class="token string" >'/u/1'</span> <span class="token comment" spellcheck="true"># https://localhost:1010/u/1</span>
-site<span class="token punctuation" >.</span>global<span class="token punctuation" >.</span>origin <span class="token comment" spellcheck="true"># https://nicedomainname.io</span>
-site<span class="token punctuation" >.</span>global<span class="token punctuation" >.</span>url <span class="token string" >'u/1'</span> <span class="token comment" spellcheck="true"># https://nicedomainname.io/u/1</span>
+site<span class="token punctuation">.</span>local<span class="token punctuation">.</span>origin <span class="token comment" spellcheck="true"># https://localhost:1010</span>
+site<span class="token punctuation">.</span>local<span class="token punctuation">.</span>url <span class="token string">'/u/1'</span> <span class="token comment" spellcheck="true"># https://localhost:1010/u/1</span>
+site<span class="token punctuation">.</span>global<span class="token punctuation">.</span>origin <span class="token comment" spellcheck="true"># https://nicedomainname.io</span>
+site<span class="token punctuation">.</span>global<span class="token punctuation">.</span>url <span class="token string">'u/1'</span> <span class="token comment" spellcheck="true"># https://nicedomainname.io/u/1</span>
 </code></pre>
 <p>Raw:</p>
-<pre><code class="lang-coffeescript"><span class="token property" >site</span><span class="token punctuation" >:</span>                  <span class="token comment" spellcheck="true"># Description of site url</span>
-    <span class="token property" >local</span><span class="token punctuation" >:</span>             <span class="token comment" spellcheck="true"># Local url (use for start server)</span>
-        <span class="token property" >host</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># [optional] By default: localhost</span>
-        <span class="token property" >port</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># [optional] By default: 8080</span>
-    <span class="token property" >global</span><span class="token punctuation" >:</span>            <span class="token comment" spellcheck="true"># Global url ("nice" domain of site)</span>
-        <span class="token property" >host</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># [optional] By default: localhost</span>
-        <span class="token property" >port</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># [optional] By default: null</span>
-    <span class="token property" >ssl</span><span class="token punctuation" >:</span>               <span class="token comment" spellcheck="true"># SSL support. Check here - https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener</span>
-        <span class="token property" >key</span><span class="token punctuation" >:</span>           <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to key.pem  (just path, not need read as file)</span>
-        <span class="token property" >cert</span><span class="token punctuation" >:</span>          <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to cert.pem (just path, not need read as file)</span>
-        <span class="token property" >pfx</span><span class="token punctuation" >:</span>           <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to pfx.pem  (just path, not need read as file)</span>
+<pre><code class="lang-coffeescript"><span class="token property">site</span><span class="token punctuation">:</span>                  <span class="token comment" spellcheck="true"># Description of site url</span>
+    <span class="token property">local</span><span class="token punctuation">:</span>             <span class="token comment" spellcheck="true"># Local url (use for start server)</span>
+        <span class="token property">host</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># [optional] By default: localhost</span>
+        <span class="token property">port</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># [optional] By default: 8080</span>
+    <span class="token property">global</span><span class="token punctuation">:</span>            <span class="token comment" spellcheck="true"># Global url ("nice" domain of site)</span>
+        <span class="token property">host</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># [optional] By default: localhost</span>
+        <span class="token property">port</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># [optional] By default: null</span>
+    <span class="token property">ssl</span><span class="token punctuation">:</span>               <span class="token comment" spellcheck="true"># SSL support. Check here - https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener</span>
+        <span class="token property">key</span><span class="token punctuation">:</span>           <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to key.pem  (just path, not need read as file)</span>
+        <span class="token property">cert</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to cert.pem (just path, not need read as file)</span>
+        <span class="token property">pfx</span><span class="token punctuation">:</span>           <span class="token comment" spellcheck="true"># Full or relative (at project_folder) path to pfx.pem  (just path, not need read as file)</span>
 
-<span class="token multiline-comment comment" >###
+<span class="token multiline-comment comment">###
 Note: ifnode generate config option .site with options:
     .origin                   Equal to: http(s)://${host}[:${port}] (if set site.ssl - https, other - http)
     .url(pathname: String)    Method for generate link
@@ -296,19 +296,19 @@ Note: ifnode generate config option .site with options:
 </tbody>
 </table>
 <p>Raw:</p>
-<pre><code class="lang-coffeescript"><span class="token property" >application</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># Application (and express()) settings</span>
-    <span class="token property" >environment</span><span class="token punctuation" >:</span>            <span class="token comment" spellcheck="true"># Name of environment. By default: name of config file (if config by file) or "local"</span>
-    <span class="token property" >express</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># Hash of express application settings (list: https://expressjs.com/4x/api.html#app.set)</span>
-        <span class="token property" >env</span><span class="token punctuation" >:</span>                <span class="token comment" spellcheck="true"># By default: name of config file (if config by file) or "local"</span>
-        <span class="token string" >"view engine"</span><span class="token punctuation" >:</span>      <span class="token comment" spellcheck="true"># By default: jade</span>
-        <span class="token property" >views</span><span class="token punctuation" >:</span>              <span class="token comment" spellcheck="true"># By default: ${backend_folder}/views</span>
-        <span class="token string" >"x-powered-by"</span>      <span class="token comment" spellcheck="true"># By default: false (sorry, express :) )</span>
-    <span class="token property" >folders</span><span class="token punctuation" >:</span>
-        <span class="token property" >extensions</span><span class="token punctuation" >:</span>         <span class="token comment" spellcheck="true"># Folder of extensions.  By default: ${backend_folder}/extensions</span>
-        <span class="token property" >components</span><span class="token punctuation" >:</span>         <span class="token comment" spellcheck="true"># Folder of components.  By default: ${backend_folder}/components</span>
-        <span class="token property" >views</span><span class="token punctuation" >:</span>              <span class="token comment" spellcheck="true"># Folder of views.       By default: ${backend_folder}/views</span>
-        <span class="token property" >controllers</span><span class="token punctuation" >:</span>        <span class="token comment" spellcheck="true"># Folder of controllers. By default: ${backend_folder}/controllers</span>
-        <span class="token property" >models</span><span class="token punctuation" >:</span>             <span class="token comment" spellcheck="true"># Folder of models.      By default: ${backend_folder}/models</span>
+<pre><code class="lang-coffeescript"><span class="token property">application</span><span class="token punctuation">:</span>                <span class="token comment" spellcheck="true"># Application (and express()) settings</span>
+    <span class="token property">environment</span><span class="token punctuation">:</span>            <span class="token comment" spellcheck="true"># Name of environment. By default: name of config file (if config by file) or "local"</span>
+    <span class="token property">express</span><span class="token punctuation">:</span>                <span class="token comment" spellcheck="true"># Hash of express application settings (list: https://expressjs.com/4x/api.html#app.set)</span>
+        <span class="token property">env</span><span class="token punctuation">:</span>                <span class="token comment" spellcheck="true"># By default: name of config file (if config by file) or "local"</span>
+        <span class="token string">"view engine"</span><span class="token punctuation">:</span>      <span class="token comment" spellcheck="true"># By default: jade</span>
+        <span class="token property">views</span><span class="token punctuation">:</span>              <span class="token comment" spellcheck="true"># By default: ${backend_folder}/views</span>
+        <span class="token string">"x-powered-by"</span>      <span class="token comment" spellcheck="true"># By default: false (sorry, express :) )</span>
+    <span class="token property">folders</span><span class="token punctuation">:</span>
+        <span class="token property">extensions</span><span class="token punctuation">:</span>         <span class="token comment" spellcheck="true"># Folder of extensions.  By default: ${backend_folder}/extensions</span>
+        <span class="token property">components</span><span class="token punctuation">:</span>         <span class="token comment" spellcheck="true"># Folder of components.  By default: ${backend_folder}/components</span>
+        <span class="token property">views</span><span class="token punctuation">:</span>              <span class="token comment" spellcheck="true"># Folder of views.       By default: ${backend_folder}/views</span>
+        <span class="token property">controllers</span><span class="token punctuation">:</span>        <span class="token comment" spellcheck="true"># Folder of controllers. By default: ${backend_folder}/controllers</span>
+        <span class="token property">models</span><span class="token punctuation">:</span>             <span class="token comment" spellcheck="true"># Folder of models.      By default: ${backend_folder}/models</span>
 </code></pre>
 <h4 id="middleware">middleware</h4>
 <table>
@@ -352,17 +352,17 @@ Note: ifnode generate config option .site with options:
 </tbody>
 </table>
 <p>Example:</p>
-<pre><code class="lang-javascript"><span class="token punctuation" >{</span>
-    <span class="token string" >'body'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-        <span class="token string" >'text'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span><span class="token punctuation" >}</span><span class="token punctuation" >,</span>
-        <span class="token string" >'urlencoded'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-            extended<span class="token punctuation" >:</span> <span class="token boolean" >true</span>
-        <span class="token punctuation" >}</span><span class="token punctuation" >,</span>
-        <span class="token string" >'json'</span><span class="token punctuation" >:</span> <span class="token punctuation" >{</span>
-            limit<span class="token punctuation" >:</span> <span class="token string" >'500kb'</span>
-        <span class="token punctuation" >}</span>
-    <span class="token punctuation" >}</span>
-<span class="token punctuation" >}</span>
+<pre><code class="lang-javascript"><span class="token punctuation">{</span>
+    <span class="token string">'body'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'text'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token string">'urlencoded'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            extended<span class="token punctuation">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token string">'json'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            limit<span class="token punctuation">:</span> <span class="token string">'500kb'</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h6 id="middleware-statics-">middleware.statics:</h6>
 <table>
@@ -387,8 +387,8 @@ Note: ifnode generate config option .site with options:
 </tbody>
 </table>
 <p>Raw:</p>
-<pre><code class="lang-coffeescript"><span class="token property" >middleware</span><span class="token punctuation" >:</span>                            <span class="token comment" spellcheck="true"># External middleware modules (examples: connect-multiparty, cookie-parser etc)</span>
-<span class="token multiline-comment comment" >###
+<pre><code class="lang-coffeescript"><span class="token property">middleware</span><span class="token punctuation">:</span>                            <span class="token comment" spellcheck="true"># External middleware modules (examples: connect-multiparty, cookie-parser etc)</span>
+<span class="token multiline-comment comment">###
     ifnode middlewares:
         body:                          # Build on body-parser module
             '${parser}': options        ${parser} - name of parser, options - hash of parser options. See here: https://github.com/expressjs/body-parser
@@ -407,15 +407,15 @@ Note: ifnode generate config option .site with options:
 </code></pre>
 <h4 id="db">db</h4>
 <p>Raw:</p>
-<pre><code class="lang-coffeescript"><span class="token property" >db</span><span class="token punctuation" >:</span>                                     <span class="token comment" spellcheck="true"># Initialize options of databases (models schemas)</span>
-    <span class="token property" >name_of_db</span><span class="token punctuation" >:</span>                         <span class="token comment" spellcheck="true"># Name of database connect</span>
-        <span class="token property" >schema</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># name of schema #      # Schema name (for choose of schema)</span>
-        <span class="token property" >config</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># schema config #       # Config of database connection</span>
+<pre><code class="lang-coffeescript"><span class="token property">db</span><span class="token punctuation">:</span>                                     <span class="token comment" spellcheck="true"># Initialize options of databases (models schemas)</span>
+    <span class="token property">name_of_db</span><span class="token punctuation">:</span>                         <span class="token comment" spellcheck="true"># Name of database connect</span>
+        <span class="token property">schema</span><span class="token punctuation">:</span> <span class="token comment" spellcheck="true"># name of schema #      # Schema name (for choose of schema)</span>
+        <span class="token property">config</span><span class="token punctuation">:</span> <span class="token comment" spellcheck="true"># schema config #       # Config of database connection</span>
 </code></pre>
 <h4 id="components">components</h4>
 <p>Raw:</p>
-<pre><code class="lang-coffeescript"><span class="token property" >components</span><span class="token punctuation" >:</span>                             <span class="token comment" spellcheck="true"># Initialize options for components of ifnode</span>
-    <span class="token property" >name_of_component</span><span class="token punctuation" >:</span> <span class="token comment" spellcheck="true"># options #</span>
+<pre><code class="lang-coffeescript"><span class="token property">components</span><span class="token punctuation">:</span>                             <span class="token comment" spellcheck="true"># Initialize options for components of ifnode</span>
+    <span class="token property">name_of_component</span><span class="token punctuation">:</span> <span class="token comment" spellcheck="true"># options #</span>
 </code></pre>
 
 </section>
@@ -426,7 +426,7 @@ Note: ifnode generate config option .site with options:
         </main>
         <footer class="page-footer">
             <span class="owner">
-                <a href="https://github.com/ilfroloff/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">ilfroloff</a> ©
+                <a href="https://github.com/ifnode/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">Ilya Frolov</a> ©
             </span>
         </footer>
     </body>
