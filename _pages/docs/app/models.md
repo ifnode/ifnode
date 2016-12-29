@@ -1,9 +1,11 @@
-## Models
+# Models
+
 Model is database presentation of tables (SQL) or collections (NoSQL) data.
 
 `ifnode` model is middleware between native npm module for database (mongoose, knex, etc) and real using. `ifnode` make all dirty work for initialize and populate all application data presentations.
 
-### Example
+## Example
+
 Create `mongodb` model using `ifnode-mongoose` - middleware between `mongoose` module and `ifnode`:
 
 Creating config file with database options:

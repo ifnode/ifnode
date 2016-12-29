@@ -1,10 +1,11 @@
-## Schema plugin
+# Schema plugin
 
 Possibility to create own schema plugin to `ifnode`.
 
 Schema is middleware between `ifnode` models and database module (mongoose, knex, etc).
 
-### Creating own plugin
+## Creating own plugin
+
 Below example of simple plugin `memorystore` for store data in RAM:
 
 Plugin file:
@@ -89,6 +90,7 @@ app.models.users.set(1, { id: 1, name: 'ilfroloff' });
 app.models.users.get_all(); // [{ id: 1, name: 'ilfroloff' }]
 ```
 
-## Real examples
+## Examples
+
 * **[ifnode-virtual](https://github.com/ifnode/ifnode/blob/master/plugins/ifnode-virtual/index.js)**
 * **[ifnode-mongoose](https://github.com/ifnode/mongoose)**

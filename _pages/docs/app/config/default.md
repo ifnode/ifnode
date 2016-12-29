@@ -1,4 +1,4 @@
-## Default config
+# Default config
 
 This is default `ifnode` config:
 
@@ -41,9 +41,9 @@ module.exports = {
 
 Properties can be extended or changed. Also can add own properties.
 
-## Special properties
+# Special properties
 
-### site
+## site
 Is special property where set application urls: `local` and `global`.
 Both build to special object with property `origin` and method `url`. Example:
 
@@ -74,10 +74,10 @@ site.global.origin;     // https://nicedomainname.io
 site.global.url('u/2'); // https://nicedomainname.io/u/2
 ```
     
-### application
+## application
 Application field contains settings for express.js core (list check **[here](https://expressjs.com/4x/api.html#app.set)**), path to application components folders and **[middleware](/docs/app/config/middleware)**.
 
-### components
+## components
 Any config has special property `components`, where set data for components. For example **[ifnode-auth](https://www.npmjs.com/package/ifnode-auth)**:
 
 ```javascript

@@ -1,4 +1,4 @@
-## app.Controller
+# app.Controller
 
 Returns controller instance:
 
@@ -8,7 +8,7 @@ app.Controller([Object options])
 
 Controller can be extended by external plugins (example: `ifnode-auth`, `ifnode-permissions` etc)
 
-### Default parameters
+## Default parameters
 
 Option | Type | Description | Optional | Default
 :------ | :---- | :----------- | :-------- | :-------
@@ -18,9 +18,9 @@ router | Object | `express.Router` options. Check [here](https://expressjs.com/4
 ajax | Undefined &#10072; Boolean | AJAX settings of controller's actions | true | undefined
 
 
-### Controller instance
+## Controller instance
 
-#### Constants
+### Constants
 
 Option | Type | Description
 :------ | :---- | :-----------
@@ -29,7 +29,7 @@ Option | Type | Description
 .name | String | Controller's name
 .router | [Router] | `express.Router()` instance
 
-#### Methods
+### Methods
 
 Option | Description
 :------ | :-----------
@@ -39,18 +39,18 @@ Option | Description
 .use([String path,] Function callback [, Function callback...]) | Check [here](https://expressjs.com/4x/api.html#app.use)
 .error(Function handler) | Invoke `.error()` handler when any request handler's `next()` method of controller get instance of `Error` class. By default try find parent error handler, and if not find throw error in `node.js`
 
-#### Handler options
+### Handler options
 
 All handlers `request` and `response` methods populated by same custom options:
 
-##### request
+#### request
 
 Option | Description
 ------ | -----------
 .data | "Syntax sugar". Return `request.body`, or `request.query` or `null`
 
 
-##### response
+#### response
 
 Option | Description
 ------ | -----------
@@ -70,7 +70,7 @@ Option | Description
 [.err()](#response-error) | Alias of `.error()`
 [.notFound()](#response-notfound) | Alias of `.not_found()`
 
-#### Notes
+### Notes
 
 Controller's filename `!.js` and `~.js` are special. Those filenames not participate in forming name and root options.
 
@@ -101,9 +101,9 @@ Option | Description
 .populate(...Function populator &#10072; Array populators) | Add route middleware for populate arguments own options
 .middleware(...Function middleware &#10072; Array middleware) | Add route middleware for process request
 
-### app.Controller#.method
+## app.Controller#.method
 
-#### Parameters
+### Parameters
 
 Argument | Description | Default
 :-------- | :----------- | :-------

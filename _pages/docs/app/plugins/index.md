@@ -1,4 +1,4 @@
-## Plugins
+# Plugins
 
 Plugins are external modules which extends default `ifnode` possibilities.
 

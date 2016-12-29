@@ -1,4 +1,4 @@
-## Ideology
+# Ideology
 
 * `ifnode` is simple, understandable and light
 * `ifnode`'s main idea is not dictate for developer what need to do but make all for simplification work

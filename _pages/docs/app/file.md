@@ -1,4 +1,4 @@
-## app.js
+# app.js
 
 The simplest web-server:
 
@@ -23,4 +23,4 @@ var ifnode = require('ifnode'),
 app.run();
 ```
 
-*Note: Options for ifnode can find [here](/docs/api/ifnode)*
+*Note: Options for ifnode can find __[here](/docs/api/ifnode)__*

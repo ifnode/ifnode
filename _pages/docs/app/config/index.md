@@ -1,12 +1,12 @@
-## Config
+# Config
 
 Config is `js` or `json` object with all application options. Can contain any and same of options specialized for `ifnode`.
 
 Path to config's folder `${project_folder}/config`
 
-### Specialized ifnode options
+## Specialized ifnode options
 
-#### site
+### site
 
 Option | Type | Description | Default
 :------ | :----- | :----------- | :-------
@@ -22,7 +22,7 @@ Option | Type | Description | Default
 `site.ssl.cert` | String &#10072; Undefined | Full or relative (at `${project_folder}`) path to `cert.pem` (just path, not need read as file) | `undefined`
 `site.ssl.pfx` | String &#10072; Undefined | Full or relative (at `${project_folder}`) path to `pfx.pem` (just path, not need read as file) | `undefined`
 
-##### Note
+#### Note
 
 `ifnode` generate special `app.config.site` options: .site with options:
 
@@ -74,7 +74,7 @@ Note: ifnode generate config option .site with options:
     .url(pathname: String)    Method for generate link
 ###
 ```
-#### application
+### application
 
 Option | Type | Description | Default
 :------ | :----- | :----------- | :-------
@@ -108,7 +108,7 @@ application:                # Application (and express()) settings
         controllers:        # Folder of controllers. By default: ${backend_folder}/controllers
         models:             # Folder of models.      By default: ${backend_folder}/models
 ```
-#### middleware
+### middleware
 
 Option | Type | Description
 :------ | :----- | :-----------
@@ -118,7 +118,7 @@ More information about `ifnode` middleware read [here](/docs/app/config/middlewa
 
 Below specialized `ifnode` middleware:
 
-###### middleware.body:
+##### middleware.body:
 
 Option | Type | Description
 :------ | :----- | :-----------
@@ -141,7 +141,7 @@ Example:
 }
 ```
 
-###### middleware.statics:
+##### middleware.statics:
 
 Option | Type | Description
 :------ | :----- | :-----------
@@ -169,7 +169,7 @@ middleware:                            # External middleware modules (examples: 
 ###
 ```
 
-#### db
+### db
 
 Raw:
 ```coffeescript
@@ -179,7 +179,7 @@ db:                                     # Initialize options of databases (model
         config: # schema config #       # Config of database connection
 ```
 
-#### components
+### components
 
 Raw:
 ```coffeescript

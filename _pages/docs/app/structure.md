@@ -1,4 +1,5 @@
-## Application structure
+# Application structure
+
 `ifnode` propose next application structure:
 
     application_name/

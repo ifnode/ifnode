@@ -1,9 +1,10 @@
-## Extensions
+# Extensions
+
 When application requires special and independent from system module it is Extension. Extensions are similar to `npm` module. Extension's load have [same rules of initializing](https://nodejs.org/api/modules.html#modules_all_together) and usage as `npm` modules.
 
 Extension loads by application's instance method `app.extension` (or alias `app.ext` (deprecated))
 
-### Example
+## Example
 
 Simple extension file:
 

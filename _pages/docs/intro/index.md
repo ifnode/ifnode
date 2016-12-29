@@ -1,4 +1,4 @@
-## Introduction
+# Introduction
 
 1. Create folder for you awesome application:
 

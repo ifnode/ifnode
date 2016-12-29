@@ -1,7 +1,9 @@
-## Controller plugin
+# Controller plugin
+
 Possibility to create own controller plugin to `ifnode`.
 
-### Creating own plugin
+## Creating own plugin
+
 Below example of simple plugin `ip-filter` for filter access by user ip.
 
 Plugin file:
@@ -82,5 +84,6 @@ Test case:
     curl localhost:8080 -H x-forwarded-for=127.0.0.1 # status 401, Access denied for user's ip
     curl localhost:8080 -H x-forwarded-for=10.10.10.1 # status 200, use handler
 
-## Real examples
+## Example
+
 * **[ifnode-auth](https://github.com/ifnode/auth)**

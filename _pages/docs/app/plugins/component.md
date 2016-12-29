@@ -1,4 +1,5 @@
-## Component plugin
+# Component plugin
+
 Possibility to create own component plugin to `ifnode`. Below example of simple component:
 
 Component module:
@@ -30,5 +31,6 @@ app.register('thumbnail-generator');
 app.thumbnailer.generate();
 ```
 
-## Real examples
+## Example
+
 * **[ifnode-auth](https://github.com/ifnode/auth)**

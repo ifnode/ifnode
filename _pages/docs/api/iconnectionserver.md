@@ -1,11 +1,11 @@
-## IConnectionServer
+# IConnectionServer
 
-### Description
+## Description
 
 Interface for creating and using server connection. By default, it presented by `http` and `https` node.js's module,
 but it can be any other internal node.js or some other module (for example, from `npm`).
 
-### Parameters
+## Parameters
 
 Methods | Description
 :------ | :-----------
@@ -14,7 +14,7 @@ Methods | Description
 .listen([Function callback]) | Starts connection server. Callback is optional and invokes after server will be started
 .close([Function callback]) | Stops connection server. Callback is optional and invokes after server will be stopped
 
-### Examples
+## Examples
 
 1. Internal `ifnode` realization under `http` and `https` node.js's modules can find **[here](https://github.com/ifnode/ifnode/blob/master/plugins/node-http_s-server.js)**
 2. Realization of `spdy` and `http2` connection server (based on **[`spdy`](https://www.npmjs.com/package/spdy)** module):

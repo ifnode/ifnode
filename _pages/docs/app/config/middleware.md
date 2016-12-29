@@ -1,8 +1,9 @@
-## Middleware
+# Middleware
 
 Middleware is special field of `config.application`. Here can set different `express.js` middleware and create own.
 
-### Set middleware
+## Set middleware
+
 Can three possibilities to set middleware:
 
 * By object
@@ -17,7 +18,8 @@ Notes:
 
 Order of middleware load is `natural` (first key - first load, second key - second load, etc)
 
-### by object
+## by object
+
 For middleware where options is one object. For example, *[connect-multiparty](https://www.npmjs.com/package/connect-multiparty)*:
 
 ```javascript
@@ -32,7 +34,8 @@ For middleware where options is one object. For example, *[connect-multiparty](h
 }
 ```
     
-### by array
+## by array
+
 For middleware where options is several agruments. For example, *[serve-static](https://www.npmjs.com/package/serve-static)*:
 
 ```javascript
@@ -45,7 +48,8 @@ For middleware where options is several agruments. For example, *[serve-static](
 }
 ```
     
-### by function
+## by function
+
 "Raw" set of middleware. Possibility to create own middleware or attach any external middleware:
 
 ```javascript
@@ -73,7 +77,7 @@ var session = require('express-session'),
                         port: 27017
                     })
                 }));
-            },
+            }
         }
     }
 }

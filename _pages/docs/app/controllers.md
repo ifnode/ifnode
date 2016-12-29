@@ -1,7 +1,9 @@
-## Controllers
+# Controllers
+
 Controller is item for building routes system of `ifnode` application. 
 
-### Example
+## Example
+
 Create simple controller for two routes `/` and `/api/login` with options.
 
 View `index.jade`:

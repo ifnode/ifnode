@@ -1,9 +1,11 @@
-## Components
+# Components
+
 Component is special `ifnode` application item. Instead of `extension`, component know about models and can use them.
 
 Can be settings by `ifnode` config.
 
-### Example
+## Example
+
 Create `thumbnail-generator` component with configured image options.
 
 Creating config file with component options:

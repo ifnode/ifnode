@@ -1,6 +1,6 @@
-## app
+# app
 
-### Description
+## Description
 
 Instance of `ifnode` module:
 
@@ -8,7 +8,7 @@ Instance of `ifnode` module:
 app = ifnode(options);
 ```
 
-### Constants
+## Constants
 
 Option | Description | Default
 :------ | :----------- | :-------
@@ -31,7 +31,7 @@ Option | Description
 **[.projectFolder](#project_folder)** | Alias of `.project_folder`
 **[.backendFolder](#backend_folder)** | Alias of `.backend_folder`
 
-### Methods
+## Methods
 
 Option | Description
 ------ | -----------
@@ -48,7 +48,7 @@ Option | Description
 ------ | -----------
 [.ext()](#extension) | Alias of `.extension()`
 
-### Examples
+## Examples
 
 ```javascript
 var ifnode = require('ifnode'),

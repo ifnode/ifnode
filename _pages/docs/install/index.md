@@ -1,6 +1,6 @@
-## Install
+# Install
 
-### Requirements
+## Requirements
 
 You can create you awesome application on
 
@@ -9,7 +9,7 @@ You can create you awesome application on
 
 *Note: for install node.js or iojs you can use simple and great __[nvm](https://github.com/creationix/nvm)__*
 
-### Install
+## Install
 
 Type simple command:
 
