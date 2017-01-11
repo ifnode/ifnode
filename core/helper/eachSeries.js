@@ -1,21 +1,31 @@
 'use strict';
 
-module.exports = function eachSeries(array, iterator) {
-    if(!(Array.isArray(array) && array.length)) {
+var toArray = require('./toArray');
+
+/**
+ *
+ * @param {Array.<*>}   array
+ * @param {function}    iterator
+ */
+function eachSeries(array, iterator) {
+    array = toArray(array);
+
+    var length = array.length;
+
+    if(!length) {
         return;
     }
 
-    var i = 0,
-        length = array.length,
+    var i = 0;
 
-        next = function() {
-            if(i < length) {
-                return iterator(array[i++], next, function interrupt() {
-                    i = length;
-                    next();
-                });
-            }
-        };
+    (function next() {
+        if(i < length) {
+            return iterator(array[i++], next, function interrupt() {
+                i = length;
+                next();
+            });
+        }
+    })();
+}
 
-    next();
-};
+module.exports = eachSeries;

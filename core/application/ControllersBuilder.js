@@ -140,7 +140,7 @@ ControllersBuilder.prototype.read_and_initialize_controllers = function read_and
 
         if(controller) {
             app.controllers[controller.name] = controller;
-            controller._compile();
+            controller.compile();
         }
     });
 };
