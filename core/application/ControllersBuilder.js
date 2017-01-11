@@ -8,7 +8,7 @@ var Path = require('path');
 var debug = require('debug')('ifnode:controllers');
 var pathWithoutExtension = require('./../helper/pathWithoutExtension');
 var addSlashToStringEnd = require('./../helper/addSlashToStringEnd');
-var Log = require('./../extensions/log');
+var Log = require('./../Log');
 var Controller = require('./../Controller');
 
 /**

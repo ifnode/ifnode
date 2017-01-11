@@ -1,7 +1,7 @@
 'use strict';
 
 var Path = require('path');
-var log = require('./../extensions/log');
+var Log = require('./../Log');
 
 /**
  *
@@ -22,7 +22,7 @@ Extension.prototype.require = function(id) {
     try {
         return require(Path.resolve(this._start_load_point, id));
     } catch(err) {
-        log.error('extensions', 'Cannot find extension by [' + id + '].');
+        Log.error('extensions', 'Cannot find extension by [' + id + '].');
     }
 };
 

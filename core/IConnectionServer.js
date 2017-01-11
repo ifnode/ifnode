@@ -1,6 +1,6 @@
 'use strict';
 
-var Log = require('./extensions/log');
+var Log = require('./Log');
 
 /**
  * @callback ServerListener

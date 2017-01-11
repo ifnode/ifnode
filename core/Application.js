@@ -11,7 +11,7 @@ var pathWithoutExtension = require('./helper/pathWithoutExtension');
 var tryCatch = require('./helper/tryCatch');
 
 var debug = require('debug')('ifnode:application');
-var Log = require('./extensions/log');
+var Log = require('./Log');
 
 var Extension = require('./application/Extension');
 var PLUGIN_TYPES = require('./PLUGIN_TYPES');

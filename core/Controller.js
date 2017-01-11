@@ -16,7 +16,7 @@ var addSlashToStringEnd = require('./helper/addSlashToStringEnd');
 
 var UUID = require('uuid');
 var Express = require('express');
-var Log = require('./extensions/log');
+var Log = require('./Log');
 
 /**
  *

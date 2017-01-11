@@ -2,7 +2,7 @@
 
 var _isPlainObject = require('lodash/isPlainObject');
 var toArray = require('./../helper/toArray');
-var Log = require('./../extensions/log');
+var Log = require('./../Log');
 
 /**
  *

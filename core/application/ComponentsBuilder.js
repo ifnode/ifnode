@@ -5,7 +5,7 @@ var Path = require('path');
 var isInheritsFrom = require('./../helper/isInheritsFrom');
 var pathWithoutExtension = require('./../helper/pathWithoutExtension');
 
-var Log = require('./../extensions/log');
+var Log = require('./../Log');
 var Component = require('./../Component');
 
 /**

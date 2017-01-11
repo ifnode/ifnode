@@ -6,7 +6,7 @@ var FS = require('fs');
 var HTTP = require('http');
 var HTTPS = require('https');
 
-var Log = require('./../core/extensions/log');
+var Log = require('./../core/Log');
 var IConnectionServer = require('./../core/IConnectionServer');
 
 /**

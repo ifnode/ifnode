@@ -21,7 +21,6 @@
         "diread": "0.2.0",
         "express": "4.14.0",
         "lodash": "4.17.2",
-        "sprintf": "0.1.5",
         "uuid": "3.0.1"
     },
     "devDependencies": {
