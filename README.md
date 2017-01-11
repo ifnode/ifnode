@@ -8,9 +8,9 @@
      /   / /   /    /__/  |__/  \_______/  \_______/ /______/
     /___/ /___/
 
-    Best MVC framework for node.js :^)
+    Best MVC Framework for node.js :^)
 
-[![Build Status](https://travis-ci.org/ilfroloff/ifnode.svg?branch=master)](https://travis-ci.org/ilfroloff/ifnode) [![NSP Status](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084/badge)](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084)
+[![Build Status](https://travis-ci.org/ifnode/ifnode.svg?branch=master)](https://travis-ci.org/ifnode/ifnode) [![NSP Status](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084/badge)](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084)
 
 ### What is `ifnode`?
 
@@ -41,6 +41,6 @@ npm install -S ifnode
 
 ### Documentation
 
-You can explore the [documentation](https://ifnode.com/docs/intro) section in official [ifnode website](https://ifnode.com). Also you can check [examples](https://github.com/ifnode/examples).
+You can explore the **[documentation](https://ifnode.com/docs/intro)**. Also you can check `ifnode` applications **[examples](https://github.com/ifnode/examples)**.
 
 © **[ifnode](https://ifnode.com/)**
