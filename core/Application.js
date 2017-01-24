@@ -8,6 +8,7 @@ var Diread = require('diread');
 
 var toArray = require('./helper/toArray');
 var defineProperties = require('./helper/defineProperties');
+var deepFreeze = require('./helper/deepFreeze');
 
 var debug = require('debug')('ifnode:application');
 var Log = require('./extensions/log');
@@ -308,6 +309,8 @@ Application.prototype._initialize_config = function(environment) {
         backend_folder: this._backend_folder,
         config_path: config_path
     });
+
+    deepFreeze(this.config);
 };
 
 /**

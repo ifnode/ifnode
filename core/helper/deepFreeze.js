@@ -1,4 +1,5 @@
 'use strict';
+var _isPlainObject = require('lodash/lang/isPlainObject');
 
 module.exports = function deepFreeze(object) {
     Object.freeze(object);
@@ -7,7 +8,7 @@ module.exports = function deepFreeze(object) {
 
         if(
             !object.hasOwnProperty(key) ||
-            typeof property !== 'object' ||
+            !_isPlainObject(property) ||
             Object.isFrozen(property)
         ) {
             return;
