@@ -50,6 +50,23 @@ describe('Application', function() {
             config.db.virtual.schema.should.be.equal('virtual');
         });
 
+        it("should be non-editable configuration", function() {
+            var app = IFNode('application');
+            var config = app.config;
+            
+            (function() {
+                config.site = {};
+            }).should.throw();
+
+            (function() {
+                config.site.local = {};
+            }).should.throw();
+
+            (function() {
+                config.site.local.origin = 'my custom origin';
+            }).should.throw();
+        });
+
         it('should few instances', function() {
             var app1 = IFNode({
                 alias: 'app1'
