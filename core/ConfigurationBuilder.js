@@ -1,7 +1,6 @@
 'use strict';
 
 var _clone = require('lodash/clone');
-var _cloneDeep = require('lodash/cloneDeep');
 var _defaults = require('lodash/defaults');
 var _includes = require('lodash/includes');
 
@@ -264,7 +263,7 @@ function ConfigurationBuilder(options) {
         return default_config;
     }
 
-    var config = _cloneDeep(require(options.config_path));
+    var config = require(options.config_path);
     // var config = Object.create(ConfigPrototype);
 
     initialize_properties_config(config, default_config, options.project_folder);

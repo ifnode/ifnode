@@ -7,6 +7,7 @@ var UUID = require('uuid');
 var Diread = require('diread');
 
 var toArray = require('./helper/toArray');
+var deepFreeze = require('./helper/deepFreeze');
 var pathWithoutExtension = require('./helper/pathWithoutExtension');
 var tryCatch = require('./helper/tryCatch');
 
@@ -61,7 +62,8 @@ function Application(options) {
     this.backend_folder = this.backendFolder = this._backend_folder;
 
     this.config = this._initialize_config(options.env || options.environment);
-
+    deepFreeze(this.config);
+    
     this.listener = this._initialize_listener();
     this.connection = this._initialize_connection_server();
 
