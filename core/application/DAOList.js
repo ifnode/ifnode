@@ -16,8 +16,9 @@ function DAOList(schemas_list, db) {
  */
 DAOList.prototype._constructor = function(schemas_list, db) {
     this._schemas_list = schemas_list;
-    this._schemas = {};
-    this._default_creator = '';
+    this._daos = {};
+    this._daos_drivers = {};
+    this._default_dao_name = '';
 
     this._initialize_schemas(db);
 };
@@ -27,7 +28,7 @@ DAOList.prototype._constructor = function(schemas_list, db) {
  * @returns {string}
  */
 DAOList.prototype.get_default_dao_name = function() {
-    return this._default_creator;
+    return this._default_dao_name;
 };
 
 /**
@@ -36,20 +37,30 @@ DAOList.prototype.get_default_dao_name = function() {
  * @returns {?Function}
  */
 DAOList.prototype.get_dao = function get_dao(name) {
-    return this._schemas[name] || null;
+    return this._daos[name] || null;
+};
+
+/**
+ *
+ * @param   {string}    name
+ * @returns {?Function}
+ */
+DAOList.prototype.get_dao_driver = function get_dao_driver(name) {
+    return this._daos_drivers[name] || null;
 };
 
 DAOList.prototype._initialize_schemas = function _initialize_schemas(db) {
+    var self = this;
     var db_connections_names = Object.keys(db);
 
-    this._default_creator = db_connections_names[0];
+    this._default_dao_name = db_connections_names[0];
 
     db_connections_names.forEach(function(db_connection_name) {
         var db_config = db[db_connection_name];
-        var schema_driver = this._schemas_list.get_schema(db_config.schema);
+        var schema_driver = self._schemas_list.get_schema(db_config.schema);
 
         if(db_config.default) {
-            this._default_creator = db_connection_name;
+            self._default_dao_name = db_connection_name;
         }
 
         if(schema_driver.driver) {
@@ -57,11 +68,12 @@ DAOList.prototype._initialize_schemas = function _initialize_schemas(db) {
 
             if(driver) {
                 schema_driver.fn._driver = driver;
+                self._daos_drivers[db_connection_name] = driver;
             }
         }
 
-        this._schemas[db_connection_name] = schema_driver;
-    }.bind(this));
+        self._daos[db_connection_name] = schema_driver;
+    });
 };
 
 module.exports = DAOList;

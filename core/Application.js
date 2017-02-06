@@ -222,7 +222,7 @@ Application.prototype.ext = Application.prototype.extension;
 /**
  *
  * @param   {Object}    model_config
- * @param   {Object}    options
+ * @param   {Object}    [options]
  * @returns {Function}
  * @constructor
  */

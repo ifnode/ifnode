@@ -16,10 +16,6 @@ module.exports = function SchemaFactory() {
      * @constructor
      */
     function Schema(model_config) {
-        if(!(this instanceof Schema)) {
-            return new Schema(model_config);
-        }
-
         var initialize_method = this.initialize || this.init;
 
         this.id = UUID.v4();
