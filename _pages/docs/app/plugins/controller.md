@@ -32,6 +32,8 @@ module.exports.controller = function(app, Controller) {
         response.forbidden_ip_address = function() {
             this.status(401).send("Access denied for user's ip");
         };
+        
+        next_handler();
     });
 
     // set controller middleware

@@ -5,23 +5,107 @@
 Interface for creating and using server connection. By default, it presented by `http` and `https` node.js's module,
 but it can be any other internal node.js or some other module (for example, from `npm`).
 
-## Parameters
+Name of file with implemented interface class is a connection name from related configuration options (**[see usage example below](#config-local-js)**).
 
-Methods | Description
-:------ | :-----------
-.constructor(Express listener, Object config) | Constructor get two options: `listener` is `app.listener` and config is `app.config.site`
-.configure(Function configurator) | Set configuration for connection server
-.listen([Function callback]) | Starts connection server. Callback is optional and invokes after server will be started
-.close([Function callback]) | Stops connection server. Callback is optional and invokes after server will be stopped
+Also internal `ifnode` implementations of server connections have equal to node.js modules names: `http` and `https`. Default connection name is `http`.
+
+## Definition
+
+### JSDoc syntax
+
+```javascript
+/**
+ * @callback ServerListener
+ *
+ * @param {IncomingMessage} request
+ * @param {ServerResponse}  response
+ */
+
+/**
+ * @interface IConnectionServer
+ * 
+ * @param {ServerListener}  listener
+ * @param {IFSiteConfig}  config
+ */
+
+/**
+ * @function IConnectionServer#configure
+ * 
+ * @param {function}    configurator
+ */
+
+/**
+ * @function IConnectionServer#listen
+ * 
+ * @param {function}    [callback]
+ */
+
+/**
+ * @function IConnectionServer#close
+ * 
+ * @param {function}    [callback]
+ */
+```
+
+### TypeScript syntax
+
+```typescript
+interface ServerListener {
+    (request: IncomingMessage, response: ServerResponse)
+}
+
+interface IConnectionServer {
+    constructor(listener: ServerListener, config: IFSiteConfig),
+    configure(configuration: Function),
+    listen(callback?: Function),
+    close(callback?: Function)
+}
+```
+
+### Interface methods
+
+#### IConnectionServer#constructor( listener, config )
+
+##### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `listener` | [`ServerListener`](https://github.com/ifnode/ifnode/blob/master/core/IConnectionServer.js#L6) | `listener` presented by [Express](https://expressjs.com) instance and set to `app.listener` |
+| `config` | [`IFSiteConfig`] (/api/) | Config is `app.config.site` |
+
+#### IConnectionServer#configure( configurator )
+
+##### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `configurator` | `function` | Set configuration for connection server |
+
+#### IConnectionServer#listen( [callback] )
+
+##### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `callback` | `function` | Starts connection server. Callback is optional and invokes after server will be started |
+
+#### IConnectionServer#close( [callback] )
+
+##### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `callback` | `function` | Stops connection server. Callback is optional and invokes after server will be stopped |
 
 ## Examples
 
-1. Internal `ifnode` realization under `http` and `https` node.js's modules can find **[here](https://github.com/ifnode/ifnode/blob/master/plugins/node-http_s-server.js)**
-2. Realization of `spdy` and `http2` connection server (based on **[`spdy`](https://www.npmjs.com/package/spdy)** module):
+* Internal `ifnode` realization under `http` and `https` node.js's modules can find **[here](https://github.com/ifnode/ifnode/blob/master/plugins/node-http_s-server.js)**
+* Realization of `spdy` and `http2` connection server (based on **[`spdy`](https://www.npmjs.com/package/spdy)** module):
     1. Added connection server like extension:
-  
+
+    #### protected/extensions/spdy-connection-server.js
+
     ```javascript
-    // protected/extensions/spdy-connection-server.js
     'use strict';
     
     const SPDY = require('spdy');
@@ -102,11 +186,10 @@ Methods | Description
     ```
     
     2. Added config with connection server settings:
-    
+
+    #### config/local.js
+
     ```javascript
-    // config/local.js
-    'use strict';
-    
     const FS = require('fs');
     
     module.exports = {
@@ -132,9 +215,9 @@ Methods | Description
     
     3. Starts `http2` connection server:
     
+    #### app.js
+    
     ```javascript
-    // app.js
-    'use strict';
     const IFNode = require('ifnode');
     const app = IFNode({
         environment: 'local'

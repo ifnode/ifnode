@@ -1,6 +1,42 @@
-# Controllers
+# Controllers (Requests Layer)
 
-Controller is item for building routes system of `ifnode` application. 
+Controller is item for building routes system of `ifnode` application.
+
+## Initializing
+
+@TODO
+
+### Notes
+
+Controller's filename `!.js` and `~.js` are special. Those filenames not participate in forming name and root options.
+
+`!.js` always initialize first in folder. Next loaded controllers into folders, and next files
+`~.js` always initialize last in folder
+
+#### Example
+
+##### protected/controllers/api/v1/!.js
+
+
+```javascript
+const controller = app.Controller();
+controller.name // api/v1
+controller.root // /api/v1/
+```
+
+##### protected/controllers/api/v1/user.js
+
+```javascript
+const controller = app.Controller({
+    root: '/user'
+});
+controller.name // api/v1/user
+controller.root // /user
+```
+
+## Definition by `map`
+
+@TODO
 
 ## Example
 

@@ -18,7 +18,7 @@ Like presented in picture, each item have specified and direct role in `ifnode` 
 
 `node_modules` is a fundamental part of each application. `npm` have a large amount of great and not modules
 
-## extensions (Helpers Layer)
+## Extensions (Helpers Layer)
 
 Frequently developing application requires some specified module which cannot find in `npm`. Extensions are the internal application modules. It can be helper's functions, internal logging system, etc. `ifnode`'s extension can to extend some `npm` module and to increase possibilities.
 
@@ -29,7 +29,9 @@ Notes:
 
 _P.S. One of "native" `npm` variant of creating own modules describes **[here](https://blog.risingstack.com/nodejs-at-scale-npm-best-practices/#9developingpackages)**._
 
-## models (Data Access Layer)
+***Main article about extensions is placed [here](/docs/app/extensions)***
+
+## Models (Data Access Layer)
 
 Most problems requires processing data. Data can be from database or by services, and application must have access point to get or change this data. `ifnode`'s models part is it.
 Each model build on `schema` - point to get and work with data. Each `schema` is `npm` module or extension, because `schema` cannot be related of developing application. Frequently `schema` is a middleware between `ifnode`'s models system and external data access library (for example, **[ifnode-mongoose](https://www.npmjs.com/package/ifnode-mongoose)**).
@@ -37,7 +39,9 @@ Each model build on `schema` - point to get and work with data. Each `schema` is
 Notes:
 * model cannot accessed other model
 
-## components (Business Layer)
+***Main article about models is placed [here](/docs/app/models)***
+
+## Components (Business Layer)
 
 Business Layer resolves two problems:
 
@@ -51,7 +55,11 @@ Example of component usage: developer wants to create component which generate e
 Notes:
 * component can accessed other component
 
-## controllers (Requests Layer)
+***Main article about components is placed [here](/docs/app/components)***
+
+## Controllers (Requests Layer)
 
 Controllers system of `ifnode` build on `express` `npm` module and extends it possibilities. Each controller is a independent route point with specified behavior. Behavior describes by plugins. For example you want to add possibility to prevent access to some IP's.
 Controller inherits `express.Router` and have most of `Router` class methods.
+
+***Main article about controllers is placed [here](/docs/app/controllers)***
