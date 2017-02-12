@@ -4,9 +4,12 @@
     "scripts": {
         "static": "DEBUG=ifnode:* node app.js",
         "pages:index": "node _bundlers/index",
+        "pages:toc": "node _bundlers/toc",
+        "pages:api-toc": "node _bundlers/api-toc",
+        "pages:api": "node _bundlers/api",
         "pages:docs-toc": "node _bundlers/docs-toc",
         "pages:docs": "node _bundlers/docs",
-        "pages": "npm run pages:index & npm run pages:docs-toc & npm run pages:docs"
+        "pages": "npm run pages:index & npm run pages:api-toc & npm run pages:api & npm run pages:docs-toc & npm run pages:docs & npm run pages:toc"
     },
     "devDependencies": {
         "diread": "0.2.0",

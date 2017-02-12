@@ -8,8 +8,8 @@ const buildTOC = require('./helpers/buildTOC');
 const buildPage = require('./helpers/buildPage');
 const read = require('./helpers/readUTF8File');
 
-const docs_folder = Path.resolve(__dirname, './../_pages/docs');
-const docs_output = Path.resolve(__dirname, './../docs');
+const docs_folder = Path.resolve(__dirname, './../_pages/api');
+const docs_output = Path.resolve(__dirname, './../api');
 
 Promise
     .all([

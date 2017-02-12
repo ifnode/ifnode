@@ -6,7 +6,7 @@ const MKPath = require('mkpath');
  *
  * @param   {string}        output
  * @param   {string|Buffer} data
- * @returns {Promise.<string>}
+ * @returns {Promise}
  */
 module.exports = function writeUTF8File(output, data) {
     return new Promise((resolve, reject) => {
