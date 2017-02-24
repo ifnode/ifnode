@@ -99,7 +99,7 @@ describe('Controllers', function() {
         });
 
         describe('.method(method: String|Array, [route: String], [options: Object], handler: Function)', function() {
-            it('shoes exists', function() {
+            it('should exists', function() {
                 app.controllers.main.method.should.be.an.Function;
             });
 
@@ -126,6 +126,16 @@ describe('Controllers', function() {
                         .expect({ id: 0 }, done);
                 });
             });
+
+            it('should jump to next controller', function(done) {
+                var url  = '/api/jump/to/next';
+
+                request(app.listener)
+                    .get(url)
+                    .expect({
+                        echo: url
+                    }, done)
+            })
         });
 
         describe('.error(handler: Function)', function() {
