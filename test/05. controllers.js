@@ -117,6 +117,16 @@ describe('Controllers', function() {
                         .expect({ id: 0 }, done);
                 });
             });
+
+            it('should jump to next controller', function(done) {
+                var url = '/api/jump/to/next';
+
+                SuperTest(app.listener)
+                    .get(url)
+                    .expect({
+                        echo: url
+                    }, done)
+            })
         });
 
         describe('.error(handler: function)', function() {

@@ -45,6 +45,12 @@ main_controller.get('/error/fire', function(request, response, next) {
     next(new Error('fire'));
 });
 
+main_controller.use(function(request, response) {
+    response.ok({
+        echo: request.url
+    });
+});
+
 main_controller.error(function(err, request, response) {
     response.ok({ error: err.message });
 });
