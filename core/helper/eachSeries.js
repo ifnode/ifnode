@@ -1,6 +1,12 @@
 'use strict';
 
-module.exports = function eachSeries(array, iterator) {
+/**
+ *
+ * @param {Array.<*>}   array
+ * @param {Function}    iterator
+ * @param {Function}    finish
+ */
+function eachSeries(array, iterator, finish) {
     if(!(Array.isArray(array) && array.length)) {
         return;
     }
@@ -14,8 +20,12 @@ module.exports = function eachSeries(array, iterator) {
                     i = length;
                     next();
                 });
+            } else {
+                finish();
             }
         };
 
     next();
-};
+}
+
+module.exports = eachSeries;

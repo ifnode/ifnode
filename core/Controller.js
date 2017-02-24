@@ -117,7 +117,7 @@ var _generate_url = function(method) {
                 interrupt();
                 next_route(err);
             }
-        });
+        }, next_route);
     });
 };
 
