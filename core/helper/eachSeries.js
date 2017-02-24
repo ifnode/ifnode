@@ -12,15 +12,17 @@ function eachSeries(array, iterator, finish) {
     }
 
     var i = 0,
+        interrupted = false,
         length = array.length,
 
         next = function() {
             if(i < length) {
                 return iterator(array[i++], next, function interrupt() {
+                    interrupted = true;
                     i = length;
                     next();
                 });
-            } else {
+            } else if(!interrupted) {
                 finish();
             }
         };
