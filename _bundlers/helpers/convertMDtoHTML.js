@@ -6,14 +6,43 @@ const Prism = global.Prism = require('prismjs');
 const read = require('./readUTF8File');
 
 class MyRenderer extends Renderer {
+    /**
+     *
+     * @param   {string}    text
+     * @param   {number}    level
+     * @param   {string}    raw
+     * @returns {string}
+     */
     heading(text, level, raw) {
+        const is_class_method = /\#[A-Z]/.test(raw);
+
         raw = raw
             .replace(/\[([^\[\]]+)\]\(.+?\)/g, '$1')
             .replace(/\([^\(\)]+\)/g, '')
             .replace(/[`]+/g, '')
             .toLowerCase();
 
+        if (is_class_method) {
+            raw += '-class';
+        }
+
+        text = `${text} <a href="#${this._build_heading_id(raw)}"><span>#</span></a>`;
+
         return super.heading(text, level, raw);
+    }
+
+    /**
+     *
+     * @private
+     * @param   {string}    raw
+     * @returns {string}
+     */
+    _build_heading_id(raw) {
+        return `${this.options.headerPrefix}${
+            raw.toLowerCase()
+               .replace(/[^\w]+/g, '-')
+                .replace(/^-|-$/g, '')
+        }`;
     }
 }
 

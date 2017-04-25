@@ -22,11 +22,15 @@ function buildTOC(current_filepath) {
             return fromContent(markdown_toc);
         }
 
-        const relive_doc_path = current_filepath.replace(pages_folder, '');
-        const resolve_current_page_from_toc_regexp_string = `\\[(.+?)\\]\\(${relive_doc_path
+        const relive_doc_path = current_filepath
+            .replace(pages_folder, '')
             .replace('.md', '')
             .replace('/toc', '')
-            .replace('/index', '')
+            .replace('/index', '');
+
+        // relive_doc_path.split('/');
+
+        const resolve_current_page_from_toc_regexp_string = `\\[(.+?)\\]\\(${relive_doc_path
             .replace(/\//g, '\\/')
             }\\)`;
 
