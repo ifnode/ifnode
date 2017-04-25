@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - Excellent Node.js Framework</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content="The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application right after of module install.">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.5.1" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable framework</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
+            </div>
+        </header>
+        <main class="main main--m docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs">Guide</a><ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api">API</a><ul>
+<li>Constants<ul>
+<li><a href="/api/plugin_types">PLUGIN_TYPES</a><ul>
+<li><a href="/api/plugin_types#schema">.SCHEMA</a></li>
+<li><a href="/api/plugin_types#component">.COMPONENT</a></li>
+<li><a href="/api/plugin_types#controller">.CONTROLLER</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Interfaces<ul>
+<li><a href="/api/iconnectionserver">IConnectionServer</a><ul>
+<li><a href="/api/iconnectionserver#iconnectionserver-constructor">#constructor</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-configure">#configure</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-listen">#listen</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-close">#close</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Classes<ul>
+<li><a href="/api/ifnode">IFNode</a></li>
+<li><strong>Application</strong><ul>
+<li><a href="/api/application#application-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/application#application-id">.id</a></li>
+<li><a href="/api/application#application-alias">.alias</a></li>
+<li><a href="/api/application#application-project_folder">.project_folder</a></li>
+<li><a href="/api/application#application-project_folder">.projectFolder</a></li>
+<li><a href="/api/application#application-backend_folder">.backend_folder</a></li>
+<li><a href="/api/application#application-backend_folder">.backendFolder</a></li>
+<li><a href="/api/application#application-config">.config</a></li>
+<li><a href="/api/application#application-listener">.listener</a></li>
+<li><a href="/api/application#application-connection">.connection</a></li>
+<li><em><a href="/api/application#application-server">.server <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-models">.models</a></li>
+<li><a href="/api/application#application-components">.components</a></li>
+<li><a href="/api/application#application-controllers">.controllers</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/application#application-require">.require</a></li>
+<li><a href="/api/application#application-register">.register</a></li>
+<li><a href="/api/application#application-load">.load</a></li>
+<li><a href="/api/application#application-extension">.extension</a></li>
+<li><em><a href="/api/application#application-extension">.ext <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-component">.component</a></li>
+<li><em><a href="/api/application#application-run">.run <sup>deprecated</sup></a></em></li>
+<li><em><a href="/api/application#application-down">.down <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-model-class">.Model</a></li>
+<li><em><a href="/api/application#application-component-class">.Component <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-controller-class">.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/model">Model</a><ul>
+<li><a href="/api/model#model-constructor">Constructor</a></li>
+</ul>
+</li>
+<li><a href="/api/component">Component</a><ul>
+<li><a href="/api/component#component-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/component#component-id">.id</a></li>
+<li><a href="/api/component#component-name">.name</a></li>
+<li><a href="/api/component#component-config">.config</a></li>
+<li><a href="/api/component#component-alias">.alias</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/controller">Controller</a><ul>
+<li>Static methods<ul>
+<li><a href="/api/controller#process_config">.process_config</a></li>
+<li><a href="/api/controller#process_config">.processConfig</a></li>
+<li><a href="/api/controller#populate">.populate</a></li>
+<li><a href="/api/controller#middleware">.middleware</a></li>
+</ul>
+</li>
+<li><a href="/api/controller#constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/controller#controller-id">.id</a></li>
+<li><a href="/api/controller#controller-name">.name</a></li>
+<li><a href="/api/controller#controller-root">.root</a></li>
+<li><a href="/api/controller#controller-router">.router</a></li>
+<li><a href="/api/controller#controller-map">.map</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/controller#before">.before</a></li>
+<li><a href="/api/controller#param">.param</a></li>
+<li><a href="/api/controller#method">.method</a></li>
+<li><a href="/api/controller#method-get">.get</a></li>
+<li><a href="/api/controller#method-post">.post</a></li>
+<li><a href="/api/controller#method-put">.put</a></li>
+<li><a href="/api/controller#method-patch">.patch</a></li>
+<li><a href="/api/controller#method-delete">.delete</a></li>
+<li><em><a href="/api/controller#method-del">.del <sup>deprecated</sup></a></em></li>
+<li><a href="/api/controller#use">.use</a></li>
+<li><a href="/api/controller#end">.end</a></li>
+<li><a href="/api/controller#error">.error</a></li>
+</ul>
+</li>
+<li>Request property<ul>
+<li><a href="/api/controller#request-data">req.data</a></li>
+</ul>
+</li>
+<li>Response methods<ul>
+<li><a href="/api/controller#response-ok">res.ok</a></li>
+<li><a href="/api/controller#response-bad_request">res.bad_request</a></li>
+<li><a href="/api/controller#response-bad_request">res.badRequest</a></li>
+<li><a href="/api/controller#response-bad_request">res.fail</a></li>
+<li><a href="/api/controller#response-unauthorized">res.unauthorized</a></li>
+<li><a href="/api/controller#response-forbidden">res.forbidden</a></li>
+<li><a href="/api/controller#response-not_found">res.not_found</a></li>
+<li><a href="/api/controller#response-not_found">res.notFound</a></li>
+<li><a href="/api/controller#response-error">res.error</a></li>
+<li><a href="/api/controller#response-error">res.err</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h1 id="application">Application <a href="#application"><span>#</span></a></h1>
+<h2 id="description">Description <a href="#description"><span>#</span></a></h2>
+<p><code>Application</code> is &quot;private&quot; (must not be directly used) maintain core class for </p>
+<p>Instance of <code>ifnode</code> module:</p>
+<pre><code class="lang-javascript"><span class="token keyword">const</span> IFNode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">IFNode</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="definition">Definition <a href="#definition"><span>#</span></a></h2>
+<h3 id="typescript-syntax">TypeScript syntax <a href="#typescript-syntax"><span>#</span></a></h3>
+<pre><code class="lang-typescript"><span class="token keyword">interface</span> <span class="token class-name">ApplicationOptions</span> <span class="token punctuation">{</span>
+    alias<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    project_folder<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    projectFolder<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    environment<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    env<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Application</span> <span class="token punctuation">{</span>
+    id<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    alias<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    project_folder<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    projectFolder<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    backend_folder<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    backendFolder<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    config<span class="token punctuation">:</span> Object<span class="token punctuation">,</span>
+    listener<span class="token punctuation">:</span> Express<span class="token punctuation">,</span>
+    connection<span class="token punctuation">:</span> IConnectionServer<span class="token punctuation">,</span>
+    server<span class="token punctuation">:</span> http<span class="token punctuation">.</span>Server<span class="token punctuation">,</span>
+    components<span class="token punctuation">:</span> Object<span class="token operator">|</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+    models<span class="token punctuation">:</span> Object<span class="token operator">|</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+    controllers<span class="token punctuation">:</span> Object<span class="token operator">|</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+    <span class="token keyword">new</span> <span class="token punctuation">(</span>options<span class="token operator">?</span><span class="token punctuation">:</span> ApplicationOptions<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">require</span><span class="token punctuation">(</span>id<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">register</span><span class="token punctuation">(</span><span class="token keyword">module</span><span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token operator">|</span>Extension<span class="token operator">|</span><span class="token keyword">Array</span><span class="token operator">&lt;</span><span class="token keyword">string</span><span class="token operator">|</span>Extension<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">extension</span><span class="token punctuation">(</span>id<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">ext</span><span class="token punctuation">(</span>id<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">load</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">run</span><span class="token punctuation">(</span>callback<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">Function</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">down</span><span class="token punctuation">(</span>callback<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">Function</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">Model</span><span class="token punctuation">(</span>model_options<span class="token punctuation">:</span> Object<span class="token punctuation">,</span> db_options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">Component</span><span class="token punctuation">(</span>options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">Controller</span><span class="token punctuation">(</span>options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="application-constructor">Application#constructor( [options] ) <a href="#application-constructor"><span>#</span></a></h2>
+<h3 id="arguments">Arguments <a href="#arguments"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><a href="https://github.com/ifnode/ifnode/blob/master/core/Application.T.js#L2"><code>ApplicationOptions</code></a></td>
+<td>Options definition for application. Below <code>ApplicationOptions</code> are described more detailed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options">options <a href="#options"><span>#</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alias</td>
+<td><code>string</code></td>
+<td>Set alias name of application</td>
+</tr>
+<tr>
+<td>project_folder</td>
+<td><code>string</code></td>
+<td>Full path to application&#39;s root folder</td>
+</tr>
+<tr>
+<td>projectFolder</td>
+<td><code>string</code></td>
+<td>Alias of <code>project_folder</code></td>
+</tr>
+<tr>
+<td>environment</td>
+<td><code>string</code></td>
+<td>Name of application config (folder <code>${project_folder}/config</code>)</td>
+</tr>
+<tr>
+<td>env</td>
+<td><code>string</code></td>
+<td>Alias of <code>environment</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Note: all options are optional</em></strong></p>
+<h2 id="instance-properties">Instance properties <a href="#instance-properties"><span>#</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code id="application-id">id</code></td>
+<td><code>string</code></td>
+<td><a href="https://github.com/kelektiv/node-uuid#uuidv4options--buffer--offset">UUID v4</a></td>
+<td>Unique value for each <code>Application</code> instance</td>
+</tr>
+<tr>
+<td><code id="application-alias">alias</code></td>
+<td><code>string</code></td>
+<td>Same as <code>id</code></td>
+<td>&quot;Pretty&quot; application name. It useful for multiplied <code>ifnode</code> application. Alias can be used for getting application by <code>ifnode</code> function</td>
+</tr>
+<tr>
+<td><code id="application-project_folder">project_folder</code></td>
+<td><code>string</code></td>
+<td><code>process.argv[1]</code></td>
+<td>Full path to application&#39;s root folder. Paths to maintain <code>ifnode</code> application items build from it</td>
+</tr>
+<tr>
+<td><code>projectFolder</code></td>
+<td><code>string</code></td>
+<td><code>process.argv[1]</code></td>
+<td>Alias of <code>project_folder</code></td>
+</tr>
+<tr>
+<td><code id="application-backend_folder">backend_folder</code></td>
+<td><code>string</code></td>
+<td><code>${project_folder}/protected</code></td>
+<td>Full path to application backend folder (folder with all components)</td>
+</tr>
+<tr>
+<td><code>backendFolder</code></td>
+<td><code>string</code></td>
+<td><code>${project_folder}/protected</code></td>
+<td>Alias of <code>backend_folder</code></td>
+</tr>
+<tr>
+<td><code id="application-config">config</code></td>
+<td><code>Object</code></td>
+<td><a href="https://github.com/ifnode/ifnode/blob/master/core/ConfigurationBuilder.js#L189">Default configuration</a></td>
+<td>Application&#39;s configuration options. Contain predefined and special sections. More detailed described <strong><a href="/docs/app/config">here</a></strong></td>
+</tr>
+<tr>
+<td><code id="application-listener">listener</code></td>
+<td><code>Express</code></td>
+<td>Instance of <code>Express</code></td>
+<td>Listener is a handler of all external connections</td>
+</tr>
+<tr>
+<td><code id="application-connection">connection</code></td>
+<td><code>IConnectionServer</code></td>
+<td><code>http</code> server</td>
+<td>Connection server (implements <a href="/docs/api/iconnectionserver"><code>IConnectionServer</code></a> interface)</td>
+</tr>
+<tr>
+<td><em><code id="application-server">server</code> <sup>deprecated</sup></em></td>
+<td><a href="https://nodejs.org/api/http.html#http_class_http_server"><code>http.Server</code></a></td>
+<td>Instance of server</td>
+<td>Instance of connection server. It can be <code>http</code>, <code>https</code> and returned by implemented <a href="/docs/api/iconnectionserver"><code>IConnectionServer</code></a> interface&#39;s class</td>
+</tr>
+<tr>
+<td><code id="application-components">components</code></td>
+<td><code>Object</code>, <code>null</code></td>
+<td><code>null</code></td>
+<td>Hash of application components. Contains all application components</td>
+</tr>
+<tr>
+<td><code id="application-models">models</code></td>
+<td><code>Object</code>, <code>null</code></td>
+<td><code>null</code></td>
+<td>Hash of application models. Contains all application models</td>
+</tr>
+<tr>
+<td><code id="application-controllers">controllers</code></td>
+<td><code>Object</code>, <code>null</code></td>
+<td><code>null</code></td>
+<td>Hash of application controllers. Contains all application controllers</td>
+</tr>
+</tbody>
+</table>
+<h2 id="instance-methods">Instance methods <a href="#instance-methods"><span>#</span></a></h2>
+<h3 id="application-require">Application#require( [id] ) <a href="#application-require"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Have same behavior like node.js <code>require</code>. Path to required module builds by native <code>path</code> module using method <code>resolve</code>. First argument of <code>path.resolve</code> is an <code>app.project_folder</code>, second is the <code>id</code> argument</td>
+</tr>
+</tbody>
+</table>
+<h3 id="application-register">Application#register( [module] ) <a href="#application-register"><span>#</span></a></h3>
+<table>
+    <thead>
+        <tr colspan="2">
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td id="options" rowspan="3"><code>module</code></td>
+            <td><code>string</code></td>
+            <td>
+                Attach modules for <code>ifnode</code> application. Module must be added to <code>/node_modules</code> folder or extensions (own application independent modules). Example: <code>ifnode-auth</code>, <code>ifnode-mongoose</code>, etc
+            </td>
+        </tr>
+        <tr>
+            <td><a href="https://github.com/ifnode/ifnode/blob/master/core/application/Extension.js"><code>Extension</code></a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>Array&lt;string|Extension&gt;</code></td>
+            <td>Returns first created <code>Application</code> instance by <code>IFNode</code> invoke or creates and returns new instance</td>
+        </tr>
+    </tbody>
+</table>
+
+<h4 id="examples">Examples <a href="#examples"><span>#</span></a></h4>
+<pre><code class="lang-javascript"><span class="token keyword">const</span> ifnode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">ifnode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+app<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token string">'ifnode-auth'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 id="application-extension">Application#extension( id ) <a href="#application-extension"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Get application&#39;s extension by name. More information about <code>extensions</code> <a href="/docs/app/extensions">here</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Aliases:</em></strong></p>
+<ul>
+<li><em><code>app.ext</code> <sup>deprecated</sup></em></li>
+</ul>
+<h3 id="application-load">Application#load( ) <a href="#application-load"><span>#</span></a></h3>
+<p>Read and initialize all application items - models, components and controllers. Can be invoked only once and next invokes do nothing</p>
+<h3 id="application-component">Application#component( id ) <a href="#application-component"><span>#</span></a></h3>
+<p>There is special method for reading and initializing component. <code>app.component</code> takes path to the component&#39;s module, <code>require</code>s it and
+initializes by special rules: <code>Component</code> extended classes will be instanceonate, simple classes or primitives
+will be exported as it is.</p>
+<p>You can read more about working with components <strong><a href="/docs/app/components">here</a></strong>.</p>
+<p><code>id</code> argument can be presented by two main ways of usage:</p>
+<ol>
+<li>Path on <code>ifnode</code> components folder. For example, <code>app.component(&#39;MyComponent&#39;)</code> means that component will be exported
+from components folder.</li>
+<li>Direct path of some place (path rules are same as on <code>require</code> function). For example, <code>app.component(&#39;./MyComponent&#39;)</code> means that component will be exported
+from current folder and file will have name <code>&#39;MyComponent.js&#39;</code>.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Path to the required component</td>
+</tr>
+</tbody>
+</table>
+<h3 id="application-run">Application#run( [callback] ) <a href="#application-run"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>callback</code></td>
+<td><code>Function</code></td>
+<td>Invokes <code>app.load</code> method and starts connection server</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Note: deprecated and will be removed from 2.0 version</em></strong></p>
+<h3 id="application-down">Application#down( [callback] ) <a href="#application-down"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>callback</code></td>
+<td><code>Function</code></td>
+<td>Stop application server</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Note: deprecated and will be removed from 2.0 version</em></strong></p>
+<h3 id="application-model-class">Application#Model( model_options [, db_options] ) <a href="#application-model-class"><span>#</span></a></h3>
+<p>Returns instance of <code>Model</code>. Please, read related API section about <code>Model</code> <strong><a href="/api/model">here</a></strong></p>
+<h3 id="application-component-class">Application#Component( [options] ) <a href="#application-component-class"><span>#</span></a></h3>
+<p>Returns instance of <code>Component</code>. Please, read related API section about <code>Component</code> <strong><a href="/api/component">here</a></strong>. Also dive into <strong><a href="/docs/app/components">components guide</a></strong> from <code>ifnode</code> documentation</p>
+<p><strong><em>Note: <code>app.Component</code> is deprecated. Need to use <code>Component</code> class directly</em></strong></p>
+<h3 id="application-controller-class">Application#Controller( [options] ) <a href="#application-controller-class"><span>#</span></a></h3>
+<p>Returns instance of <code>Controller</code>. Please, read related API section about <code>Controller</code> <strong><a href="/api/controller">here</a></strong></p>
+
+</section>
+<section id="toc-page">
+    <a href="/toc">Table of Content</a>
+</section>
+
+        </main>
+        <footer class="page-footer">
+            <span class="owner">
+                <a href="https://github.com/ifnode/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">Ilya Frolov</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

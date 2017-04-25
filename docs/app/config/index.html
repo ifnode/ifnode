@@ -20,9 +20,10 @@
                 <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
-        <main class="centered-content main-content docs">
+        <main class="main main--m docs">
             <aside id="toc">
     <ul>
+<li><a href="/docs">Guide</a><ul>
 <li><a href="/docs/intro">Introduction</a><ul>
 <li><a href="/docs/intro/ideology">Ideology</a></li>
 </ul>
@@ -48,13 +49,130 @@
 </li>
 </ul>
 </li>
-<li><a href="/docs/api">API</a><ul>
-<li><a href="/docs/api/ifnode">ifnode</a></li>
-<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
-<li><a href="/docs/api/app">app</a><ul>
-<li><a href="/docs/api/app/model">app.Model</a></li>
-<li><a href="/docs/api/app/component">app.Component</a></li>
-<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+<li><a href="/api">API</a><ul>
+<li>Constants<ul>
+<li><a href="/api/plugin_types">PLUGIN_TYPES</a><ul>
+<li><a href="/api/plugin_types#schema">.SCHEMA</a></li>
+<li><a href="/api/plugin_types#component">.COMPONENT</a></li>
+<li><a href="/api/plugin_types#controller">.CONTROLLER</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Interfaces<ul>
+<li><a href="/api/iconnectionserver">IConnectionServer</a><ul>
+<li><a href="/api/iconnectionserver#iconnectionserver-constructor">#constructor</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-configure">#configure</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-listen">#listen</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-close">#close</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Classes<ul>
+<li><a href="/api/ifnode">IFNode</a></li>
+<li><a href="/api/application">Application</a><ul>
+<li><a href="/api/application#application-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/application#application-id">.id</a></li>
+<li><a href="/api/application#application-alias">.alias</a></li>
+<li><a href="/api/application#application-project_folder">.project_folder</a></li>
+<li><a href="/api/application#application-project_folder">.projectFolder</a></li>
+<li><a href="/api/application#application-backend_folder">.backend_folder</a></li>
+<li><a href="/api/application#application-backend_folder">.backendFolder</a></li>
+<li><a href="/api/application#application-config">.config</a></li>
+<li><a href="/api/application#application-listener">.listener</a></li>
+<li><a href="/api/application#application-connection">.connection</a></li>
+<li><em><a href="/api/application#application-server">.server <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-models">.models</a></li>
+<li><a href="/api/application#application-components">.components</a></li>
+<li><a href="/api/application#application-controllers">.controllers</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/application#application-require">.require</a></li>
+<li><a href="/api/application#application-register">.register</a></li>
+<li><a href="/api/application#application-load">.load</a></li>
+<li><a href="/api/application#application-extension">.extension</a></li>
+<li><em><a href="/api/application#application-extension">.ext <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-component">.component</a></li>
+<li><em><a href="/api/application#application-run">.run <sup>deprecated</sup></a></em></li>
+<li><em><a href="/api/application#application-down">.down <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-model-class">.Model</a></li>
+<li><em><a href="/api/application#application-component-class">.Component <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-controller-class">.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/model">Model</a><ul>
+<li><a href="/api/model#model-constructor">Constructor</a></li>
+</ul>
+</li>
+<li><a href="/api/component">Component</a><ul>
+<li><a href="/api/component#component-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/component#component-id">.id</a></li>
+<li><a href="/api/component#component-name">.name</a></li>
+<li><a href="/api/component#component-config">.config</a></li>
+<li><a href="/api/component#component-alias">.alias</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/controller">Controller</a><ul>
+<li>Static methods<ul>
+<li><a href="/api/controller#process_config">.process_config</a></li>
+<li><a href="/api/controller#process_config">.processConfig</a></li>
+<li><a href="/api/controller#populate">.populate</a></li>
+<li><a href="/api/controller#middleware">.middleware</a></li>
+</ul>
+</li>
+<li><a href="/api/controller#constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/controller#controller-id">.id</a></li>
+<li><a href="/api/controller#controller-name">.name</a></li>
+<li><a href="/api/controller#controller-root">.root</a></li>
+<li><a href="/api/controller#controller-router">.router</a></li>
+<li><a href="/api/controller#controller-map">.map</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/controller#before">.before</a></li>
+<li><a href="/api/controller#param">.param</a></li>
+<li><a href="/api/controller#method">.method</a></li>
+<li><a href="/api/controller#method-get">.get</a></li>
+<li><a href="/api/controller#method-post">.post</a></li>
+<li><a href="/api/controller#method-put">.put</a></li>
+<li><a href="/api/controller#method-patch">.patch</a></li>
+<li><a href="/api/controller#method-delete">.delete</a></li>
+<li><em><a href="/api/controller#method-del">.del <sup>deprecated</sup></a></em></li>
+<li><a href="/api/controller#use">.use</a></li>
+<li><a href="/api/controller#end">.end</a></li>
+<li><a href="/api/controller#error">.error</a></li>
+</ul>
+</li>
+<li>Request property<ul>
+<li><a href="/api/controller#request-data">req.data</a></li>
+</ul>
+</li>
+<li>Response methods<ul>
+<li><a href="/api/controller#response-ok">res.ok</a></li>
+<li><a href="/api/controller#response-bad_request">res.bad_request</a></li>
+<li><a href="/api/controller#response-bad_request">res.badRequest</a></li>
+<li><a href="/api/controller#response-bad_request">res.fail</a></li>
+<li><a href="/api/controller#response-unauthorized">res.unauthorized</a></li>
+<li><a href="/api/controller#response-forbidden">res.forbidden</a></li>
+<li><a href="/api/controller#response-not_found">res.not_found</a></li>
+<li><a href="/api/controller#response-not_found">res.notFound</a></li>
+<li><a href="/api/controller#response-error">res.error</a></li>
+<li><a href="/api/controller#response-error">res.err</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -63,11 +181,11 @@
 
 </aside>
 <section id="docs">
-    <h2 id="config">Config</h2>
+    <h1 id="config">Config <a href="#config"><span>#</span></a></h1>
 <p>Config is <code>js</code> or <code>json</code> object with all application options. Can contain any and same of options specialized for <code>ifnode</code>.</p>
 <p>Path to config&#39;s folder <code>${project_folder}/config</code></p>
-<h3 id="specialized-ifnode-options">Specialized ifnode options</h3>
-<h4 id="site">site</h4>
+<h2 id="specialized-ifnode-options">Specialized ifnode options <a href="#specialized-ifnode-options"><span>#</span></a></h2>
+<h3 id="site">site <a href="#site"><span>#</span></a></h3>
 <table>
 <thead>
 <tr>
@@ -146,7 +264,7 @@
 </tr>
 </tbody>
 </table>
-<h5 id="note">Note</h5>
+<h4 id="note">Note <a href="#note"><span>#</span></a></h4>
 <p><code>ifnode</code> generate special <code>app.config.site</code> options: .site with options:</p>
 <table>
 <thead>
@@ -205,7 +323,7 @@ Note: ifnode generate config option .site with options:
     .url(pathname: String)    Method for generate link
 ###</span>
 </code></pre>
-<h4 id="application">application</h4>
+<h3 id="application">application <a href="#application"><span>#</span></a></h3>
 <table>
 <thead>
 <tr>
@@ -310,7 +428,7 @@ Note: ifnode generate config option .site with options:
         <span class="token property">controllers</span><span class="token punctuation">:</span>        <span class="token comment" spellcheck="true"># Folder of controllers. By default: ${backend_folder}/controllers</span>
         <span class="token property">models</span><span class="token punctuation">:</span>             <span class="token comment" spellcheck="true"># Folder of models.      By default: ${backend_folder}/models</span>
 </code></pre>
-<h4 id="middleware">middleware</h4>
+<h3 id="middleware">middleware <a href="#middleware"><span>#</span></a></h3>
 <table>
 <thead>
 <tr>
@@ -329,7 +447,7 @@ Note: ifnode generate config option .site with options:
 </table>
 <p>More information about <code>ifnode</code> middleware read <a href="/docs/app/config/middleware">here</a>.</p>
 <p>Below specialized <code>ifnode</code> middleware:</p>
-<h6 id="middleware-body-">middleware.body:</h6>
+<h5 id="middleware-body-">middleware.body: <a href="#middleware-body"><span>#</span></a></h5>
 <table>
 <thead>
 <tr>
@@ -364,7 +482,7 @@ Note: ifnode generate config option .site with options:
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h6 id="middleware-statics-">middleware.statics:</h6>
+<h5 id="middleware-statics-">middleware.statics: <a href="#middleware-statics"><span>#</span></a></h5>
 <table>
 <thead>
 <tr>
@@ -405,14 +523,14 @@ Note: ifnode generate config option .site with options:
                 ...
 ###</span>
 </code></pre>
-<h4 id="db">db</h4>
+<h3 id="db">db <a href="#db"><span>#</span></a></h3>
 <p>Raw:</p>
 <pre><code class="lang-coffeescript"><span class="token property">db</span><span class="token punctuation">:</span>                                     <span class="token comment" spellcheck="true"># Initialize options of databases (models schemas)</span>
     <span class="token property">name_of_db</span><span class="token punctuation">:</span>                         <span class="token comment" spellcheck="true"># Name of database connect</span>
         <span class="token property">schema</span><span class="token punctuation">:</span> <span class="token comment" spellcheck="true"># name of schema #      # Schema name (for choose of schema)</span>
         <span class="token property">config</span><span class="token punctuation">:</span> <span class="token comment" spellcheck="true"># schema config #       # Config of database connection</span>
 </code></pre>
-<h4 id="components">components</h4>
+<h3 id="components">components <a href="#components"><span>#</span></a></h3>
 <p>Raw:</p>
 <pre><code class="lang-coffeescript"><span class="token property">components</span><span class="token punctuation">:</span>                             <span class="token comment" spellcheck="true"># Initialize options for components of ifnode</span>
     <span class="token property">name_of_component</span><span class="token punctuation">:</span> <span class="token comment" spellcheck="true"># options #</span>
@@ -420,7 +538,7 @@ Note: ifnode generate config option .site with options:
 
 </section>
 <section id="toc-page">
-    <a href="/docs/toc">Table of Content</a>
+    <a href="/toc">Table of Content</a>
 </section>
 
         </main>

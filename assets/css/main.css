@@ -91,57 +91,87 @@ a:hover {
     top: .3rem;
 }
 
-.main-content :first-child {
+.main :first-child {
     margin-top: 0;
 }
 
-.main-content img {
+.main img {
     max-width: 100%;
 }
 
-.main-content h1,
-.main-content h2,
-.main-content h3,
-.main-content h4,
-.main-content h5,
-.main-content h6 {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
+.main h1 {
+    font-size: 1.7em;
+}
+.main h2 {
+    font-size: 1.43em;
+}
+.main h3 {
+    font-size: 1.31em;
+}
+.main h4 {
+    font-size: 1.21em;
+}
+.main h5 {
+    font-size: 1.1em;
+}
+.main h6 {
+    font-size: 1em;
+}
+
+.main.index h1 {
+    font-size: 1.17em;
+}
+
+.main h1,
+.main h2,
+.main h3,
+.main h4,
+.main h5,
+.main h6 {
+    margin-top: 1.4rem;
+    margin-bottom: .8rem;
     font-weight: normal;
     color: #159957;
 }
 
-.main-content h1 {
-    font-size: 1.5em;
-}
-.main-content h2 {
-    font-size: 1.17em;
-}
-.main-content h3 {
-    font-size: 1em;
-}
-.main-content h4 {
-    font-size: .83em;
+.main h1 > a,
+.main h2 > a,
+.main h3 > a,
+.main h4 > a,
+.main h5 > a,
+.main h6 > a {
+    display: none;
+    color: #159957;
+    margin-left: .3rem;
 }
 
-.main-content.index h1 {
-    font-size: 1.17em;
+.main h1:hover > a,
+.main h2:hover > a,
+.main h3:hover > a,
+.main h4:hover > a,
+.main h5:hover > a,
+.main h6:hover > a {
+    display: inline;
 }
 
-.main-content p {
-    margin-bottom: 1em;
+.main p {
+    margin-bottom: .8em;
 }
 
-.main-content code {
+.main code {
     padding: 2px 4px;
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-    font-size: 0.9rem;
+    font-size: .9rem;
     color: #383e41;
     background-color: #f3f6fa;
     border-radius: 0.3rem;
 }
 
-.main-content pre {
+.main a code {
+    color: #1e6bb8;
+}
+
+.main pre {
     padding: 0.8rem;
     margin-top: 0;
     margin-bottom: 1rem;
@@ -153,7 +183,7 @@ a:hover {
     border-radius: 0.3rem;
 }
 
-.main-content pre > code {
+.main pre > code {
     padding: 0;
     margin: 0;
     font-size: 0.9rem;
@@ -164,16 +194,16 @@ a:hover {
     border: 0;
 }
 
-.main-content .highlight {
+.main .highlight {
     margin-bottom: 1rem;
 }
 
-.main-content .highlight pre {
+.main .highlight pre {
     margin-bottom: 0;
     word-break: normal;
 }
 
-.main-content .highlight pre, .main-content pre {
+.main .highlight pre, .main pre {
     padding: 0.8rem;
     overflow: auto;
     font-size: 0.9rem;
@@ -181,7 +211,7 @@ a:hover {
     border-radius: 0.3rem;
 }
 
-.main-content pre code, .main-content pre tt {
+.main pre code, .main pre tt {
     display: inline;
     max-width: initial;
     padding: 0;
@@ -193,30 +223,30 @@ a:hover {
     border: 0;
 }
 
-.main-content pre code:before, .main-content pre code:after, .main-content pre tt:before, .main-content pre tt:after {
+.main pre code:before, .main pre code:after, .main pre tt:before, .main pre tt:after {
     content: normal;
 }
 
-.main-content ul, .main-content ol {
+.main ul, .main ol {
     margin-top: 0;
 }
 
-.main-content blockquote {
+.main blockquote {
     padding: 0 1rem;
     margin-left: 0;
     color: #819198;
     border-left: 0.3rem solid #dce6f0;
 }
 
-.main-content blockquote > :first-child {
+.main blockquote > :first-child {
     margin-top: 0;
 }
 
-.main-content blockquote > :last-child {
+.main blockquote > :last-child {
     margin-bottom: 0;
 }
 
-.main-content table {
+.main table {
     display: block;
     width: 100%;
     overflow: auto;
@@ -224,32 +254,32 @@ a:hover {
     word-break: keep-all;
 }
 
-.main-content table th {
+.main table th {
     font-weight: bold;
 }
 
-.main-content table th, .main-content table td {
+.main table th, .main table td {
     padding: 0.5rem 1rem;
     border: 1px solid #e9ebec;
 }
 
-.main-content dl {
+.main dl {
     padding: 0;
 }
 
-.main-content dl dt {
+.main dl dt {
     padding: 0;
     margin-top: 1rem;
     font-size: 1rem;
     font-weight: bold;
 }
 
-.main-content dl dd {
+.main dl dd {
     padding: 0;
     margin-bottom: 1rem;
 }
 
-.main-content hr {
+.main hr {
     height: 2px;
     padding: 0;
     margin: 1rem 0;
@@ -276,12 +306,16 @@ a:hover {
 .docs-toc ul,
 .docs-toc li {
     line-height: 1.6;
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 #toc > ul,
 .docs-toc > ul {
     padding-left: 0;
+}
+
+#toc sup {
+    font-size: 65%;
 }
 
 #toc-page {
@@ -293,23 +327,26 @@ a:hover {
     margin-left: 14rem;
     width: calc(100% - 14rem);
 }
+#docs ul > li {
+    list-style-type: disc;
+}
 
-.centered-content {
+.main--m {
     position: relative;
 }
 
 @media screen and (min-width: 74em) {
-    .centered-content {
+    .main--m {
         max-width: 74rem;
         padding: 2rem 6rem;
         margin: 0 auto;
         font-size: 1.1rem;
     }
 
-    .main-content {
+    .main {
         min-height: calc(100% - 5.8rem);
     }
-    .main-content.docs {
+    .main.docs {
         max-width: 104rem;
     }
 
@@ -319,18 +356,18 @@ a:hover {
 }
 
 @media screen and (max-width: 74em) {
-    .centered-content {
+    .main--m {
         padding: 0;
     }
 }
 
 @media screen and (min-width: 42em) and (max-width: 74em) {
-    .centered-content {
+    .main--m {
         margin: 1rem 1.5rem;
         font-size: 1.1rem;
     }
 
-    .main-content {
+    .main {
         min-height: calc(100% - 7.8rem);
     }
 
@@ -341,7 +378,7 @@ a:hover {
     #toc ul,
     #toc li {
         line-height: 1.5;
-        font-size: .9rem;
+        font-size: .8rem;
     }
 
     #docs {
@@ -352,12 +389,12 @@ a:hover {
 }
 
 @media screen and (max-width: 42em) {
-    .centered-content {
+    .main--m {
         margin: 1rem 1rem 0;
         font-size: 1rem;
     }
 
-    .main-content {
+    .main {
         min-height: calc(100% - 6.8rem);
     }
 

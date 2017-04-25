@@ -38,7 +38,7 @@
 </ul>
 </li>
 <li><a href="/docs/app/extensions">Extensions</a></li>
-<li><strong>Models</strong></li>
+<li><a href="/docs/app/models">Models</a></li>
 <li><a href="/docs/app/components">Components</a></li>
 <li><a href="/docs/app/controllers">Controllers</a></li>
 <li><a href="/docs/app/plugins">Plugins</a><ul>
@@ -72,7 +72,7 @@
 </ul>
 </li>
 <li>Classes<ul>
-<li><a href="/api/ifnode">IFNode</a></li>
+<li><strong>IFNode</strong></li>
 <li><a href="/api/application">Application</a><ul>
 <li><a href="/api/application#application-constructor">Constructor</a></li>
 <li>Properties<ul>
@@ -181,42 +181,103 @@
 
 </aside>
 <section id="docs">
-    <h1 id="models-">Models (Data Access Layer) <a href="#models"><span>#</span></a></h1>
-<p>Model is database presentation of tables (SQL) or collections (NoSQL) data.</p>
-<p><code>ifnode</code> model is middleware between native npm module for database (mongoose, knex, etc) and real using. <code>ifnode</code> make all dirty work for initialize and populate all application data presentations.</p>
+    <h1 id="ifnode">IFNode <a href="#ifnode"><span>#</span></a></h1>
+<h2 id="description">Description <a href="#description"><span>#</span></a></h2>
+<p><code>IFNode</code> is a factory method for creating instances of <code>Application</code> class.</p>
+<p>Incoming argument presented like options for <a href="/api/application#constructor"><code>Application</code> constructor</a>, alias of created application instance or empty (first created by <code>IFNode</code> invoke) argument.</p>
+<h2 id="definition">Definition <a href="#definition"><span>#</span></a></h2>
+<h3 id="jsdoc-syntax">JSDoc syntax <a href="#jsdoc-syntax"><span>#</span></a></h3>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">/**
+ * @interface IFNode
+ * @function
+ * 
+ * @param   {string|ApplicationOptions} [options]
+ * @returns {Application}
+ */</span>
+</code></pre>
+<h3 id="typescript-syntax">TypeScript syntax <a href="#typescript-syntax"><span>#</span></a></h3>
+<pre><code class="lang-typescript"><span class="token keyword">interface</span> <span class="token class-name">IFNode</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">(</span>options<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token operator">|</span>ApplicationOptions<span class="token punctuation">)</span><span class="token punctuation">:</span> Application
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="arguments">Arguments <a href="#arguments"><span>#</span></a></h3>
+<table>
+    <thead>
+        <tr colspan="2">
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td id="options" rowspan="3"><code>options</code></td>
+            <td><code>ApplicationOptions</code></td>
+            <td>Creates and returns <code>Application</code> instance by options</td>
+        </tr>
+        <tr>
+            <td><code>string</code></td>
+            <td>Returns <code>Application</code> instance with <code>alias</code> option from <code>ApplicationOptions</code> or <code>undefined</code></td>
+        </tr>
+        <tr>
+            <td><code>undefined</code></td>
+            <td>Returns first created <code>Application</code> instance by <code>IFNode</code> invoke or creates and returns new instance</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 id="returns">Returns <a href="#returns"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Application</code></td>
+<td><code>Application</code> instance</td>
+</tr>
+</tbody>
+</table>
 <h2 id="example">Example <a href="#example"><span>#</span></a></h2>
-<p>Create <code>mongodb</code> model using <code>ifnode-mongoose</code> - middleware between <code>mongoose</code> module and <code>ifnode</code>:</p>
-<p>Creating config file with database options:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// config/local.js    </span>
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
-    db<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-        mongo<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-            schema<span class="token punctuation">:</span> <span class="token string">'mongoose'</span><span class="token punctuation">,</span>
-            config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-                database<span class="token punctuation">:</span> <span class="token string">'library'</span><span class="token punctuation">,</span>
-                host<span class="token punctuation">:</span> <span class="token string">'localhost'</span>
-            <span class="token punctuation">}</span>
+<h3 id="create-application-with-default-config">Create application with default config <a href="#create-application-with-default-config"><span>#</span></a></h3>
+<h4 id="app-js">app.js <a href="#app-js"><span>#</span></a></h4>
+<pre><code class="lang-javascript"><span class="token keyword">const</span> Assert <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'assert'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> IFNode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> app1 <span class="token operator">=</span> <span class="token function">IFNode</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    project_folder<span class="token punctuation">:</span> __dirname<span class="token punctuation">,</span>
+    alias<span class="token punctuation">:</span> <span class="token string">'application'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> app2 <span class="token operator">=</span> <span class="token function">IFNode</span><span class="token punctuation">(</span><span class="token string">'application'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> app3 <span class="token operator">=</span> <span class="token function">IFNode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+Assert<span class="token punctuation">.</span><span class="token function">equal</span><span class="token punctuation">(</span>app1<span class="token punctuation">,</span> app2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+Assert<span class="token punctuation">.</span><span class="token function">equal</span><span class="token punctuation">(</span>app2<span class="token punctuation">,</span> app3<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 id="create-application-with-custom-config">Create application with custom config <a href="#create-application-with-custom-config"><span>#</span></a></h3>
+<h4 id="config-dev-js">config/dev.js <a href="#config-dev-js"><span>#</span></a></h4>
+<pre><code class="lang-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    site<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        local<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            port<span class="token punctuation">:</span> <span class="token number">3000</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
-<p>Creating books model:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// models/books.js    </span>
-<span class="token keyword">var</span> app <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    books <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Model</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        collection<span class="token punctuation">:</span> <span class="token string">'books'</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-<p>Application file:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// app.js    </span>
-<span class="token keyword">var</span> ifnode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    app <span class="token operator">=</span> <span class="token function">ifnode</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        env<span class="token punctuation">:</span> <span class="token string">'local'</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h4 id="app-js">app.js <a href="#app-js"><span>#</span></a></h4>
+<pre><code class="lang-javascript"><span class="token keyword">const</span> Assert <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'assert'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> IFNode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">IFNode</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    project_folder<span class="token punctuation">:</span> __dirname<span class="token punctuation">,</span>
+    alias<span class="token punctuation">:</span> <span class="token string">'application'</span><span class="token punctuation">,</span>
+    environment<span class="token punctuation">:</span> <span class="token string">'dev'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token comment" spellcheck="true">// load all models and initialize them</span>
-app<span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-app<span class="token punctuation">.</span>models<span class="token punctuation">.</span>books<span class="token punctuation">.</span><span class="token function">findOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// return instance of mongoose.Model</span>
+Assert<span class="token punctuation">.</span><span class="token function">equal</span><span class="token punctuation">(</span>app<span class="token punctuation">.</span>config<span class="token punctuation">.</span>environment<span class="token punctuation">,</span> <span class="token string">'dev'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Assert<span class="token punctuation">.</span><span class="token function">equal</span><span class="token punctuation">(</span>app<span class="token punctuation">.</span>config<span class="token punctuation">.</span>site<span class="token punctuation">.</span>local<span class="token punctuation">.</span>origin<span class="token punctuation">,</span> <span class="token string">'http://localhost:3000'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 
 </section>

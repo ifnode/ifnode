@@ -38,7 +38,7 @@
 </ul>
 </li>
 <li><a href="/docs/app/extensions">Extensions</a></li>
-<li><strong>Models</strong></li>
+<li><a href="/docs/app/models">Models</a></li>
 <li><a href="/docs/app/components">Components</a></li>
 <li><a href="/docs/app/controllers">Controllers</a></li>
 <li><a href="/docs/app/plugins">Plugins</a><ul>
@@ -51,7 +51,7 @@
 </li>
 </ul>
 </li>
-<li><a href="/api">API</a><ul>
+<li><strong>API</strong><ul>
 <li>Constants<ul>
 <li><a href="/api/plugin_types">PLUGIN_TYPES</a><ul>
 <li><a href="/api/plugin_types#schema">.SCHEMA</a></li>
@@ -181,47 +181,136 @@
 
 </aside>
 <section id="docs">
-    <h1 id="models-">Models (Data Access Layer) <a href="#models"><span>#</span></a></h1>
-<p>Model is database presentation of tables (SQL) or collections (NoSQL) data.</p>
-<p><code>ifnode</code> model is middleware between native npm module for database (mongoose, knex, etc) and real using. <code>ifnode</code> make all dirty work for initialize and populate all application data presentations.</p>
-<h2 id="example">Example <a href="#example"><span>#</span></a></h2>
-<p>Create <code>mongodb</code> model using <code>ifnode-mongoose</code> - middleware between <code>mongoose</code> module and <code>ifnode</code>:</p>
-<p>Creating config file with database options:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// config/local.js    </span>
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
-    db<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-        mongo<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-            schema<span class="token punctuation">:</span> <span class="token string">'mongoose'</span><span class="token punctuation">,</span>
-            config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-                database<span class="token punctuation">:</span> <span class="token string">'library'</span><span class="token punctuation">,</span>
-                host<span class="token punctuation">:</span> <span class="token string">'localhost'</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
-</code></pre>
-<p>Creating books model:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// models/books.js    </span>
-<span class="token keyword">var</span> app <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    books <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Model</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        collection<span class="token punctuation">:</span> <span class="token string">'books'</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-<p>Application file:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// app.js    </span>
-<span class="token keyword">var</span> ifnode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    app <span class="token operator">=</span> <span class="token function">ifnode</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        env<span class="token punctuation">:</span> <span class="token string">'local'</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <h1 id="table-of-content">Table of Content <a href="#table-of-content"><span>#</span></a></h1>
+<ul>
+<li><a href="/api">API</a><ul>
+<li>Constants<ul>
+<li><a href="/api/plugin_types">PLUGIN_TYPES</a><ul>
+<li><a href="/api/plugin_types#schema">.SCHEMA</a></li>
+<li><a href="/api/plugin_types#component">.COMPONENT</a></li>
+<li><a href="/api/plugin_types#controller">.CONTROLLER</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Interfaces<ul>
+<li><a href="/api/iconnectionserver">IConnectionServer</a><ul>
+<li><a href="/api/iconnectionserver#iconnectionserver-constructor">#constructor</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-configure">#configure</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-listen">#listen</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-close">#close</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Classes<ul>
+<li><a href="/api/ifnode">IFNode</a></li>
+<li><a href="/api/application">Application</a><ul>
+<li><a href="/api/application#application-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/application#application-id">.id</a></li>
+<li><a href="/api/application#application-alias">.alias</a></li>
+<li><a href="/api/application#application-project_folder">.project_folder</a></li>
+<li><a href="/api/application#application-project_folder">.projectFolder</a></li>
+<li><a href="/api/application#application-backend_folder">.backend_folder</a></li>
+<li><a href="/api/application#application-backend_folder">.backendFolder</a></li>
+<li><a href="/api/application#application-config">.config</a></li>
+<li><a href="/api/application#application-listener">.listener</a></li>
+<li><a href="/api/application#application-connection">.connection</a></li>
+<li><em><a href="/api/application#application-server">.server <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-models">.models</a></li>
+<li><a href="/api/application#application-components">.components</a></li>
+<li><a href="/api/application#application-controllers">.controllers</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/application#application-require">.require</a></li>
+<li><a href="/api/application#application-register">.register</a></li>
+<li><a href="/api/application#application-load">.load</a></li>
+<li><a href="/api/application#application-extension">.extension</a></li>
+<li><em><a href="/api/application#application-extension">.ext <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-component">.component</a></li>
+<li><em><a href="/api/application#application-run">.run <sup>deprecated</sup></a></em></li>
+<li><em><a href="/api/application#application-down">.down <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-model-class">.Model</a></li>
+<li><em><a href="/api/application#application-component-class">.Component <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-controller-class">.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/model">Model</a><ul>
+<li><a href="/api/model#model-constructor">Constructor</a></li>
+</ul>
+</li>
+<li><a href="/api/component">Component</a><ul>
+<li><a href="/api/component#component-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/component#component-id">.id</a></li>
+<li><a href="/api/component#component-name">.name</a></li>
+<li><a href="/api/component#component-config">.config</a></li>
+<li><a href="/api/component#component-alias">.alias</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/controller">Controller</a><ul>
+<li>Static methods<ul>
+<li><a href="/api/controller#process_config">.process_config</a></li>
+<li><a href="/api/controller#process_config">.processConfig</a></li>
+<li><a href="/api/controller#populate">.populate</a></li>
+<li><a href="/api/controller#middleware">.middleware</a></li>
+</ul>
+</li>
+<li><a href="/api/controller#constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/controller#controller-id">.id</a></li>
+<li><a href="/api/controller#controller-name">.name</a></li>
+<li><a href="/api/controller#controller-root">.root</a></li>
+<li><a href="/api/controller#controller-router">.router</a></li>
+<li><a href="/api/controller#controller-map">.map</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/controller#before">.before</a></li>
+<li><a href="/api/controller#param">.param</a></li>
+<li><a href="/api/controller#method">.method</a></li>
+<li><a href="/api/controller#method-get">.get</a></li>
+<li><a href="/api/controller#method-post">.post</a></li>
+<li><a href="/api/controller#method-put">.put</a></li>
+<li><a href="/api/controller#method-patch">.patch</a></li>
+<li><a href="/api/controller#method-delete">.delete</a></li>
+<li><em><a href="/api/controller#method-del">.del <sup>deprecated</sup></a></em></li>
+<li><a href="/api/controller#use">.use</a></li>
+<li><a href="/api/controller#end">.end</a></li>
+<li><a href="/api/controller#error">.error</a></li>
+</ul>
+</li>
+<li>Request property<ul>
+<li><a href="/api/controller#request-data">req.data</a></li>
+</ul>
+</li>
+<li>Response methods<ul>
+<li><a href="/api/controller#response-ok">res.ok</a></li>
+<li><a href="/api/controller#response-bad_request">res.bad_request</a></li>
+<li><a href="/api/controller#response-bad_request">res.badRequest</a></li>
+<li><a href="/api/controller#response-bad_request">res.fail</a></li>
+<li><a href="/api/controller#response-unauthorized">res.unauthorized</a></li>
+<li><a href="/api/controller#response-forbidden">res.forbidden</a></li>
+<li><a href="/api/controller#response-not_found">res.not_found</a></li>
+<li><a href="/api/controller#response-not_found">res.notFound</a></li>
+<li><a href="/api/controller#response-error">res.error</a></li>
+<li><a href="/api/controller#response-error">res.err</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
-<span class="token comment" spellcheck="true">// load all models and initialize them</span>
-app<span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-app<span class="token punctuation">.</span>models<span class="token punctuation">.</span>books<span class="token punctuation">.</span><span class="token function">findOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// return instance of mongoose.Model</span>
-</code></pre>
-
-</section>
-<section id="toc-page">
-    <a href="/toc">Table of Content</a>
 </section>
 
         </main>

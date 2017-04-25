@@ -38,7 +38,7 @@
 </ul>
 </li>
 <li><a href="/docs/app/extensions">Extensions</a></li>
-<li><strong>Models</strong></li>
+<li><a href="/docs/app/models">Models</a></li>
 <li><a href="/docs/app/components">Components</a></li>
 <li><a href="/docs/app/controllers">Controllers</a></li>
 <li><a href="/docs/app/plugins">Plugins</a><ul>
@@ -53,7 +53,7 @@
 </li>
 <li><a href="/api">API</a><ul>
 <li>Constants<ul>
-<li><a href="/api/plugin_types">PLUGIN_TYPES</a><ul>
+<li><strong>PLUGIN_TYPES</strong><ul>
 <li><a href="/api/plugin_types#schema">.SCHEMA</a></li>
 <li><a href="/api/plugin_types#component">.COMPONENT</a></li>
 <li><a href="/api/plugin_types#controller">.CONTROLLER</a></li>
@@ -181,42 +181,61 @@
 
 </aside>
 <section id="docs">
-    <h1 id="models-">Models (Data Access Layer) <a href="#models"><span>#</span></a></h1>
-<p>Model is database presentation of tables (SQL) or collections (NoSQL) data.</p>
-<p><code>ifnode</code> model is middleware between native npm module for database (mongoose, knex, etc) and real using. <code>ifnode</code> make all dirty work for initialize and populate all application data presentations.</p>
-<h2 id="example">Example <a href="#example"><span>#</span></a></h2>
-<p>Create <code>mongodb</code> model using <code>ifnode-mongoose</code> - middleware between <code>mongoose</code> module and <code>ifnode</code>:</p>
-<p>Creating config file with database options:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// config/local.js    </span>
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
-    db<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-        mongo<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-            schema<span class="token punctuation">:</span> <span class="token string">'mongoose'</span><span class="token punctuation">,</span>
-            config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-                database<span class="token punctuation">:</span> <span class="token string">'library'</span><span class="token punctuation">,</span>
-                host<span class="token punctuation">:</span> <span class="token string">'localhost'</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <h1 id="plugin_types">PLUGIN_TYPES <a href="#plugin_types"><span>#</span></a></h1>
+<h2 id="description">Description <a href="#description"><span>#</span></a></h2>
+<p>File with constant names of plugins. It contains three types: <code>schema</code>, <code>component</code> and <code>controller</code>.</p>
+<h2 id="definition">Definition <a href="#definition"><span>#</span></a></h2>
+<h3 id="jsdoc-syntax">JSDoc syntax <a href="#jsdoc-syntax"><span>#</span></a></h3>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">/**
+ * 
+ * @constant {Object} PLUGIN_TYPES
+ */</span>
+<span class="token punctuation">{</span>
+    SCHEMA<span class="token punctuation">:</span> <span class="token string">'schema'</span><span class="token punctuation">,</span>
+    COMPONENT<span class="token punctuation">:</span> <span class="token string">'component'</span><span class="token punctuation">,</span>
+    CONTROLLER<span class="token punctuation">:</span> <span class="token string">'controller'</span>
+<span class="token punctuation">}</span>
 </code></pre>
-<p>Creating books model:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// models/books.js    </span>
-<span class="token keyword">var</span> app <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    books <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Model</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        collection<span class="token punctuation">:</span> <span class="token string">'books'</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h3 id="typescript-syntax">TypeScript syntax <a href="#typescript-syntax"><span>#</span></a></h3>
+<pre><code class="lang-typescript"><span class="token keyword">interface</span> <span class="token class-name">PLUGIN_TYPES</span> <span class="token punctuation">{</span>
+    SCHEMA<span class="token punctuation">:</span> <span class="token string">'schema'</span><span class="token punctuation">,</span>
+    COMPONENT<span class="token punctuation">:</span> <span class="token string">'component'</span><span class="token punctuation">,</span>
+    CONTROLLER<span class="token punctuation">:</span> <span class="token string">'controller'</span>
+<span class="token punctuation">}</span>
 </code></pre>
-<p>Application file:</p>
-<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// app.js    </span>
-<span class="token keyword">var</span> ifnode <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    app <span class="token operator">=</span> <span class="token function">ifnode</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        env<span class="token punctuation">:</span> <span class="token string">'local'</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h3 id="constant-properties">Constant properties <a href="#constant-properties"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code id="schema">SCHEMA</code></td>
+<td><code>&quot;schema&quot;</code></td>
+<td>Plugin type of models schemas. More about schema plugin you can find <strong><a href="/docs/app/plugins/schema">here</a></strong></td>
+</tr>
+<tr>
+<td><code id="component">COMPONENT</code></td>
+<td><code>&quot;component&quot;</code></td>
+<td>Plugin type for external components. More about component plugin you can find <strong><a href="/docs/app/plugins/component">here</a></strong></td>
+</tr>
+<tr>
+<td><code id="controller">CONTROLLER</code></td>
+<td><code>&quot;controller&quot;</code></td>
+<td>Plugin type for controllers extending possibilities. More about controller plugin and describing you can find <strong><a href="/docs/app/plugins/controller">here</a></strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="examples">Examples <a href="#examples"><span>#</span></a></h2>
+<pre><code class="lang-javascript"><span class="token keyword">const</span> PLUGIN_TYPES <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ifnode/core/PLUGIN_TYPES'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token comment" spellcheck="true">// load all models and initialize them</span>
-app<span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-app<span class="token punctuation">.</span>models<span class="token punctuation">.</span>books<span class="token punctuation">.</span><span class="token function">findOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// return instance of mongoose.Model</span>
+module<span class="token punctuation">.</span>exports<span class="token punctuation">[</span>PLUGIN_TYPES<span class="token punctuation">.</span>SCHEMA<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token function">MyOwnSchema</span><span class="token punctuation">(</span>app<span class="token punctuation">,</span> MyOwnSchema<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// do smt</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 
 </section>

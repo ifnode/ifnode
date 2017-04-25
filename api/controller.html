@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <title>ifnode - Excellent Node.js Framework</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content="The ifnode is a simple, flexible, super-light and pluginnable node.js framework. Allows to start developing of application right after of module install.">
+        <link rel="stylesheet" type="text/css" href="/assets/css/open-sans.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/prism-default.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css?v=1.5.1" media="screen">
+        <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=1.5.1" media="screen">
+    </head>
+    <body>
+        <header class="page-header">
+            <div class="project-name">
+                <a href="/">ifnode</a>
+            </div>
+            <div class="project-tagline">Simple, flexible, super-light and pluginnable framework</div>
+            <div class="project-buttons">
+                <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
+            </div>
+        </header>
+        <main class="main main--m docs">
+            <aside id="toc">
+    <ul>
+<li><a href="/docs">Guide</a><ul>
+<li><a href="/docs/intro">Introduction</a><ul>
+<li><a href="/docs/intro/ideology">Ideology</a></li>
+</ul>
+</li>
+<li><a href="/docs/install">Install</a></li>
+<li><a href="/docs/app">Application Items</a><ul>
+<li><a href="/docs/app/structure">Structure</a></li>
+<li><a href="/docs/app/file">app.js</a></li>
+<li><a href="/docs/app/config">Config</a><ul>
+<li><a href="/docs/app/config/default">Default config</a></li>
+<li><a href="/docs/app/config/middleware">Middleware</a></li>
+</ul>
+</li>
+<li><a href="/docs/app/extensions">Extensions</a></li>
+<li><a href="/docs/app/models">Models</a></li>
+<li><a href="/docs/app/components">Components</a></li>
+<li><a href="/docs/app/controllers">Controllers</a></li>
+<li><a href="/docs/app/plugins">Plugins</a><ul>
+<li><a href="/docs/app/plugins/component">component</a></li>
+<li><a href="/docs/app/plugins/controller">controller</a></li>
+<li><a href="/docs/app/plugins/schema">schema</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api">API</a><ul>
+<li>Constants<ul>
+<li><a href="/api/plugin_types">PLUGIN_TYPES</a><ul>
+<li><a href="/api/plugin_types#schema">.SCHEMA</a></li>
+<li><a href="/api/plugin_types#component">.COMPONENT</a></li>
+<li><a href="/api/plugin_types#controller">.CONTROLLER</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Interfaces<ul>
+<li><a href="/api/iconnectionserver">IConnectionServer</a><ul>
+<li><a href="/api/iconnectionserver#iconnectionserver-constructor">#constructor</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-configure">#configure</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-listen">#listen</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-close">#close</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Classes<ul>
+<li><a href="/api/ifnode">IFNode</a></li>
+<li><a href="/api/application">Application</a><ul>
+<li><a href="/api/application#application-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/application#application-id">.id</a></li>
+<li><a href="/api/application#application-alias">.alias</a></li>
+<li><a href="/api/application#application-project_folder">.project_folder</a></li>
+<li><a href="/api/application#application-project_folder">.projectFolder</a></li>
+<li><a href="/api/application#application-backend_folder">.backend_folder</a></li>
+<li><a href="/api/application#application-backend_folder">.backendFolder</a></li>
+<li><a href="/api/application#application-config">.config</a></li>
+<li><a href="/api/application#application-listener">.listener</a></li>
+<li><a href="/api/application#application-connection">.connection</a></li>
+<li><em><a href="/api/application#application-server">.server <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-models">.models</a></li>
+<li><a href="/api/application#application-components">.components</a></li>
+<li><a href="/api/application#application-controllers">.controllers</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/application#application-require">.require</a></li>
+<li><a href="/api/application#application-register">.register</a></li>
+<li><a href="/api/application#application-load">.load</a></li>
+<li><a href="/api/application#application-extension">.extension</a></li>
+<li><em><a href="/api/application#application-extension">.ext <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-component">.component</a></li>
+<li><em><a href="/api/application#application-run">.run <sup>deprecated</sup></a></em></li>
+<li><em><a href="/api/application#application-down">.down <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-model-class">.Model</a></li>
+<li><em><a href="/api/application#application-component-class">.Component <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-controller-class">.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/model">Model</a><ul>
+<li><a href="/api/model#model-constructor">Constructor</a></li>
+</ul>
+</li>
+<li><a href="/api/component">Component</a><ul>
+<li><a href="/api/component#component-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/component#component-id">.id</a></li>
+<li><a href="/api/component#component-name">.name</a></li>
+<li><a href="/api/component#component-config">.config</a></li>
+<li><a href="/api/component#component-alias">.alias</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Controller</strong><ul>
+<li>Static methods<ul>
+<li><a href="/api/controller#process_config">.process_config</a></li>
+<li><a href="/api/controller#process_config">.processConfig</a></li>
+<li><a href="/api/controller#populate">.populate</a></li>
+<li><a href="/api/controller#middleware">.middleware</a></li>
+</ul>
+</li>
+<li><a href="/api/controller#constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/controller#controller-id">.id</a></li>
+<li><a href="/api/controller#controller-name">.name</a></li>
+<li><a href="/api/controller#controller-root">.root</a></li>
+<li><a href="/api/controller#controller-router">.router</a></li>
+<li><a href="/api/controller#controller-map">.map</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/controller#before">.before</a></li>
+<li><a href="/api/controller#param">.param</a></li>
+<li><a href="/api/controller#method">.method</a></li>
+<li><a href="/api/controller#method-get">.get</a></li>
+<li><a href="/api/controller#method-post">.post</a></li>
+<li><a href="/api/controller#method-put">.put</a></li>
+<li><a href="/api/controller#method-patch">.patch</a></li>
+<li><a href="/api/controller#method-delete">.delete</a></li>
+<li><em><a href="/api/controller#method-del">.del <sup>deprecated</sup></a></em></li>
+<li><a href="/api/controller#use">.use</a></li>
+<li><a href="/api/controller#end">.end</a></li>
+<li><a href="/api/controller#error">.error</a></li>
+</ul>
+</li>
+<li>Request property<ul>
+<li><a href="/api/controller#request-data">req.data</a></li>
+</ul>
+</li>
+<li>Response methods<ul>
+<li><a href="/api/controller#response-ok">res.ok</a></li>
+<li><a href="/api/controller#response-bad_request">res.bad_request</a></li>
+<li><a href="/api/controller#response-bad_request">res.badRequest</a></li>
+<li><a href="/api/controller#response-bad_request">res.fail</a></li>
+<li><a href="/api/controller#response-unauthorized">res.unauthorized</a></li>
+<li><a href="/api/controller#response-forbidden">res.forbidden</a></li>
+<li><a href="/api/controller#response-not_found">res.not_found</a></li>
+<li><a href="/api/controller#response-not_found">res.notFound</a></li>
+<li><a href="/api/controller#response-error">res.error</a></li>
+<li><a href="/api/controller#response-error">res.err</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</aside>
+<section id="docs">
+    <h1 id="controller">Controller <a href="#controller"><span>#</span></a></h1>
+<h2 id="description">Description <a href="#description"><span>#</span></a></h2>
+<p><code>ifnode</code> have possibility to build own web-API interfaces.</p>
+<p>Controller can be extended by external plugins (example: <code>ifnode-auth</code>, <code>ifnode-permissions</code> etc)</p>
+<h2 id="definition">Definition <a href="#definition"><span>#</span></a></h2>
+<h3 id="jsdoc-syntax">JSDoc syntax <a href="#jsdoc-syntax"><span>#</span></a></h3>
+<pre><code class="lang-javascript"><span class="token comment" spellcheck="true">/**
+ * @typedef {Express.Request} IFRequest
+ * 
+ * @property {?Object}  data
+ */</span>
+
+
+<span class="token comment" spellcheck="true">/**
+ * @typedef {Buffer|Array|String|Object} IFResponseData
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @callback request_ok
+ * @param {IFResponseData}  [data]
+ */</span>
+<span class="token comment" spellcheck="true">/**
+ * @callback request_fail
+ * @param {IFResponseData}  [data]
+ */</span>
+<span class="token comment" spellcheck="true">/**
+ * @callback request_error
+ * @param {IFResponseData}  [data]
+ */</span>
+<span class="token comment" spellcheck="true">/**
+ * @callback request_unauthorized
+ * @param {IFResponseData}  [data]
+ */</span>
+<span class="token comment" spellcheck="true">/**
+ * @callback request_forbidden
+ * @param {IFResponseData}  [data]
+ */</span>
+<span class="token comment" spellcheck="true">/**
+ * @callback request_not_found
+ * @param {IFResponseData}  [data]
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @typedef {Express.Response} IFResponse
+ * 
+ * @property    {request_ok}            ok
+ * @property    {request_fail}          fail
+ * @property    {request_fail}          bad_request
+ * @property    {request_fail}          badRequest
+ * @property    {request_unauthorized}  unauthorized
+ * @property    {request_forbidden}     forbidden
+ * @property    {request_not_found}     not_found
+ * @property    {request_not_found}     notFound
+ * @property    {request_error}         error
+ * @property    {request_error}         err
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @callback nextHandler
+ * @param {Error}    [error]
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @callback routeHandler
+ * 
+ * @param {IFRequset}    request
+ * @param {IFResponse}   response
+ * @param {nextHandler}  next_handler
+ * @param {nextHandler}  next_route
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @callback errorHandler
+ * 
+ * @param {Error}        error
+ * @param {IFRequset}    request
+ * @param {IFResponse}   response
+ * @param {nextHandler}  next_handler
+ * @param {nextHandler}  next_route
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @typedef {Object} ControllerOptions
+ * 
+ * @property {string}   [root]
+ * @property {string}   [name]
+ * @property {Object}   [router]
+ * @property {boolean}  [ajax]
+ * @property {Object}   [map]
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @interface Controller
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#constructor
+ * 
+ * @param {ControllerOptions}   [options]
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#before
+ * 
+ * @param {...routeHandler} callbacks
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#param
+ * 
+ * @param {string}      name
+ * @param {function}    expression
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#method
+ * 
+ * @param   {string|Array.&lt;string>} methods
+ * @param   {string}                [path]
+ * @param   {Object}                [options]
+ * @param   {...routeHandler}       callbacks
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#get
+ * 
+ * @param   {string}            [path]
+ * @param   {Object}            [options]
+ * @param   {...routeHandler}   callbacks
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#post
+ * 
+ * @param   {string}            [path]
+ * @param   {Object}            [options]
+ * @param   {...routeHandler}   callbacks
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#put
+ * 
+ * @param   {string}            [path]
+ * @param   {Object}            [options]
+ * @param   {...routeHandler}   callbacks
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#patch
+ * 
+ * @param   {string}            [path]
+ * @param   {Object}            [options]
+ * @param   {...routeHandler}   callbacks
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#delete
+ * 
+ * @param   {string}            [path]
+ * @param   {Object}            [options]
+ * @param   {...routeHandler}   callbacks
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#del
+ * 
+ * @param   {string}            [path]
+ * @param   {Object}            [options]
+ * @param   {...routeHandler}   callbacks
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#error
+ * 
+ * @param   {errorHandler}  custom_error_handler
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#use
+ * 
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#use
+ * 
+ * @param   {...routeHandler}   callbacks
+ * @returns {Controller}
+ */</span>
+
+<span class="token comment" spellcheck="true">/**
+ * @function Controller#compile
+ */</span>
+</code></pre>
+<h3 id="typescript-syntax">TypeScript syntax <a href="#typescript-syntax"><span>#</span></a></h3>
+<pre><code class="lang-typescript"><span class="token keyword">interface</span> <span class="token class-name">IFRequest</span> <span class="token keyword">extends</span> <span class="token class-name">Express<span class="token punctuation">.</span>Request</span> <span class="token punctuation">{</span>
+    data<span class="token punctuation">:</span> Object<span class="token operator">|</span><span class="token keyword">null</span>
+<span class="token punctuation">}</span>
+
+type IFResponseData <span class="token operator">=</span> Buffer<span class="token operator">|</span><span class="token keyword">Array</span><span class="token operator">|</span>String<span class="token operator">|</span>Object<span class="token punctuation">;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">IFResponse</span> <span class="token keyword">extends</span> <span class="token class-name">Express<span class="token punctuation">.</span>Response</span> <span class="token punctuation">{</span>
+    <span class="token function">ok</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">bad_request</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">badRequest</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">fail</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">unauthorized</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">forbidden</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">not_found</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">notFound</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span>
+    <span class="token function">error</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">err</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token punctuation">:</span> IFResponseData<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">nextHandler</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">(</span>error<span class="token operator">?</span><span class="token punctuation">:</span> Error<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">routeHandler</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">(</span>request<span class="token punctuation">:</span> IFRequest<span class="token punctuation">,</span> response<span class="token punctuation">:</span> IFResponse<span class="token punctuation">,</span> next_handler<span class="token punctuation">:</span> nextHandler<span class="token punctuation">,</span> next_route<span class="token punctuation">:</span> nextHandler<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">errorHandler</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">(</span>error<span class="token punctuation">:</span> Error<span class="token punctuation">,</span> request<span class="token punctuation">:</span> IFRequest<span class="token punctuation">,</span> response<span class="token punctuation">:</span> IFResponse<span class="token punctuation">,</span> next_handler<span class="token punctuation">:</span> nextHandler<span class="token punctuation">,</span> next_route<span class="token punctuation">:</span> nextHandler<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">ControllerOptions</span> <span class="token punctuation">{</span>
+    root<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    name<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    router<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span>
+    ajax<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">boolean</span><span class="token punctuation">,</span>
+    map<span class="token operator">?</span><span class="token punctuation">:</span> Object
+<span class="token punctuation">}</span>
+
+type URLPath <span class="token operator">=</span> <span class="token keyword">string</span><span class="token operator">|</span>RegExp<span class="token operator">|</span><span class="token keyword">Array</span><span class="token operator">&lt;</span><span class="token keyword">string</span><span class="token operator">|</span>RegExp<span class="token operator">></span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Controller</span> <span class="token punctuation">{</span>
+    id<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    name<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    root<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span>
+    router<span class="token punctuation">:</span> Express<span class="token punctuation">.</span>Router<span class="token punctuation">,</span>
+    map<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span>
+    <span class="token keyword">new</span> <span class="token punctuation">(</span>options<span class="token operator">?</span><span class="token punctuation">:</span> ControllerOptions<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">before</span><span class="token punctuation">(</span><span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">param</span><span class="token punctuation">(</span>name<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">,</span> expression<span class="token punctuation">:</span> <span class="token keyword">Function</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">method</span><span class="token punctuation">(</span>methods<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token operator">|</span><span class="token keyword">Array</span><span class="token operator">&lt;</span><span class="token keyword">string</span><span class="token operator">></span><span class="token punctuation">,</span> path<span class="token operator">?</span><span class="token punctuation">:</span> URLPath<span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span> <span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token keyword">get</span><span class="token punctuation">(</span>path<span class="token operator">?</span><span class="token punctuation">:</span> URLPath<span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span> <span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token function">post</span><span class="token punctuation">(</span>path<span class="token operator">?</span><span class="token punctuation">:</span> URLPath<span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span> <span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token function">put</span><span class="token punctuation">(</span>path<span class="token operator">?</span><span class="token punctuation">:</span> URLPath<span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span> <span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token function">patch</span><span class="token punctuation">(</span>path<span class="token operator">?</span><span class="token punctuation">:</span> URLPath<span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span> <span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token keyword">delete</span><span class="token punctuation">(</span>path<span class="token operator">?</span><span class="token punctuation">:</span> URLPath<span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span> <span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token function">del</span><span class="token punctuation">(</span>path<span class="token operator">?</span><span class="token punctuation">:</span> URLPath<span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token punctuation">:</span> Object<span class="token punctuation">,</span> <span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token function">use</span><span class="token punctuation">(</span>path<span class="token operator">?</span><span class="token punctuation">:</span> URLPath<span class="token punctuation">,</span> <span class="token operator">...</span>callbacks<span class="token punctuation">:</span> <span class="token keyword">Array</span><span class="token operator">&lt;</span>routeHandler<span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token function">error</span><span class="token punctuation">(</span>custom_error_handler<span class="token punctuation">:</span> errorHandler<span class="token punctuation">)</span><span class="token punctuation">:</span> Controller<span class="token punctuation">,</span>
+    <span class="token function">compile</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="static-methods">Static methods <a href="#static-methods"><span>#</span></a></h2>
+<p>Static methods of <code>Controller</code> can be useful for creating controller&#39;s plugin. Example of static methods usage you can find <strong><a href="/docs/app/plugins/controller">here</a></strong>.</p>
+<h3 id="controller-process_config">Controller.process_config( processors ) <a href="#controller-process_config"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>processors</code></td>
+<td><code>function</code>, <code>Array&lt;function&gt;</code></td>
+<td>Adding special processor for initializing of controller&#39;s options</td>
+</tr>
+</tbody>
+</table>
+<p><strong>_Alias: <a href="/api/controller#process_config">Controller.processConfig</a>_</strong></p>
+<h3 id="controller-populate">Controller.populate( populators ) <a href="#controller-populate"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>populators</code></td>
+<td><code>routeHandler</code>, <code>Array&lt;routeHandler&gt;</code></td>
+<td>Adding special middleware for populating by own properties and methods of <code>request</code>/<code>response</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="controller-middleware">Controller.middleware( middlewares ) <a href="#controller-middleware"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>middlewares</code></td>
+<td><code>routeHandler</code>, <code>Array&lt;routeHandler&gt;</code></td>
+<td>Adding special middleware for process request</td>
+</tr>
+</tbody>
+</table>
+<h2 id="controller-constructor">Controller#constructor( [options] ) <a href="#controller-constructor"><span>#</span></a></h2>
+<h3 id="arguments">Arguments <a href="#arguments"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><a href="https://github.com/ifnode/ifnode/blob/master/core/Controller.T.js#L2"><code>ControllerOptions</code></a></td>
+<td>Options definition for controller. Below <code>ControllerOptions</code> are described more detailed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options">options <a href="#options"><span>#</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>root</td>
+<td><code>string</code></td>
+<td>Root path of the controller handling (for example, <code>/api/v1/users</code>)</td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+<td>Controller&#39;s name <code>path/to/controller</code> related <code>${backend_folder}</code></td>
+</tr>
+<tr>
+<td>router</td>
+<td><code>Object</code></td>
+<td>Options for initializing of <code>Express.Router</code> (check <a href="https://expressjs.com/4x/api.html#router">here</a> list of possible options)</td>
+</tr>
+<tr>
+<td>ajax</td>
+<td><code>boolean</code></td>
+<td>Configure accessibility of controller for AJAX, non-AJAX or both types of requests</td>
+</tr>
+<tr>
+<td>map</td>
+<td><code>Object</code></td>
+<td>Hash of controllers actions. It contains key with method/path and value with action (read more about <code>map</code> <strong><a href="/docs/app/controller#definition-by-map">here</a></strong>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Note: all options are optional</em></strong></p>
+<h2 id="instance-properties">Instance properties <a href="#instance-properties"><span>#</span></a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code id="controller-id">id</code></td>
+<td><code>string</code></td>
+<td><a href="https://github.com/kelektiv/node-uuid#uuidv4options--buffer--offset">UUID v4</a></td>
+<td>Unique value for each <code>Controller</code> instance</td>
+</tr>
+<tr>
+<td><code id="controller-name">name</code></td>
+<td><code>string</code></td>
+<td><code>/path/to/controller/</code> relative to <a href="/api/application#application-backend_folder"><code>app.backend_folder</code></a></td>
+<td>Controller&#39;s name. This name will used by framework when controller will be attached to <code>Application</code> instance (read more about controllers initializing <strong><a href="/docs/app/controllers#initializing">here</a></strong>)</td>
+</tr>
+<tr>
+<td><code id="controller-root">root</code></td>
+<td><code>string</code></td>
+<td><code>/path/to/controller/</code> relative to <a href="/api/application#application-backend_folder"><code>app.backend_folder</code></a></td>
+<td>Controller root requests path. This path is a start point for all defined controllers handlers by <code>method</code> function. <code>root</code> will be concatenated with <code>method</code>&#39;s path</td>
+</tr>
+<tr>
+<td><code id="controller-router">router</code></td>
+<td><code>Express.Router</code></td>
+<td><code>{}</code></td>
+<td>Router is base of controller</td>
+</tr>
+<tr>
+<td><code id="controller-map">map</code></td>
+<td><code>Object</code></td>
+<td><code>{}</code></td>
+<td>Contains hash with all controllers routes, those handler callbacks and options</td>
+</tr>
+</tbody>
+</table>
+<h2 id="instance-methods">Instance methods <a href="#instance-methods"><span>#</span></a></h2>
+<h3 id="controller-before">Controller#before( callbacks ) <a href="#controller-before"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>callbacks</code></td>
+<td><code>...Array&lt;routeHandler&gt;</code></td>
+<td>List of middlewares which will be invoked before any path handler in controller. Can be useful for options presetting or checking of incoming data</td>
+</tr>
+</tbody>
+</table>
+<h3 id="controller-param">Controller#param( name, expression ) <a href="#controller-param"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>Name of param (definition equal to <code>Express</code>&#39;s <a href="http://expressjs.com/en/api.html#app.param"><code>param</code></a>)</td>
+</tr>
+<tr>
+<td><code>expression</code></td>
+<td><code>function</code></td>
+<td>Describing of parameter Name of param (definition equal to <code>Express</code>&#39;s <a href="http://expressjs.com/en/api.html#app.param"><code>param</code></a>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="controller-method">Controller#method( methods, [path, ] [options, ] callbacks ) <a href="#controller-method"><span>#</span></a></h3>
+<p><code>Controller#method</code> build on <code>Express</code>&#39;s <strong><a href="http://expressjs.com/en/api.html#router.METHOD">router.METHOD</a></strong> and extends all possibilities.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>methods</code></td>
+<td><code>string</code>, <code>Array&lt;string&gt;</code></td>
+<td>none</td>
+<td>Name of HTTP(s) method. Can be presented by GET, POST, PUT, DELETE, etc in lowercase (equal to <code>router.METHOD</code>)</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td><code>URLPath</code></td>
+<td><code>/</code></td>
+<td>Path is a continuing of controller root and create a new route of requests</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td><code>Object</code></td>
+<td><code>{}</code></td>
+<td>Hash of specified controller options for route. Default value is a base options of current controller</td>
+</tr>
+<tr>
+<td><code>callbacks</code></td>
+<td><code>...Array&lt;routerHandler&gt;</code></td>
+<td>Handlers of request</td>
+</tr>
+</tbody>
+</table>
+<h4 id="aliases-of-base-http-methods-">Aliases of base HTTP methods: <a href="#aliases-of-base-http-methods"><span>#</span></a></h4>
+<ul>
+<li><span id="method-get">Controller#get([path, ] [options, ] callbacks )</span></li>
+<li><span id="method-post">Controller#post([path, ] [options, ] callbacks )</span></li>
+<li><span id="method-put">Controller#put([path, ] [options, ] callbacks )</span></li>
+<li><span id="method-patch">Controller#patch([path, ] [options, ] callbacks )</span></li>
+<li><span id="method-delete">Controller#delete([path, ] [options, ] callbacks )</span></li>
+<li><em><span id="method-del">Controller#del([path, ] [options, ] callbacks ) <sup>deprecated</sup></span></em></li>
+</ul>
+<h3 id="controller-use">Controller#use( [path, ] callbacks ) <a href="#controller-use"><span>#</span></a></h3>
+<p><code>Controller#use</code> build on <code>Express</code>&#39;s <strong><a href="http://expressjs.com/en/api.html#router.use">router.use</a></strong> and extends all possibilities.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td><code>URLPath</code></td>
+<td><code>/</code></td>
+<td>Path is a continuing of controller root and create a new route of requests</td>
+</tr>
+<tr>
+<td><code>callbacks</code></td>
+<td><code>...Array&lt;routerHandler&gt;</code></td>
+<td>Handler(s) of request</td>
+</tr>
+</tbody>
+</table>
+<h3 id="controller-end">Controller#end( ) <a href="#controller-end"><span>#</span></a></h3>
+<p>Mark the end of controller route handlers definition - controller will send <code>response.not_found()</code> if cannot find any handler for current request.</p>
+<p>By default go to next controller to find request handlers if <code>controller.end()</code> will not be invoked.</p>
+<h4 id="examples">Examples <a href="#examples"><span>#</span></a></h4>
+<h5 id="without-end-">without <code>.end()</code> <a href="#without-end"><span>#</span></a></h5>
+<pre><code class="lang-javascript"><span class="token keyword">const</span> controller <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Controller</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    name<span class="token punctuation">:</span> <span class="token string">'controller'</span><span class="token punctuation">,</span>
+    root<span class="token punctuation">:</span> <span class="token string">'/'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+controller<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/exists'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> res<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span><span class="token string">'response by controller'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> controller1 <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Controller</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+   name<span class="token punctuation">:</span> <span class="token string">'controller1'</span><span class="token punctuation">,</span>
+   root<span class="token punctuation">:</span> <span class="token string">'/'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+controller1<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/exists1'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> res<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span><span class="token string">'response by controller1'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<pre><code class="lang-bash">curl /exists1   <span class="token comment" spellcheck="true"># -> status 200, "response by controller1"</span>
+</code></pre>
+<h5 id="with-end-">with <code>.end()</code> <a href="#with-end"><span>#</span></a></h5>
+<pre><code class="lang-javascript"><span class="token keyword">const</span> controller <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Controller</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    name<span class="token punctuation">:</span> <span class="token string">'controller'</span><span class="token punctuation">,</span>
+    root<span class="token punctuation">:</span> <span class="token string">'/'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+controller<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/exists'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> res<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span><span class="token string">'response by controller'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+controller<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> controller1 <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">Controller</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+   name<span class="token punctuation">:</span> <span class="token string">'controller1'</span><span class="token punctuation">,</span>
+   root<span class="token punctuation">:</span> <span class="token string">'/'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+controller1<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'/exists1'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> res<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span><span class="token string">'response by controller1'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<pre><code class="lang-bash">curl /exists1   <span class="token comment" spellcheck="true"># -> status 404</span>
+</code></pre>
+<h3 id="controller-error">Controller#error( custom_error_handler ) <a href="#controller-error"><span>#</span></a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>custom_error_handler</code></td>
+<td><code>errorHandler</code></td>
+<td>Method will be invoked when instance of <code>Error</code> will be passed into <code>next_hander()</code> method of route handler. <code>ifnode</code> will search first error handler in parent controller if it cannot set in current controller or throw error in <code>node.js</code> if will not find any handler</td>
+</tr>
+</tbody>
+</table>
+<h3 id="route-handler-additional-properties">Route handler additional properties <a href="#route-handler-additional-properties"><span>#</span></a></h3>
+<p><code>request</code> and <code>response</code> parameters of route handler are populated by useful custom options.</p>
+<h4 id="request-additional-properties"><code>request</code> additional properties <a href="#request-additional-properties"><span>#</span></a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code id="request-data">data</code></td>
+<td><code>Object</code>, <code>null</code></td>
+<td>&quot;Syntax sugar&quot; which <code>request.body</code>, <code>request.query</code> or <code>null</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="response-additional-methods"><code>response</code> additional methods <a href="#response-additional-methods"><span>#</span></a></h4>
+<h5 id="response-ok">response.ok( [data] ) <a href="#response-ok"><span>#</span></a></h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td><code>IFResponseData</code></td>
+<td>Set status <code>200</code> and return <code>data</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="response-bad_request">response.bad_request( [data] ) <a href="#response-bad_request"><span>#</span></a></h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td><code>IFResponseData</code></td>
+<td>Set status <code>400</code> and return <code>data</code> or text &quot;Bad Request&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Aliases:</em></strong></p>
+<ul>
+<li>response.badRequest</li>
+<li>response.fail</li>
+</ul>
+<h5 id="response-unauthorized">response.unauthorized( [data] ) <a href="#response-unauthorized"><span>#</span></a></h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td><code>IFResponseData</code></td>
+<td>Set status <code>401</code> and return <code>data</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="response-forbidden">response.forbidden( [data] ) <a href="#response-forbidden"><span>#</span></a></h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td><code>IFResponseData</code></td>
+<td>Set status <code>403</code> and return <code>data</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="response-not_found">response.not_found( [data] ) <a href="#response-not_found"><span>#</span></a></h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td><code>IFResponseData</code></td>
+<td>Set status <code>404</code> and return <code>data</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Aliases:</em></strong></p>
+<ul>
+<li>response.notFound</li>
+</ul>
+<h5 id="response-error">response.error( [data] ) <a href="#response-error"><span>#</span></a></h5>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td><code>IFResponseData</code></td>
+<td>Set status <code>500</code> and return <code>data</code> or text &quot;Server Internal Error&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Aliases:</em></strong></p>
+<ul>
+<li>response.err</li>
+</ul>
+
+</section>
+<section id="toc-page">
+    <a href="/toc">Table of Content</a>
+</section>
+
+        </main>
+        <footer class="page-footer">
+            <span class="owner">
+                <a href="https://github.com/ifnode/ifnode">ifnode</a> is maintained by <a href="https://github.com/ilfroloff">Ilya Frolov</a> ©
+            </span>
+        </footer>
+    </body>
+</html>

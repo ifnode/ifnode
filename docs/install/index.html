@@ -20,9 +20,10 @@
                 <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
-        <main class="centered-content main-content docs">
+        <main class="main main--m docs">
             <aside id="toc">
     <ul>
+<li><a href="/docs">Guide</a><ul>
 <li><a href="/docs/intro">Introduction</a><ul>
 <li><a href="/docs/intro/ideology">Ideology</a></li>
 </ul>
@@ -48,13 +49,130 @@
 </li>
 </ul>
 </li>
-<li><a href="/docs/api">API</a><ul>
-<li><a href="/docs/api/ifnode">ifnode</a></li>
-<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
-<li><a href="/docs/api/app">app</a><ul>
-<li><a href="/docs/api/app/model">app.Model</a></li>
-<li><a href="/docs/api/app/component">app.Component</a></li>
-<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+<li><a href="/api">API</a><ul>
+<li>Constants<ul>
+<li><a href="/api/plugin_types">PLUGIN_TYPES</a><ul>
+<li><a href="/api/plugin_types#schema">.SCHEMA</a></li>
+<li><a href="/api/plugin_types#component">.COMPONENT</a></li>
+<li><a href="/api/plugin_types#controller">.CONTROLLER</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Interfaces<ul>
+<li><a href="/api/iconnectionserver">IConnectionServer</a><ul>
+<li><a href="/api/iconnectionserver#iconnectionserver-constructor">#constructor</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-configure">#configure</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-listen">#listen</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-close">#close</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Classes<ul>
+<li><a href="/api/ifnode">IFNode</a></li>
+<li><a href="/api/application">Application</a><ul>
+<li><a href="/api/application#application-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/application#application-id">.id</a></li>
+<li><a href="/api/application#application-alias">.alias</a></li>
+<li><a href="/api/application#application-project_folder">.project_folder</a></li>
+<li><a href="/api/application#application-project_folder">.projectFolder</a></li>
+<li><a href="/api/application#application-backend_folder">.backend_folder</a></li>
+<li><a href="/api/application#application-backend_folder">.backendFolder</a></li>
+<li><a href="/api/application#application-config">.config</a></li>
+<li><a href="/api/application#application-listener">.listener</a></li>
+<li><a href="/api/application#application-connection">.connection</a></li>
+<li><em><a href="/api/application#application-server">.server <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-models">.models</a></li>
+<li><a href="/api/application#application-components">.components</a></li>
+<li><a href="/api/application#application-controllers">.controllers</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/application#application-require">.require</a></li>
+<li><a href="/api/application#application-register">.register</a></li>
+<li><a href="/api/application#application-load">.load</a></li>
+<li><a href="/api/application#application-extension">.extension</a></li>
+<li><em><a href="/api/application#application-extension">.ext <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-component">.component</a></li>
+<li><em><a href="/api/application#application-run">.run <sup>deprecated</sup></a></em></li>
+<li><em><a href="/api/application#application-down">.down <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-model-class">.Model</a></li>
+<li><em><a href="/api/application#application-component-class">.Component <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-controller-class">.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/model">Model</a><ul>
+<li><a href="/api/model#model-constructor">Constructor</a></li>
+</ul>
+</li>
+<li><a href="/api/component">Component</a><ul>
+<li><a href="/api/component#component-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/component#component-id">.id</a></li>
+<li><a href="/api/component#component-name">.name</a></li>
+<li><a href="/api/component#component-config">.config</a></li>
+<li><a href="/api/component#component-alias">.alias</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/controller">Controller</a><ul>
+<li>Static methods<ul>
+<li><a href="/api/controller#process_config">.process_config</a></li>
+<li><a href="/api/controller#process_config">.processConfig</a></li>
+<li><a href="/api/controller#populate">.populate</a></li>
+<li><a href="/api/controller#middleware">.middleware</a></li>
+</ul>
+</li>
+<li><a href="/api/controller#constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/controller#controller-id">.id</a></li>
+<li><a href="/api/controller#controller-name">.name</a></li>
+<li><a href="/api/controller#controller-root">.root</a></li>
+<li><a href="/api/controller#controller-router">.router</a></li>
+<li><a href="/api/controller#controller-map">.map</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/controller#before">.before</a></li>
+<li><a href="/api/controller#param">.param</a></li>
+<li><a href="/api/controller#method">.method</a></li>
+<li><a href="/api/controller#method-get">.get</a></li>
+<li><a href="/api/controller#method-post">.post</a></li>
+<li><a href="/api/controller#method-put">.put</a></li>
+<li><a href="/api/controller#method-patch">.patch</a></li>
+<li><a href="/api/controller#method-delete">.delete</a></li>
+<li><em><a href="/api/controller#method-del">.del <sup>deprecated</sup></a></em></li>
+<li><a href="/api/controller#use">.use</a></li>
+<li><a href="/api/controller#end">.end</a></li>
+<li><a href="/api/controller#error">.error</a></li>
+</ul>
+</li>
+<li>Request property<ul>
+<li><a href="/api/controller#request-data">req.data</a></li>
+</ul>
+</li>
+<li>Response methods<ul>
+<li><a href="/api/controller#response-ok">res.ok</a></li>
+<li><a href="/api/controller#response-bad_request">res.bad_request</a></li>
+<li><a href="/api/controller#response-bad_request">res.badRequest</a></li>
+<li><a href="/api/controller#response-bad_request">res.fail</a></li>
+<li><a href="/api/controller#response-unauthorized">res.unauthorized</a></li>
+<li><a href="/api/controller#response-forbidden">res.forbidden</a></li>
+<li><a href="/api/controller#response-not_found">res.not_found</a></li>
+<li><a href="/api/controller#response-not_found">res.notFound</a></li>
+<li><a href="/api/controller#response-error">res.error</a></li>
+<li><a href="/api/controller#response-error">res.err</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -63,13 +181,13 @@
 
 </aside>
 <section id="docs">
-    <h2 id="install">Install</h2>
-<h3 id="requirements">Requirements</h3>
+    <h1 id="install">Install <a href="#install"><span>#</span></a></h1>
+<h2 id="requirements">Requirements <a href="#requirements"><span>#</span></a></h2>
 <p>You can create you awesome application on</p>
 <pre><code>iojs =&gt; 1.0.0
 node.js =&gt; 0.10.0
 </code></pre><p><em>Note: for install node.js or iojs you can use simple and great <strong><a href="https://github.com/creationix/nvm">nvm</a></strong></em></p>
-<h3 id="install">Install</h3>
+<h2 id="install">Install <a href="#install"><span>#</span></a></h2>
 <p>Type simple command:</p>
 <pre><code class="lang-bash"><span class="token function">npm</span> <span class="token function">install</span> ifnode --save
 </code></pre>
@@ -81,7 +199,7 @@ node.js =&gt; 0.10.0
 
 </section>
 <section id="toc-page">
-    <a href="/docs/toc">Table of Content</a>
+    <a href="/toc">Table of Content</a>
 </section>
 
         </main>

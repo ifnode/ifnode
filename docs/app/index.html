@@ -20,9 +20,10 @@
                 <a href="https://github.com/ifnode/ifnode" class="btn">View on GitHub</a>
             </div>
         </header>
-        <main class="centered-content main-content docs">
+        <main class="main main--m docs">
             <aside id="toc">
     <ul>
+<li><a href="/docs">Guide</a><ul>
 <li><a href="/docs/intro">Introduction</a><ul>
 <li><a href="/docs/intro/ideology">Ideology</a></li>
 </ul>
@@ -48,13 +49,130 @@
 </li>
 </ul>
 </li>
-<li><a href="/docs/api">API</a><ul>
-<li><a href="/docs/api/ifnode">ifnode</a></li>
-<li><a href="/docs/api/iconnectionserver">IConnectionServer</a></li>
-<li><a href="/docs/api/app">app</a><ul>
-<li><a href="/docs/api/app/model">app.Model</a></li>
-<li><a href="/docs/api/app/component">app.Component</a></li>
-<li><a href="/docs/api/app/controller">app.Controller</a></li>
+</ul>
+</li>
+<li><a href="/api">API</a><ul>
+<li>Constants<ul>
+<li><a href="/api/plugin_types">PLUGIN_TYPES</a><ul>
+<li><a href="/api/plugin_types#schema">.SCHEMA</a></li>
+<li><a href="/api/plugin_types#component">.COMPONENT</a></li>
+<li><a href="/api/plugin_types#controller">.CONTROLLER</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Interfaces<ul>
+<li><a href="/api/iconnectionserver">IConnectionServer</a><ul>
+<li><a href="/api/iconnectionserver#iconnectionserver-constructor">#constructor</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-configure">#configure</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-listen">#listen</a></li>
+<li><a href="/api/iconnectionserver#iconnectionserver-close">#close</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Classes<ul>
+<li><a href="/api/ifnode">IFNode</a></li>
+<li><a href="/api/application">Application</a><ul>
+<li><a href="/api/application#application-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/application#application-id">.id</a></li>
+<li><a href="/api/application#application-alias">.alias</a></li>
+<li><a href="/api/application#application-project_folder">.project_folder</a></li>
+<li><a href="/api/application#application-project_folder">.projectFolder</a></li>
+<li><a href="/api/application#application-backend_folder">.backend_folder</a></li>
+<li><a href="/api/application#application-backend_folder">.backendFolder</a></li>
+<li><a href="/api/application#application-config">.config</a></li>
+<li><a href="/api/application#application-listener">.listener</a></li>
+<li><a href="/api/application#application-connection">.connection</a></li>
+<li><em><a href="/api/application#application-server">.server <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-models">.models</a></li>
+<li><a href="/api/application#application-components">.components</a></li>
+<li><a href="/api/application#application-controllers">.controllers</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/application#application-require">.require</a></li>
+<li><a href="/api/application#application-register">.register</a></li>
+<li><a href="/api/application#application-load">.load</a></li>
+<li><a href="/api/application#application-extension">.extension</a></li>
+<li><em><a href="/api/application#application-extension">.ext <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-component">.component</a></li>
+<li><em><a href="/api/application#application-run">.run <sup>deprecated</sup></a></em></li>
+<li><em><a href="/api/application#application-down">.down <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-model-class">.Model</a></li>
+<li><em><a href="/api/application#application-component-class">.Component <sup>deprecated</sup></a></em></li>
+<li><a href="/api/application#application-controller-class">.Controller</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/model">Model</a><ul>
+<li><a href="/api/model#model-constructor">Constructor</a></li>
+</ul>
+</li>
+<li><a href="/api/component">Component</a><ul>
+<li><a href="/api/component#component-constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/component#component-id">.id</a></li>
+<li><a href="/api/component#component-name">.name</a></li>
+<li><a href="/api/component#component-config">.config</a></li>
+<li><a href="/api/component#component-alias">.alias</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/api/controller">Controller</a><ul>
+<li>Static methods<ul>
+<li><a href="/api/controller#process_config">.process_config</a></li>
+<li><a href="/api/controller#process_config">.processConfig</a></li>
+<li><a href="/api/controller#populate">.populate</a></li>
+<li><a href="/api/controller#middleware">.middleware</a></li>
+</ul>
+</li>
+<li><a href="/api/controller#constructor">Constructor</a></li>
+<li>Properties<ul>
+<li><a href="/api/controller#controller-id">.id</a></li>
+<li><a href="/api/controller#controller-name">.name</a></li>
+<li><a href="/api/controller#controller-root">.root</a></li>
+<li><a href="/api/controller#controller-router">.router</a></li>
+<li><a href="/api/controller#controller-map">.map</a></li>
+</ul>
+</li>
+<li>Methods<ul>
+<li><a href="/api/controller#before">.before</a></li>
+<li><a href="/api/controller#param">.param</a></li>
+<li><a href="/api/controller#method">.method</a></li>
+<li><a href="/api/controller#method-get">.get</a></li>
+<li><a href="/api/controller#method-post">.post</a></li>
+<li><a href="/api/controller#method-put">.put</a></li>
+<li><a href="/api/controller#method-patch">.patch</a></li>
+<li><a href="/api/controller#method-delete">.delete</a></li>
+<li><em><a href="/api/controller#method-del">.del <sup>deprecated</sup></a></em></li>
+<li><a href="/api/controller#use">.use</a></li>
+<li><a href="/api/controller#end">.end</a></li>
+<li><a href="/api/controller#error">.error</a></li>
+</ul>
+</li>
+<li>Request property<ul>
+<li><a href="/api/controller#request-data">req.data</a></li>
+</ul>
+</li>
+<li>Response methods<ul>
+<li><a href="/api/controller#response-ok">res.ok</a></li>
+<li><a href="/api/controller#response-bad_request">res.bad_request</a></li>
+<li><a href="/api/controller#response-bad_request">res.badRequest</a></li>
+<li><a href="/api/controller#response-bad_request">res.fail</a></li>
+<li><a href="/api/controller#response-unauthorized">res.unauthorized</a></li>
+<li><a href="/api/controller#response-forbidden">res.forbidden</a></li>
+<li><a href="/api/controller#response-not_found">res.not_found</a></li>
+<li><a href="/api/controller#response-not_found">res.notFound</a></li>
+<li><a href="/api/controller#response-error">res.error</a></li>
+<li><a href="/api/controller#response-error">res.err</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -63,8 +181,8 @@
 
 </aside>
 <section id="docs">
-    <h2 id="application-items">Application items</h2>
-<h3 id="-ifnode-build-items-hierarchy"><code>ifnode</code> build items hierarchy</h3>
+    <h1 id="application-items">Application items <a href="#application-items"><span>#</span></a></h1>
+<h2 id="ifnode-build-items-hierarchy"><code>ifnode</code> build items hierarchy <a href="#ifnode-build-items-hierarchy"><span>#</span></a></h2>
 <p>Like was <strong><a href="/docs/intro/ideology">said before</a></strong>, <code>ifnode</code> contains four build items:</p>
 <ul>
 <li><strong><a href="/docs/app/extensions">extensions</a></strong></li>
@@ -75,9 +193,9 @@
 <p>Each item have specific role for building <code>ifnode</code> application. Simple hierarchy of each application elements:</p>
 <p><img src="/assets/img/hierarchy.png" alt="Application items hierarchy"></p>
 <p>Like presented in picture, each item have specified and direct role in <code>ifnode</code> application. Let&#39;s check each part closer.</p>
-<h3 id="node_modules">node_modules</h3>
+<h2 id="node_modules">node_modules <a href="#node_modules"><span>#</span></a></h2>
 <p><code>node_modules</code> is a fundamental part of each application. <code>npm</code> have a large amount of great and not modules</p>
-<h3 id="extensions-helpers-layer-">extensions (Helpers Layer)</h3>
+<h2 id="extensions-">Extensions (Helpers Layer) <a href="#extensions"><span>#</span></a></h2>
 <p>Frequently developing application requires some specified module which cannot find in <code>npm</code>. Extensions are the internal application modules. It can be helper&#39;s functions, internal logging system, etc. <code>ifnode</code>&#39;s extension can to extend some <code>npm</code> module and to increase possibilities.</p>
 <p>Also extensions using in <code>ifnode</code>&#39;s <strong><a href="/docs/app/plugins">plugins system</a></strong>, because each <code>ifnode</code>&#39;s plugin is extension (or <code>npm</code> module) in general.</p>
 <p>Notes:</p>
@@ -85,14 +203,16 @@
 <li>extension can accessed other extension</li>
 </ul>
 <p><em>P.S. One of &quot;native&quot; <code>npm</code> variant of creating own modules describes <strong><a href="https://blog.risingstack.com/nodejs-at-scale-npm-best-practices/#9developingpackages">here</a></strong>.</em></p>
-<h3 id="models-data-access-layer-">models (Data Access Layer)</h3>
+<p><strong><em>Main article about extensions is placed <a href="/docs/app/extensions">here</a></em></strong></p>
+<h2 id="models-">Models (Data Access Layer) <a href="#models"><span>#</span></a></h2>
 <p>Most problems requires processing data. Data can be from database or by services, and application must have access point to get or change this data. <code>ifnode</code>&#39;s models part is it.
 Each model build on <code>schema</code> - point to get and work with data. Each <code>schema</code> is <code>npm</code> module or extension, because <code>schema</code> cannot be related of developing application. Frequently <code>schema</code> is a middleware between <code>ifnode</code>&#39;s models system and external data access library (for example, <strong><a href="https://www.npmjs.com/package/ifnode-mongoose">ifnode-mongoose</a></strong>).</p>
 <p>Notes:</p>
 <ul>
 <li>model cannot accessed other model</li>
 </ul>
-<h3 id="components-business-layer-">components (Business Layer)</h3>
+<p><strong><em>Main article about models is placed <a href="/docs/app/models">here</a></em></strong></p>
+<h2 id="components-">Components (Business Layer) <a href="#components"><span>#</span></a></h2>
 <p>Business Layer resolves two problems:</p>
 <ol>
 <li>How application must work with models data</li>
@@ -104,13 +224,15 @@ Each model build on <code>schema</code> - point to get and work with data. Each 
 <ul>
 <li>component can accessed other component</li>
 </ul>
-<h3 id="controllers-requests-layer-">controllers (Requests Layer)</h3>
+<p><strong><em>Main article about components is placed <a href="/docs/app/components">here</a></em></strong></p>
+<h2 id="controllers-">Controllers (Requests Layer) <a href="#controllers"><span>#</span></a></h2>
 <p>Controllers system of <code>ifnode</code> build on <code>express</code> <code>npm</code> module and extends it possibilities. Each controller is a independent route point with specified behavior. Behavior describes by plugins. For example you want to add possibility to prevent access to some IP&#39;s.
 Controller inherits <code>express.Router</code> and have most of <code>Router</code> class methods.</p>
+<p><strong><em>Main article about controllers is placed <a href="/docs/app/controllers">here</a></em></strong></p>
 
 </section>
 <section id="toc-page">
-    <a href="/docs/toc">Table of Content</a>
+    <a href="/toc">Table of Content</a>
 </section>
 
         </main>
