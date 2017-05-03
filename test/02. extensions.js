@@ -26,5 +26,20 @@ describe('Extensions', function() {
 
             Should.equal(app.extension('a'), app.ext('a'));
         });
+
+        it('should show full error in extension', function() {
+            var non_exists_extension_name = 'non-exists';
+            try {
+                app.extension(non_exists_extension_name);
+            } catch(error) {
+                error.message.should.containEql(non_exists_extension_name);
+            }
+
+            try {
+                app.extension('with-error');
+            } catch(error) {
+                Should.equal(error.message, 'Expected error message');
+            }
+        });
     });
 });

@@ -19,10 +19,16 @@ function Extension(start_load_point) {
  * @returns {*}
  */
 Extension.prototype.require = function(id) {
+    var extension_path = Path.resolve(this._start_load_point, id);
+
     try {
-        return require(Path.resolve(this._start_load_point, id));
-    } catch(err) {
-        Log.error('extensions', 'Cannot find extension by [' + id + '].');
+        return require(extension_path);
+    } catch(error) {
+        if(error.message.indexOf(extension_path) === -1) {
+            throw error;
+        } else {
+            Log.error('extensions', 'Cannot find extension by [' + id + '].');
+        }
     }
 };
 
