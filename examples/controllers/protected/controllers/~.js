@@ -41,6 +41,14 @@ main_controller.method(['post', 'put'], '/:id', function(request, response) {
     response.ok({ id: request.params.id });
 });
 
+main_controller.delete('/method-delete', function(request, response) {
+    response.ok('works');
+});
+
+main_controller.del('/method-del', function(request, response) {
+    response.ok('works');
+});
+
 main_controller.get('/error/fire', function(request, response, next) {
     next(new Error('fire'));
 });

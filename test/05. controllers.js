@@ -116,6 +116,16 @@ describe('Controllers', function() {
                         .put('/a')
                         .expect({ id: 0 }, done);
                 });
+                it('delete', function(done) {
+                    SuperTest(app.listener)
+                        .delete('/method-delete')
+                        .expect('works', done);
+                });
+                it('del', function(done) {
+                    SuperTest(app.listener)
+                        .delete('/method-del')
+                        .expect('works', done);
+                });
             });
 
             it('should jump to next controller', function(done) {

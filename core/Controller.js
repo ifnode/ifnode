@@ -220,6 +220,10 @@ Controller.prototype.method = function(methods, path, options, callbacks) {
     var args = toArray(arguments, 1);
 
     toArray(methods).forEach(function(method) {
+        method = method === 'del' ?
+            'delete' :
+            method;
+
         self._generate_url.apply(self, [method].concat(args));
     });
 
@@ -273,8 +277,8 @@ Controller.prototype.delete = make_sugar('delete');
  * @param {...routeHandler}             callbacks
  */
 Controller.prototype.del = Util.deprecate(
-    make_sugar('del'),
-    'Deprecated and will be removed from 2.0.0 version. Instead of use controller.delete()'
+    make_sugar('delete'),
+    'controller.del() is deprecated and will be removed from 2.0.0 version. Instead of use controller.delete()'
 );
 
 /**
