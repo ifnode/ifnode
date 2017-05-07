@@ -34,10 +34,10 @@ DAOList.prototype.get_default_dao_name = function() {
 /**
  *
  * @param   {string}    name
- * @returns {?Function}
+ * @returns {Function}
  */
 DAOList.prototype.get_dao = function get_dao(name) {
-    return this._daos[name] || null;
+    return this._daos[name];
 };
 
 /**

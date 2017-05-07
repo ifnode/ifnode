@@ -8,51 +8,66 @@ var Express = require('express');
 
 module.exports = function(Application) {
     Application.prototype._initialize_middleware = function(middleware_configs, app) {
-        var project_folder = this._project_folder,
+        var self = this;
+        var project_folder = this._project_folder;
 
-            ifnode_middleware = {
-                'body': function(config) {
-                    var body_parser = require('body-parser');
+        var ifnode_middleware = {
+            'body': function(config) {
+                var BodyParser = require('body-parser');
 
-                    Object.keys(config).forEach(function(method) {
-                        app.use(body_parser[method](config[method]));
+                Object.keys(config).forEach(function(method) {
+                    app.use(BodyParser[method](config[method]));
+                });
+            },
+            'statics': function(app_static_files) {
+                var serveStatic = require('serve-static');
+
+                /**
+                 *
+                 * @param {string}  static_file_config
+                 */
+                function by_string(static_file_config) {
+                    app.use(serveStatic(Path.resolve(project_folder, static_file_config)));
+                }
+
+                /**
+                 *
+                 * @param {Object}  static_file_configs
+                 */
+                function by_object(static_file_configs) {
+                    _pairs(static_file_configs).forEach(function(static_file_config) {
+                        app.use(serveStatic(static_file_config[0], static_file_config[1]));
                     });
-                },
-                'statics': function(app_static_files) {
-                    var serve_static = require('serve-static'),
+                }
 
-                        init = function(static_file_config) {
-                            if(typeof static_file_config === 'string') {
-                                by_string(static_file_config);
-                            } else if(_isPlainObject(static_file_config)) {
-                                by_object(static_file_config);
-                            }
-                        },
-                        by_string = function(static_file_config) {
-                            app.use(serve_static(Path.resolve(project_folder, static_file_config)));
-                        },
-                        by_object = function(static_file_configs) {
-                            _pairs(static_file_configs).forEach(function(static_file_config) {
-                                app.use(serve_static(static_file_config[0], static_file_config[1]));
-                            });
-                        };
-
-                    if(Array.isArray(app_static_files)) {
-                        app_static_files.forEach(init);
+                /**
+                 *
+                 * @param {string|Object}   static_file_config
+                 */
+                function initialize(static_file_config) {
+                    if(typeof static_file_config === 'string') {
+                        by_string(static_file_config);
                     } else {
-                        init(app_static_files);
+                        by_object(static_file_config);
                     }
                 }
-            },
 
-            init_by_empty_config = function(name) {
-                app.use(require(name)());
+                if(Array.isArray(app_static_files)) {
+                    app_static_files.forEach(initialize);
+                } else {
+                    initialize(app_static_files);
+                }
+            }
+        };
+
+        var init_by_empty_config = function(name) {
+                app.use(self._require_module(name)());
             },
             init_by_object_config = function(name, config) {
-                app.use(require(name)(config));
+                app.use(self._require_module(name)(config));
             },
             init_by_array_config = function(name, config) {
-                var module = require(name);
+                var module = self._require_module(name);
 
                 app.use(module.apply(module, config));
             },
@@ -74,7 +89,7 @@ module.exports = function(Application) {
                     }
 
                     init_by_array_config(middleware_name, middleware_config);
-                } else if(_isPlainObject(middleware_config)) {
+                } else {
                     if(!Object.keys(middleware_config).length) {
                         return init_by_empty_config(middleware_name);
                     }

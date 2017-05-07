@@ -14,7 +14,7 @@ exports.schema = function VirtualSchema(app, VirtualSchema) {
     VirtualSchema.schema = 'virtual';
 
     VirtualSchema.fn.initialize = function(model_config) {
-        this.name = model_config.name || this.id;
+        this.name = model_config.name;
 
         delete model_config.id;
         delete model_config.name;

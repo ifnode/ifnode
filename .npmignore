@@ -3,5 +3,9 @@
 *.sublime-workspace
 **/*.DS_store
 
+coverage/
+
 ideas
 manual.txt
+
+sandbox.js

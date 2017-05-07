@@ -1,8 +1,7 @@
 'use strict';
 
-var ifnode = require('../../'),
-    app = ifnode({
-        env: 'local'
-    });
+var IFNode = require('../../');
 
-return app;
+module.exports = function applicationBuilder(options) {
+    return IFNode(options);
+};

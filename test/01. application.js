@@ -6,6 +6,14 @@ var IFNode = require('../');
 
 describe('Application', function() {
     describe('app = new Application', function() {
+        it('should throw error for wrong alias type', function() {
+            (function() {
+                IFNode({
+                    alias: null
+                });
+            }).should.throw();
+        });
+
         it('without parameters', function() {
             var app = IFNode();
             var app1 = IFNode();
@@ -17,54 +25,16 @@ describe('Application', function() {
         it('with parameters', function() {
             var application_path = Path.resolve(__dirname, '../examples/config');
             var application_alias = 'application';
-            var env = 'local';
+
             var app = IFNode({
                 project_folder: application_path,
-                alias: application_alias,
-                env: env
+                alias: application_alias
             });
 
             app.project_folder.should.be.equal(application_path);
             app.project_folder.should.be.equal(app.projectFolder);
 
             app.alias.should.be.equal(application_alias);
-        });
-
-        it('should be valid configuration', function() {
-            var app = IFNode('application');
-            var config = app.config;
-            var site_config = config.site;
-
-            config.should.be.an.Object();
-
-            config.env.should.be.equal('local');
-            config.environment.should.be.equal('local');
-
-            site_config.local.origin.should.be.equal('https://localhost:3000');
-            site_config.global.ssl.key.should.be.equal(Path.resolve(app.project_folder, 'path/to/key'));
-            site_config.global.origin.should.be.equal('https://ifnode.com');
-
-            config.application.express.should.be.an.Object();
-            config.application.folders.should.be.an.Object();
-
-            config.db.virtual.schema.should.be.equal('virtual');
-        });
-
-        it("should be non-editable configuration", function() {
-            var app = IFNode('application');
-            var config = app.config;
-            
-            (function() {
-                config.site = {};
-            }).should.throw();
-
-            (function() {
-                config.site.local = {};
-            }).should.throw();
-
-            (function() {
-                config.site.local.origin = 'my custom origin';
-            }).should.throw();
         });
 
         it('should few instances', function() {
@@ -80,7 +50,7 @@ describe('Application', function() {
         });
     });
 
-    describe('app properties', function() {
+    describe('should has base properties', function() {
         var app = IFNode({
             alias: 'app-properties-check'
         });
@@ -107,17 +77,26 @@ describe('Application', function() {
         var app = require('../examples/extensions/app');
 
         app.require('protected/extensions/a').should.have.property('value', 'a');
+        app.require('protected/extensions/a').should.have.property('value', 'a'); // get from module's cache
         app.require('./protected/extensions/a/b').should.have.property('value', 'a/b');
         app.require('app').should.be.equal(app);
         app.require('./../extensions/app').should.be.equal(app);
     });
 
     describe('app.register(module: string|Extension|Array<string|Extension>)', function() {
-        it('not should empty', function() {
+        it('shouldn\'t load empty', function() {
             var app = IFNode();
 
             (function() {
                 app.register();
+            }).should.throw();
+        });
+
+        it('shouldn\'t load non-exists plugin', function() {
+            var app = IFNode();
+
+            (function() {
+                app.register('non-exists-plugin');
             }).should.throw();
         });
 
@@ -180,6 +159,8 @@ describe('Application', function() {
                 external_mixed_module_path
             ]);
 
+            app.load();
+
             var modules = app._modules;
 
             modules.should.containEql(internal_schema);
@@ -207,7 +188,9 @@ describe('Application', function() {
 
     describe('app.run(callback?: function)', function() {
         it('without callback', function(done) {
-            var app = IFNode();
+            var app = IFNode({
+                alias: 'server-run-wt-callback'
+            });
 
             app.run();
 
@@ -221,7 +204,9 @@ describe('Application', function() {
         });
 
         it('with callback', function(done) {
-            var app = IFNode();
+            var app = IFNode({
+                alias: 'server-run-with-callback'
+            });
 
             app.run(function(config) {
                 this.should.be.equal(app);

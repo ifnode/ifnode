@@ -58,7 +58,7 @@ ComponentsBuilder.prototype.read_and_build_component = function read_and_build_c
     var component = require(component_path);
 
     if(typeof component === 'function' && isInheritsFrom(component, Component)) {
-        var component_name = component_config.name || component.name;
+        var component_name = component_config.name;
         var saved_component = this.components[component_name];
 
         if (

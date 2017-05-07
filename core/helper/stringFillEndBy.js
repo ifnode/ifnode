@@ -11,9 +11,7 @@ function stringFillEndBy(str, character, length) {
     var string_length = str.length;
     var characters_count = length - string_length;
 
-    return characters_count > 0 ?
-        str + new Array(characters_count + 1).join(character) :
-        str;
+    return str + new Array(characters_count + 1).join(character);
 }
 
 module.exports = stringFillEndBy;

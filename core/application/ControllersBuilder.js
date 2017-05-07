@@ -5,26 +5,11 @@ var _last = require('lodash/last');
 var FS = require('fs');
 var Path = require('path');
 
-var debug = require('debug')('ifnode:controllers');
+var debug = require('debug')('ifnode:controllers'); // eslint-disable-line
 var pathWithoutExtension = require('./../helper/pathWithoutExtension');
 var addSlashToStringEnd = require('./../helper/addSlashToStringEnd');
 var Log = require('./../Log');
 var Controller = require('./../Controller');
-
-/**
- *
- * @param   {string}    string
- * @returns {string}
- */
-function cut_start_slash(string) {
-    var first_letter = string[0];
-
-    if(first_letter === '/' || first_letter === '\\') {
-        string = string.substring(1);
-    }
-
-    return string;
-}
 
 /**
  *
@@ -52,7 +37,7 @@ ControllersBuilder.LAST_LOADED_FILE = '~';
 
 /**
  *
- * @param   controller_config
+ * @param   [controller_config]
  * @returns {Controller}
  */
 ControllersBuilder.prototype.make = function(controller_config) {
@@ -90,9 +75,13 @@ ControllersBuilder.prototype.compile = function(listener) {
         listener.use(controller.root, controller.router);
     });
 
-    listener.use(function(err, request, response, next) {
+    /**
+     *
+     * List of arguments requires for correct error passing by Express
+     */
+    listener.use(function(error, request, response, next) {
         if(typeof last_controller.error_handler !== 'function') {
-            Log.error('controllers', err);
+            Log.error('controllers', error);
         }
 
         last_controller.error_handler.apply(last_controller, arguments);
@@ -117,22 +106,17 @@ ControllersBuilder.prototype.read_and_initialize_controllers = function read_and
     var LAST_LOADED_FILE = Class.LAST_LOADED_FILE;
 
     this._read_controllers(controllers_path, function(controller_file_path, relative_path) {
+        relative_path = relative_path.replace(/\\/g, '/');
+
         var path_without_extension = pathWithoutExtension(relative_path);
         var root = path_without_extension
             .replace(FIRST_LOADED_FILE, '')
-            .replace(LAST_LOADED_FILE, '')
-            .replace(/\\/g, '/');
-        var name = cut_start_slash(path_without_extension);
-        var config = {};
+            .replace(LAST_LOADED_FILE, '');
 
-        if(name !== '') {
-            config.name = name;
-        }
-        if(root !== '') {
-            config.root = addSlashToStringEnd(root);
-        }
-
-        self._autoformed_config = config;
+        self._autoformed_config = {
+            name: path_without_extension.substring(1),
+            root: addSlashToStringEnd(root)
+        };
 
         require(controller_file_path);
 

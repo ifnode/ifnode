@@ -53,9 +53,10 @@ NodeHTTPServer.prototype.listen = function(callback) {
     var config = this._config.local;
     var params = [];
 
-    if(config.port) {
-        params.push(config.port);
-    }
+    params.push(config.port ?
+        config.port :
+        0
+    );
 
     var host = config.host;
 
@@ -93,12 +94,14 @@ NodeHTTPServer.prototype._create_server = function(listener) {
 
     if(credentials.pfx) {
         credentials = {
-            pfx: FS.readFileSync(credentials.pfx, 'utf8')
+            pfx: FS.readFileSync(credentials.pfx),
+            passphrase: credentials.passphrase
         };
     } else if(credentials.key && credentials.cert) {
         credentials = {
-            key: FS.readFileSync(credentials.key, 'utf8'),
-            cert: FS.readFileSync(credentials.cert, 'utf8')
+            key: FS.readFileSync(credentials.key),
+            cert: FS.readFileSync(credentials.cert),
+            passphrase: credentials.passphrase
         };
     } else {
         Log.error('extension:ifnode-http', 'Wrong https credentials');

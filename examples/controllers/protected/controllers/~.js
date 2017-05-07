@@ -5,10 +5,8 @@ var app = require('../../../../')('cntllrs'),
         permanent: 'yes'
     });
 
-main_controller.before(function(request, response, next, next_router) {
-    if(!request.user) {
-        request.with_user = 'no';
-    }
+main_controller.before(function(request, response, next) {
+    request.check_before = 'invoked';
 
     next();
 });
@@ -19,12 +17,15 @@ main_controller.param('id', function(request, response, next, id) {
     next();
 });
 
-main_controller.get(function(request, response) {
-    response.ok({ default: true });
+main_controller.get({ default_special_options: true }, function(request, response) {
+    response.ok({
+        default: true,
+        default_special_options: request.controller_options.default_special_options
+    });
 });
 
 main_controller.get('/check_before', function(request, response) {
-    response.ok({ with_user: request.with_user });
+    response.ok({ check_before: request.check_before });
 });
 main_controller.get('/check_permanent_options', function(request, response) {
     response.ok({ permanent: request.controller_options.permanent });
@@ -46,6 +47,10 @@ main_controller.delete('/method-delete', function(request, response) {
 });
 
 main_controller.del('/method-del', function(request, response) {
+    response.ok('works');
+});
+
+main_controller.method(['del', 'delete'], '/methods-delete', function(request, response) {
     response.ok('works');
 });
 
