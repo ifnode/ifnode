@@ -58,6 +58,17 @@ ComponentsBuilder.prototype.read_and_build_component = function read_and_build_c
     var component = require(component_path);
 
     if(typeof component === 'function' && isInheritsFrom(component, Component)) {
+        var component_name = component_config.name || component.name;
+        var saved_component = this.components[component_name];
+
+        if (
+            saved_component &&
+            saved_component.constructor === component &&
+            saved_component.name === component_name
+        ) {
+            return component;
+        }
+
         component = new component(component_config);
     }
 
@@ -122,13 +133,7 @@ ComponentsBuilder.prototype._save_component = function(component, key) {
 
     if(!saved_component) {
         return this.components[key] = component;
-    } else if (
-        saved_component === component ||
-        (
-            saved_component.constructor === component.constructor &&
-            saved_component.name === component.name
-        )
-    ) {
+    } else if (saved_component === component) {
         return saved_component;
     }
 
