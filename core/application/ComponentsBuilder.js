@@ -57,13 +57,13 @@ ComponentsBuilder.prototype.build_and_memorize_config = function build_and_memor
 ComponentsBuilder.prototype.read_and_build_component = function read_and_build_component(component_path, component_config) {
     var component = require(component_path);
 
-    if (component instanceof Component) {
-        return this._save_component(component, component.name);
-    } else if(typeof component === 'function' && isInheritsFrom(component, Component)) {
-        return this._save_component(new component(component_config), component_config.name);
-    } else {
-        return component;
+    if(typeof component === 'function' && isInheritsFrom(component, Component)) {
+        component = new component(component_config);
     }
+
+    return component instanceof Component ?
+        this._save_component(component, component.name) :
+        component;
 };
 
 /**
@@ -122,7 +122,13 @@ ComponentsBuilder.prototype._save_component = function(component, key) {
 
     if(!saved_component) {
         return this.components[key] = component;
-    } else if (saved_component === component) {
+    } else if (
+        saved_component === component ||
+        (
+            saved_component.constructor === component.constructor &&
+            saved_component.name === component.name
+        )
+    ) {
         return saved_component;
     }
 

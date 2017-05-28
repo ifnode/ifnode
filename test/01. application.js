@@ -194,9 +194,9 @@ describe('Application', function() {
             alias: 'app-load-test'
         });
 
-        Should(app.components).be.a.null();
-        Should(app.models).be.a.null();
-        Should(app.controllers).be.a.null();
+        Should.equal(Object.keys(app.components).length, 0);
+        Should.equal(Object.keys(app.models).length, 0);
+        Should.equal(Object.keys(app.controllers).length, 0);
 
         app.load();
 

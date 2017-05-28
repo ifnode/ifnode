@@ -73,9 +73,9 @@ function Application(options) {
      */
     this.server = this.connection.server;
 
-    this.models = null;
-    this.components = null;
-    this.controllers = null;
+    this.models = {};
+    this.components = {};
+    this.controllers = {};
 }
 
 require('./application/middleware')(Application);
@@ -369,8 +369,6 @@ Application.prototype._initialize_models = function _initialize_models() {
         require(model_file_path);
     });
 
-    this.models = {};
-
     return models_builder.compile_models(this);
 };
 
@@ -425,8 +423,6 @@ Application.prototype._initialize_components = function _initialize_components()
         }
     });
 
-    this.components = {};
-
     return components_builder.compile(this);
 };
 
@@ -445,8 +441,6 @@ Application.prototype._initialize_controllers = function _initialize_controllers
             module(this, Controller);
         }
     }
-
-    this.controllers = {};
 
     controllers_builder.read_and_initialize_controllers(
         this.config.application.folders.controllers, this
