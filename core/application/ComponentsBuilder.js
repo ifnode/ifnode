@@ -66,7 +66,7 @@ ComponentsBuilder.prototype.read_and_build_component = function read_and_build_c
             saved_component.constructor === component &&
             saved_component.name === component_name
         ) {
-            return component;
+            return saved_component;
         }
 
         component = new component(component_config);
