@@ -19,19 +19,19 @@
     "author": "Ilya Frolov <ilfroloff@gmail.com>",
     "license": "MIT",
     "dependencies": {
-        "debug": "2.6.8",
+        "debug": "3.0.0",
         "diread": "0.2.0",
-        "express": "4.15.3",
+        "express": "4.15.4",
         "lodash": "4.17.4",
         "uuid": "3.1.0"
     },
     "devDependencies": {
         "body-parser": "1.17.2",
         "coveralls": "2.13.1",
-        "eslint": "3.12.0",
+        "eslint": "4.5.0",
         "eslint-plugin-require-jsdoc": "1.0.4",
         "istanbul": "0.4.5",
-        "mocha": "3.4.2",
+        "mocha": "3.5.0",
         "serve-static": "1.12.4",
         "setprototypeof": "1.0.3",
         "should": "11.2.1",
