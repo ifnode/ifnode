@@ -37,10 +37,6 @@ Log.log = function(key, args) {
  * @param {Error|string}    warning
  */
 Log.warning = function(name, warning) {
-    if(warning instanceof Error) {
-        warning = warning.message;
-    }
-
     this.log(
         'warning',
         this.TEMPLATE

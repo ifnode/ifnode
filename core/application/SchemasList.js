@@ -17,10 +17,10 @@ SchemasList.prototype.attach_schema = function attach_schema(Schema) {
 /**
  *
  * @param   {string}    name
- * @returns {?ISchema}
+ * @returns {ISchema}
  */
 SchemasList.prototype.get_schema = function get_schema(name) {
-    return this._schemas_drivers[name] || null;
+    return this._schemas_drivers[name];
 };
 
 module.exports = SchemasList;

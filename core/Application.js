@@ -11,7 +11,7 @@ var deepFreeze = require('./helper/deepFreeze');
 var pathWithoutExtension = require('./helper/pathWithoutExtension');
 var tryCatch = require('./helper/tryCatch');
 
-var debug = require('debug')('ifnode:application');
+var debug = require('debug')('ifnode:application'); // eslint-disable-line
 var Log = require('./Log');
 
 var Extension = require('./application/Extension');
@@ -40,7 +40,7 @@ var NodeHTTPServer = require('./../plugins/node-http_s-server');
  * @param {ApplicationOptions}  options
  */
 function Application(options) {
-    if(options.alias && typeof options.alias !== 'string') {
+    if(options.alias !== void 0 && typeof options.alias !== 'string') {
         Log.error('application', 'Alias must be String');
     }
 
@@ -214,13 +214,13 @@ Application.prototype.Component = function(custom_component_config) {
     var builder = this._components_builder;
 
     return builder.make(
-        builder.build_component_config(custom_component_config || {}, this.config.components)
+        builder.build_component_config(custom_component_config, this.config.components)
     );
 };
 
 /**
  *
- * @param   {Object}    controller_config
+ * @param   {Object}    [controller_config]
  * @returns {Controller}
  */
 Application.prototype.Controller = function(controller_config) {
@@ -297,8 +297,8 @@ Application.prototype._initialize_listener = function() {
     app.use(RestMiddleware.response());
     if(middleware_configs) {
         this._initialize_middleware(middleware_configs, app);
-        app.use(RestMiddleware.request());
     }
+    app.use(RestMiddleware.request());
 
     var express_configs = app_config.express;
 
@@ -323,6 +323,7 @@ Application.prototype._initialize_connection_server = function() {
         case 'http':
         case 'https':
             return new NodeHTTPServer(this.listener, site_config);
+
         default:
             /**
              *
@@ -340,11 +341,6 @@ Application.prototype._initialize_connection_server = function() {
  */
 Application.prototype._initialize_models = function _initialize_models() {
     var db = this.config.db;
-
-    if(!(db && Object.keys(db).length)) {
-        return;
-    }
-
     var modules = this._modules;
     var schemas_list = new SchemasList;
 

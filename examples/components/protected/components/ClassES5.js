@@ -1,5 +1,7 @@
 'use strict';
 
+var setPrototypeOf = require('setprototypeof');
+
 /**
  *
  * @class
@@ -18,13 +20,7 @@ var ClassES5Statics = {
     }
 };
 
-if(Object.setPrototypeOf) {
-    Object.setPrototypeOf(ClassES5, ClassES5Statics);
-} else {
-    Object.keys(ClassES5Statics).forEach(function(key) {
-        ClassES5[key] = ClassES5Statics[key];
-    });
-}
+setPrototypeOf(ClassES5, ClassES5Statics);
 
 ClassES5.prototype.plain = function() {
     return this._plain;

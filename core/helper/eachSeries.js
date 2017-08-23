@@ -12,11 +12,6 @@ function eachSeries(array, iterator, finish) {
     array = toArray(array);
 
     var length = array.length;
-
-    if(!length) {
-        return;
-    }
-
     var i = 0;
     var interrupted = false;
 

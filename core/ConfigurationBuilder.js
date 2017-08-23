@@ -7,17 +7,34 @@ var _includes = require('lodash/includes');
 // var debug = require('debug')('ifnode:config');
 var path = require('path');
 
+/**
+ *
+ * @param   {IFSiteConnectionOptions}   site_config
+ * @param   {boolean}                   ssl
+ * @returns {string}
+ */
+function build_origin_value(site_config, ssl) {
+    var protocol = ssl?
+        'https://' :
+        'http://';
+    var port = site_config.port?
+        ':' + site_config.port :
+        '';
+
+    return protocol + site_config.host + port;
+}
+
+/**
+ *
+ * @param   {IFSiteConnectionOptions}   site_config
+ * @param   {boolean}                   ssl
+ * @returns {Object}
+ */
 function location_init(site_config, ssl) {
     Object.defineProperties(site_config, {
         'origin': {
             enumerable: true,
-            get: function() {
-                var protocol = ssl? 'https://' : 'http://',
-                    port = this.port? ':' + this.port : '',
-                    host = this.host? this.host : 'localhost';
-
-                return protocol + host + port;
-            }
+            value: build_origin_value(site_config, ssl)
         },
         'url': {
             enumerable: true,
@@ -33,6 +50,13 @@ function location_init(site_config, ssl) {
 
     return site_config;
 }
+
+/**
+ *
+ * @param {Object}                  params
+ * @param {Array.<Object, string>}  params.obj
+ * @param {Object}                  params.defaults
+ */
 function set_defaults(params) {
     var obj = params.obj[0],
         prop = params.obj[1],
@@ -43,20 +67,25 @@ function set_defaults(params) {
         _clone(defaults);
 }
 
+/**
+ *
+ * @param {Object}  config
+ * @param {Object}  default_config
+ * @param {string}  project_folder
+ */
 function initialize_properties_config(config, default_config, project_folder) {
     config.environment = config.env = config.environment || config.env || default_config.environment;
     config.application = config.application || {};
     config.components = config.components || {};
 
     if(config.application.folders) {
-        Object.keys(config.application.folders).forEach(function(type) {
-            var short_path = config.application.folders[type],
-                full_path = path.resolve(project_folder, short_path);
+        var folders = config.application.folders;
 
-            config.application.folders[type] = full_path;
+        Object.keys(folders).forEach(function(type) {
+            folders[type] = path.resolve(project_folder, folders[type]);
         });
 
-        if(config.application.folders.views) {
+        if(folders.views) {
             set_defaults({
                 obj: [config.application, 'express'],
                 defaults: {
@@ -96,7 +125,7 @@ function initialize_site_config(config, default_config, project_folder) {
         /**
          *
          * @param {Object}  config
-         * @param {Object}  default_ssl_config
+         * @param {Object}  [default_ssl_config]
          */
         function check_ssl_property(config, default_ssl_config) {
             if(typeof config.ssl !== 'undefined') {
@@ -106,7 +135,7 @@ function initialize_site_config(config, default_config, project_folder) {
 
                 if(config.ssl.pfx) {
                     config.ssl.pfx = path.resolve(project_folder, config.ssl.pfx);
-                } else {
+                } else if(config.ssl.key && config.ssl.cert) {
                     config.ssl.key = path.resolve(project_folder, config.ssl.key);
                     config.ssl.cert = path.resolve(project_folder, config.ssl.cert);
                 }
@@ -123,22 +152,6 @@ function initialize_site_config(config, default_config, project_folder) {
         check_ssl_property(config.site.global, config.site.ssl);
     }
 
-    /**
-     *
-     * @param {Object}  site_config
-     * @param {Object}  default_config
-     */
-    function set_default(site_config, default_config) {
-        if(!site_config.host) {
-            site_config.host = default_config.host;
-        }
-        if(_includes(['127.0.0.1', 'localhost'], site_config.host) &&
-            !site_config.port
-        ) {
-            site_config.port = default_config.port;
-        }
-    }
-
     if(!config.site) {
         config.site = _clone(default_config.site);
         return;
@@ -151,7 +164,19 @@ function initialize_site_config(config, default_config, project_folder) {
     if(!config.site.local) {
         config.site.local = _clone(default_config.site.local);
     } else {
-        set_default(config.site.local, default_config.site.local);
+        var local_site_config = config.site.local;
+        var local_default_config = default_config.site.local;
+
+        if(!local_site_config.host) {
+            local_site_config.host = local_default_config.host;
+        }
+
+        if(
+            _includes(['127.0.0.1', 'localhost'], local_site_config.host) &&
+            !local_site_config.port
+        ) {
+            local_site_config.port = local_default_config.port;
+        }
     }
 
     if(!config.site.global) {
@@ -160,18 +185,21 @@ function initialize_site_config(config, default_config, project_folder) {
 
     initialize_ssl_config();
 }
+
+/**
+ *
+ * @param {Object}  config
+ */
 function initialize_additional_site_config(config) {
     location_init(config.site.local, !!config.site.local.ssl);
     location_init(config.site.global, !!config.site.global.ssl);
 }
-function initialize_session_config(config, default_config) {
-    var session_config = config.application.session,
-        default_session_config = default_config.application.session;
 
-    if(session_config && !session_config.secret) {
-        session_config.secret = default_session_config.secret;
-    }
-}
+/**
+ *
+ * @param {Object}  config
+ * @param {Object}  default_config
+ */
 function initialize_db_config(config, default_config) {
     config.db = _defaults(config.db || {}, default_config.db);
 }
@@ -228,32 +256,32 @@ function initialize_default_config(options) {
     };
 }
 
-var ConfigPrototype = {
-    by_path: function by_path(path) {
-        var parts = path.split('.'),
-            tmp = this,
-            part, i, len = parts.length;
-
-        for (i = 0; i < len; ++i) {
-            part = parts[i];
-            tmp = tmp[part];
-
-            if (typeof tmp === 'undefined') {
-                return null;
-            }
-        }
-
-        return tmp;
-    },
-    byPath: function byPath(path) {
-        return this.by_path(path);
-    }
-};
+// var ConfigPrototype = {
+//     by_path: function by_path(path) {
+//         var parts = path.split('.'),
+//             tmp = this,
+//             part, i, len = parts.length;
+//
+//         for (i = 0; i < len; ++i) {
+//             part = parts[i];
+//             tmp = tmp[part];
+//
+//             if (typeof tmp === 'undefined') {
+//                 return null;
+//             }
+//         }
+//
+//         return tmp;
+//     },
+//     byPath: function byPath(path) {
+//         return this.by_path(path);
+//     }
+// };
 
 /**
  *
- * @param   options
- * @returns {Object}
+ * @param   {Object}    options
+ * @returns {IFConfig}
  */
 function ConfigurationBuilder(options) {
     var default_config = initialize_default_config(options);
@@ -269,7 +297,6 @@ function ConfigurationBuilder(options) {
     initialize_properties_config(config, default_config, options.project_folder);
     initialize_site_config(config, default_config, options.project_folder);
     initialize_additional_site_config(config);
-    initialize_session_config(config, default_config);
     initialize_db_config(config, default_config);
 
     return config;

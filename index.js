@@ -21,8 +21,8 @@ function IFNode(options) {
         return _applications_cache[options];
     }
 
-    var app = new Application(options || {});
-    var key = app.alias || app.id;
+    var app = new Application(options);
+    var key = app.alias;
 
     if(!_default_app_key) {
         _default_app_key = key;
