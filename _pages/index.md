@@ -10,7 +10,10 @@
 
     Best MVC Framework for node.js :^)
 
-[![Build Status](https://travis-ci.org/ifnode/ifnode.svg?branch=master)](https://travis-ci.org/ifnode/ifnode) [![Known Vulnerabilities](https://snyk.io/test/github/ifnode/ifnode/badge.svg)](https://snyk.io/test/github/ifnode/ifnode) [![NSP Status](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084/badge)](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084)
+[![Build Status](https://travis-ci.org/ifnode/ifnode.svg?branch=master)](https://travis-ci.org/ifnode/ifnode)
+[![Coverage Status](https://coveralls.io/repos/github/ifnode/ifnode/badge.svg?branch=master)](https://coveralls.io/github/ifnode/ifnode?branch=master)
+[![Known Vulnerabilities](https://snyk.io/test/github/ifnode/ifnode/badge.svg)](https://snyk.io/test/github/ifnode/ifnode)
+[![NSP Status](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084/badge)](https://nodesecurity.io/orgs/ifnode/projects/b02ae270-a972-4132-a391-8299e270d084)
 
 # What is `ifnode`?
 

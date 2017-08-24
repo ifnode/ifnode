@@ -112,7 +112,7 @@ application:                # Application (and express()) settings
 
 Option | Type | Description
 :------ | :----- | :-----------
-`middleware` | Object | Definition of middleware modules external (examples: `connect-multiparty`, `cookie-parser`, etc) or own
+`middleware` | Object | Definition of middleware. Object key is name of `node_modules` or extension name, value is module's configuration
 
 More information about `ifnode` middleware read [here](/docs/app/config/middleware).
 
