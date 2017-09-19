@@ -162,12 +162,18 @@ ControllersBuilder.prototype._read_controllers = function _read_controllers(main
         list.forEach(function(file_name) {
             if(is_directory(directory_path, file_name)) {
                 regularized.directories.push(file_name);
-            } else if(FIRST_LOADED_FILE === pathWithoutExtension(Path.basename(file_name))) {
-                regularized.start = file_name;
-            } else if(LAST_LOADED_FILE === pathWithoutExtension(Path.basename(file_name))) {
-                regularized.end = file_name;
             } else {
-                regularized.files.push(file_name);
+                if(Path.extname(file_name) !== '.js') {
+                    return;
+                }
+
+                if(FIRST_LOADED_FILE === pathWithoutExtension(Path.basename(file_name))) {
+                    regularized.start = file_name;
+                } else if(LAST_LOADED_FILE === pathWithoutExtension(Path.basename(file_name))) {
+                    regularized.end = file_name;
+                } else {
+                    regularized.files.push(file_name);
+                }
             }
         });
 
