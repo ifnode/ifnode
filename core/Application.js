@@ -53,7 +53,6 @@ function Application(options) {
         IFNodeVirtualSchema
     ];
     this._models_builder = null;
-    this._components_builder = null;
     this._controllers_builder = null;
 
     this.id = UUID.v4();
@@ -63,7 +62,7 @@ function Application(options) {
 
     this.config = this._initialize_config(options.env || options.environment);
     deepFreeze(this.config);
-    
+
     this.listener = this._initialize_listener();
     this.connection = this._initialize_connection_server();
 
@@ -75,6 +74,7 @@ function Application(options) {
 
     this.models = {};
     this.components = {};
+    this._components_builder = new ComponentsBuilder(this.components, this.config.components);
     this.controllers = {};
 }
 
@@ -133,7 +133,7 @@ Application.prototype.load = function() {
     this.models = this._initialize_models();
     Object.freeze(this.models);
 
-    this.components = this._initialize_components();
+    this._initialize_components();
     // Object.freeze(this.components);
 
     this.controllers = this._initialize_controllers();
@@ -151,7 +151,7 @@ Application.prototype.load = function() {
  */
 Application.prototype.extension = function(id) {
     var cache = this._extensions_cache;
-    
+
     if(!(id in cache)) {
         var custom_folder = this.config.application.folders.extensions;
         var custom_full_path = Path.resolve(this._project_folder, custom_folder);
@@ -184,14 +184,21 @@ Application.prototype.component = function(id) {
     }
 
     var full_path = Path.resolve(this.config.application.folders.components, id);
+    var components_configs = this.config.components;
+    var components_builder = this._components_builder;
+    var component = components_builder.read_and_build_component(full_path, {
+        name: id,
+        config: (components_configs && components_configs[id]) || {}
+    });
 
-    if(!(full_path in this.components)) {
-        this.components[full_path] = this._components_builder.read_and_build_component(full_path, {
-            name: id
-        });
+    components_builder.compile(this, full_path);
+
+    if (!this.components[id]) {
+        components_builder.save_component(component, id);
+        components_builder.components_compiled[id] = true;
     }
 
-    return this.components[full_path];
+    return component;
 };
 
 /**
@@ -214,7 +221,7 @@ Application.prototype.Component = function(custom_component_config) {
     var builder = this._components_builder;
 
     return builder.make(
-        builder.build_component_config(custom_component_config, this.config.components)
+        builder.build_component_config(custom_component_config)
     );
 };
 
@@ -374,7 +381,8 @@ Application.prototype._initialize_models = function _initialize_models() {
  * @private
  */
 Application.prototype._initialize_components = function _initialize_components()  {
-    var components_builder = this._components_builder = new ComponentsBuilder;
+    var self = this;
+    var components_builder = this._components_builder;
     var Component = this.Component.bind(this);
     var modules = this._modules;
 
@@ -382,11 +390,15 @@ Application.prototype._initialize_components = function _initialize_components()
         var module = modules[i][PLUGIN_TYPES.COMPONENT];
 
         if(module) {
-            module(this, Component);
+            var component = module(this, Component);
+
+            if(component) {
+                components_builder.build_component(component, {});
+            }
+
+            components_builder.compile(this);
         }
     }
-
-    var components_config = this.config.components;
 
     Diread({
         src: this.config.application.folders.components,
@@ -402,8 +414,9 @@ Application.prototype._initialize_components = function _initialize_components()
         try {
             components_builder.read_and_build_component(
                 component_path,
-                components_builder.build_component_config({}, components_config)
+                components_builder.build_component_config()
             );
+            components_builder.compile(self, component_path);
         } catch(error) {
             /**
              * Errors inside component will not catch by this handle
@@ -418,8 +431,6 @@ Application.prototype._initialize_components = function _initialize_components()
             }
         }
     });
-
-    return components_builder.compile(this);
 };
 
 /**

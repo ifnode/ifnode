@@ -11,25 +11,30 @@ var Component = require('./../Component');
 /**
  *
  * @class ComponentsBuilder
+ *
+ * @param {Object}  components
+ * @param {Object}  [components_configs]
  */
-function ComponentsBuilder() {
+function ComponentsBuilder(components, components_configs) {
     /**
      *
      * @type {Object.<string, Component>}
      */
-    this.components = {};
+    this.components = components;
+    this.components_compiled = {};
+
+    this._components_configs = components_configs || {};
     this._autoformed_config = null;
 }
 
 /**
  *
- * @param   {Object}    custom_config
- * @param   {Object}    [components_configs]
+ * @param   {Object}    [custom_config]
  * @returns {Object}
  */
-ComponentsBuilder.prototype.build_component_config = function build_component_config(custom_config, components_configs) {
+ComponentsBuilder.prototype.build_component_config = function build_component_config(custom_config) {
     custom_config = _defaults(custom_config || {}, this._autoformed_config);
-    custom_config.config = (components_configs && components_configs[custom_config.name]) || {};
+    custom_config.config = (this._components_configs[custom_config.name]) || {};
 
     return custom_config;
 };
@@ -49,14 +54,22 @@ ComponentsBuilder.prototype.build_and_memorize_config = function build_and_memor
     return this._autoformed_config;
 };
 
+
 /**
  *
  * @param {string}  component_path
  * @param {Object}  component_config
  */
 ComponentsBuilder.prototype.read_and_build_component = function read_and_build_component(component_path, component_config) {
-    var component = require(component_path);
+    return this.build_component(require(component_path), component_config);
+};
 
+/**
+ *
+ * @param {*}       component
+ * @param {Object}  component_config
+ */
+ComponentsBuilder.prototype.build_component = function build_component(component, component_config) {
     if(typeof component === 'function' && isInheritsFrom(component, Component)) {
         var component_name = component_config.name;
         var saved_component = this.components[component_name];
@@ -69,11 +82,13 @@ ComponentsBuilder.prototype.read_and_build_component = function read_and_build_c
             return saved_component;
         }
 
-        component = new component(component_config);
+        component_config.name = component_config.name || component.name;
+
+        component = new component(_defaults(component_config, this._components_configs[component_config.name]));
     }
 
     return component instanceof Component ?
-        this._save_component(component, component.name) :
+        this.save_component(component, component.name) :
         component;
 };
 
@@ -83,32 +98,41 @@ ComponentsBuilder.prototype.read_and_build_component = function read_and_build_c
  * @returns {Component}
  */
 ComponentsBuilder.prototype.make = function make(component_config) {
-    return this._save_component(new Component(component_config), component_config.name);
+    return this.save_component(new Component(component_config), component_config.name);
 };
 
 /**
  *
  * @param   {Application}   app
+ * @param   {string}        [component_path]
  * @returns {Object.<string, Component>}
  */
-ComponentsBuilder.prototype.compile = function compile(app) {
+ComponentsBuilder.prototype.compile = function compile(app, component_path) {
     var self = this;
     var components = this.components;
+    var components_compiled = this.components_compiled;
 
     Object.keys(components).forEach(function(unique_name) {
+        if (components_compiled[unique_name]) {
+            return;
+        }
+
         if(unique_name in app) {
             Log.error('application', 'Alias [' + unique_name + '] already busy in application instance.');
         }
 
         var component = components[unique_name];
-        app[unique_name] = component;
 
         if(component.initialize) {
             component.initialize(component.config);
         }
 
+        components_compiled[unique_name] = true;
+        app[unique_name] = component;
+
         component.alias.forEach(function(alias) {
-            self._save_component(component, alias);
+            self.save_component(component, alias);
+            components_compiled[alias] = true;
 
             if(alias in app) {
                 Log.error('application', 'Alias [' + alias + '] already busy in application instance.');
@@ -116,6 +140,11 @@ ComponentsBuilder.prototype.compile = function compile(app) {
 
             app[alias] = component;
         });
+
+        if(component_path) {
+            self.save_component(component, component_path);
+            components_compiled[component_path] = true;
+        }
     });
 
     return components;
@@ -123,12 +152,11 @@ ComponentsBuilder.prototype.compile = function compile(app) {
 
 /**
  *
- * @private
  * @param   {Component} component
  * @param   {string}    key
  * @returns {Component}
  */
-ComponentsBuilder.prototype._save_component = function(component, key) {
+ComponentsBuilder.prototype.save_component = function(component, key) {
     var saved_component = this.components[key];
 
     if(!saved_component) {
