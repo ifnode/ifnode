@@ -19,9 +19,9 @@
     "author": "Ilya Frolov <ilfroloff@gmail.com>",
     "license": "MIT",
     "dependencies": {
-        "debug": "3.0.0",
+        "debug": "3.1.0",
         "diread": "0.2.0",
-        "express": "4.15.4",
+        "express": "4.16.1",
         "lodash": "4.17.4",
         "uuid": "3.1.0"
     },
@@ -35,6 +35,9 @@
         "serve-static": "1.12.4",
         "setprototypeof": "1.0.3",
         "should": "11.2.1",
-        "supertest": "3.0.0"
+        "supertest": "2.0.1"
+    },
+    "engines": {
+        "node": ">=0.10.0"
     }
 }
