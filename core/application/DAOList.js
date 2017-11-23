@@ -64,7 +64,11 @@ DAOList.prototype._initialize_schemas = function _initialize_schemas(db) {
         }
 
         if(schema_driver.driver) {
-            var driver = schema_driver.driver(db_config.config);
+            var config = db_config.config;
+            var driver = schema_driver.driver(typeof config === 'function' ?
+                config.bind(db_config) :
+                config
+            );
 
             if(driver) {
                 schema_driver.fn._driver = driver;
