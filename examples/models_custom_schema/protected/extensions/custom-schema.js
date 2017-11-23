@@ -2,7 +2,8 @@ var SCHEMA = require('./../../../../core/PLUGIN_TYPES').SCHEMA;
 
 module.exports[SCHEMA] = function(app, CustomSchema) {
     CustomSchema.schema = 'custom-schema';
-    CustomSchema.driver = function driver() {
+    CustomSchema.driver = function driver(config) {
+        config();
         return {};
     };
 
