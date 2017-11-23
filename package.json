@@ -1,6 +1,6 @@
 {
     "name": "ifnode",
-    "version": "1.7.2",
+    "version": "1.7.3",
     "description": "Node.js MVC Framework",
     "main": "index.js",
     "scripts": {
