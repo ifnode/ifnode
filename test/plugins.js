@@ -8,7 +8,8 @@ var IFNode = require('..');
 
 var app = IFNode({
     project_folder: Path.resolve(__dirname, '../examples/plugins'),
-    alias: 'plugins'
+    alias: 'plugins',
+    environment: 'plugins'
 });
 
 app.register([
@@ -46,5 +47,10 @@ describe('Plugins', function() {
             app.component('ApplicationComponent').get_plugin_component(),
             app.component('PluginComponent')
         );
+    });
+
+    it('should has correct configurations for plugins', function() {
+        Should.deepEqual(app.component('PluginComponent').config, app.config.components.PluginComponent);
+        Should.deepEqual(app.component('PluginClassComponent').config, app.config.components.PluginClassComponent);
     });
 });

@@ -83,8 +83,12 @@ ComponentsBuilder.prototype.build_component = function build_component(component
         }
 
         component_config.name = component_config.name || component.name;
+        component_config.config = _defaults(
+            component_config.config || {},
+            (this._components_configs[component_config.name])
+        );
 
-        component = new component(_defaults(component_config, this._components_configs[component_config.name]));
+        component = new component(component_config);
     }
 
     return component instanceof Component ?
