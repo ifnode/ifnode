@@ -33,7 +33,6 @@
         "istanbul": "0.4.5",
         "mocha": "3.5.0",
         "serve-static": "1.12.4",
-        "setprototypeof": "1.0.3",
         "should": "11.2.1",
         "supertest": "2.0.1"
     },
