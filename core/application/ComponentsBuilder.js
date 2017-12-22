@@ -2,7 +2,6 @@
 
 var _defaults = require('lodash/defaults');
 var Path = require('path');
-var isInheritsFrom = require('./../helper/isInheritsFrom');
 var pathWithoutExtension = require('./../helper/pathWithoutExtension');
 
 var Log = require('./../Log');
@@ -70,7 +69,7 @@ ComponentsBuilder.prototype.read_and_build_component = function read_and_build_c
  * @param {Object}  component_config
  */
 ComponentsBuilder.prototype.build_component = function build_component(component, component_config) {
-    if(typeof component === 'function' && isInheritsFrom(component, Component)) {
+    if(typeof component === 'function' && Component.isInheritsFrom(component)) {
         var component_name = component_config.name;
         var saved_component = this.components[component_name];
 
@@ -91,14 +90,14 @@ ComponentsBuilder.prototype.build_component = function build_component(component
         component = new component(component_config);
     }
 
-    return component instanceof Component ?
+    return Component.isInstanceOf(component) ?
         this.save_component(component, component.name) :
         component;
 };
 
 /**
  *
- * @param   {Object}    component_config
+ * @param   {ComponentOptions}  component_config
  * @returns {Component}
  */
 ComponentsBuilder.prototype.make = function make(component_config) {

@@ -15,6 +15,8 @@ var app = IFNode({
 app.register([
     'internal-component',
     'internal-component-class',
+    'internal-another-ifnode-component-class',
+    'internal-another-ifnode-component-es6-class',
     'defined-controller-plugin'
 ]);
 app.load();
@@ -39,6 +41,19 @@ describe('Plugins', function() {
             app.component('PluginClassComponent') === app.plugin_class_component &&
             app.PluginClassComponent === app.component('plugin_class_component') &&
             app.plugin_class_component === app.component('PluginClassComponent')
+        );
+    });
+
+    it('should has loaded plugin another ifnode class component', function() {
+        Should.ok(
+            app.component('PluginClassAnotherIFNodeComponent') === app.plugin_class_another_ifnode_component &&
+            app.PluginClassAnotherIFNodeComponent === app.component('plugin_class_another_ifnode_component') &&
+            app.plugin_class_another_ifnode_component === app.component('PluginClassAnotherIFNodeComponent')
+        );
+        Should.ok(
+            app.component('PluginES6ClassAnotherIFNodeComponent') === app.plugin_es6_class_another_ifnode_component &&
+            app.PluginES6ClassAnotherIFNodeComponent === app.component('plugin_es6_class_another_ifnode_component') &&
+            app.plugin_es6_class_another_ifnode_component === app.component('PluginES6ClassAnotherIFNodeComponent')
         );
     });
 

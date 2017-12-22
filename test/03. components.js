@@ -22,6 +22,7 @@ describe('Components', function() {
             app.component('component-in-folder').should.be.a.String();
 
             app.component('ClassES5').should.be.a.Function();
+            app.component('ClassES5DoubleInherits').should.be.a.Function();
             app.component('ClassES5Component').should.be.not.a.Function();
         });
 
@@ -103,6 +104,11 @@ describe('Components', function() {
                 Should.equal(ClassES5.getName(), 'ClassES5');
 
                 Should.equal((new ClassES5).plain(), 'ClassES5#plain');
+
+                var ClassES5DoubleInherits = app.component('ClassES5DoubleInherits');
+
+                Should.equal((new ClassES5DoubleInherits).plain(), 'ClassES5#plain');
+                Should.equal((new ClassES5DoubleInherits).plain2(), 'ClassES5DoubleInherits#plain');
             });
 
             it('should attach component from class', function() {
