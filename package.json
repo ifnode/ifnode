@@ -28,6 +28,7 @@
     "devDependencies": {
         "body-parser": "1.17.2",
         "coveralls": "2.13.1",
+        "es6-promise": "4.2.4",
         "eslint": "4.5.0",
         "eslint-plugin-require-jsdoc": "1.0.4",
         "istanbul": "0.4.5",

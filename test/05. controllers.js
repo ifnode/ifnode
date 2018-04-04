@@ -346,4 +346,40 @@ describe('Controllers', function() {
                 .expect(500, done);
         })
     });
+
+    describe('Controller with promised handlers', function() {
+        /**
+         *
+         * @type {Application}
+         */
+        var app = IFNode({
+            project_folder: Path.resolve(__dirname, '../examples/controllers'),
+            alias: 'controllers-with-promised-handlers',
+            environment: 'controllers-with-promised-handlers'
+        }).load();
+
+        it('should return "resolved" with 200 status (non-promise is returned from handler)', function(done) {
+            SuperTest(app.listener)
+                .get('/with-promised-handlers/resolved-with-returning-non-promise')
+                .expect(200, 'resolved', done);
+        });
+
+        it('should return "resolved" with 200 status (promise is returned from handler)', function(done) {
+            SuperTest(app.listener)
+                .get('/with-promised-handlers/resolved-with-returning-promise')
+                .expect(200, 'resolved', done);
+        });
+
+        it('should return "rejected" with 500 status', function(done) {
+            SuperTest(app.listener)
+                .get('/with-promised-handlers/rejected-caught-by-handler')
+                .expect(500, 'rejected', done);
+        });
+
+        it('should return "default-error:rejected" with 500 status by common controller\'s handler', function(done) {
+            SuperTest(app.listener)
+                .get('/with-promised-handlers/rejected-caught-by-ifnode')
+                .expect(500, 'default-error-handler:rejected', done);
+        });
+    });
 });

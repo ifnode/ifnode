@@ -401,8 +401,17 @@ Controller.prototype._generate_url = function(method) {
 
     this.router[method](url, function(request, response, next_route) {
         eachSeries(callbacks, function(callback, next_callback, interrupt) {
+            /**
+             *
+             * @param {*|Error} error
+             */
+            function unexpected_error_handler(error) {
+                interrupt();
+                next_route(error);
+            }
+
             try {
-                callback(
+                var result = callback(
                     request,
                     response,
                     /**
@@ -419,9 +428,23 @@ Controller.prototype._generate_url = function(method) {
                     },
                     next_route
                 );
-            } catch(err) {
-                interrupt();
-                next_route(err);
+
+                if(result) {
+                    var Class = result.constructor;
+
+                    /**
+                     * Rough detection of Promise's instance
+                     *
+                     * @type {boolean}
+                     */
+                    var is_promise = !!(Class.all && Class.race && result.then && result.catch);
+
+                    if(is_promise) {
+                        result.catch(unexpected_error_handler);
+                    }
+                }
+            } catch(error) {
+                unexpected_error_handler(error);
             }
         }, next_route);
     });
