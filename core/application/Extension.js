@@ -1,6 +1,7 @@
 'use strict';
 
 var Path = require('path');
+var requireWithSkippingOfMissedModuleError = require('./../helper/requireWithSkippingOfMissedModuleError');
 var Log = require('./../Log');
 
 /**
@@ -20,16 +21,13 @@ function Extension(start_load_point) {
  */
 Extension.prototype.require = function(id) {
     var extension_path = Path.resolve(this._start_load_point, id);
+    var extension = requireWithSkippingOfMissedModuleError(extension_path);
 
-    try {
-        return require(extension_path);
-    } catch(error) {
-        if(error.message.indexOf(extension_path) === -1) {
-            throw error;
-        } else {
-            Log.error('extensions', 'Cannot find extension by [' + id + '].');
-        }
+    if(!extension) {
+        Log.error('extensions', 'Cannot find extension by [' + id + '].');
     }
+
+    return extension;
 };
 
 module.exports = Extension;

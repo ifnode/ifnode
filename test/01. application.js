@@ -1,5 +1,6 @@
 'use strict';
 
+var assert = require('assert');
 var Path = require('path');
 var Should = require('should');
 var IFNode = require('../');
@@ -95,9 +96,21 @@ describe('Application', function() {
         it('shouldn\'t load non-exists plugin', function() {
             var app = IFNode();
 
-            (function() {
+            try {
                 app.register('non-exists-plugin');
-            }).should.throw();
+            } catch (error) {
+                assert.ok(/Cannot\sfind\snode\smodule\sor\sextension/.test(error.message));
+            }
+        });
+
+        it('should throw original error', function() {
+            var app = require('../examples/extensions/app');
+
+            try {
+                app.register('with-syntax-error');
+            } catch (error) {
+                assert.ok(error instanceof SyntaxError);
+            }
         });
 
         it('load by extension name', function(done) {
