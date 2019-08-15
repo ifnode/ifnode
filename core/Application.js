@@ -9,7 +9,7 @@ var Diread = require('diread');
 var toArray = require('./helper/toArray');
 var deepFreeze = require('./helper/deepFreeze');
 var pathWithoutExtension = require('./helper/pathWithoutExtension');
-var tryCatch = require('./helper/tryCatch');
+var requireWithSkippingOfMissedModuleError = require('./helper/requireWithSkippingOfMissedModuleError');
 
 var debug = require('debug')('ifnode:application'); // eslint-disable-line
 var Log = require('./Log');
@@ -465,9 +465,7 @@ Application.prototype._initialize_controllers = function _initialize_controllers
 Application.prototype._require_module = function(module_name) {
     var Module;
 
-    Module = tryCatch(function() {
-        return require(module_name);
-    });
+    Module = requireWithSkippingOfMissedModuleError(module_name);
 
     if(Module) {
         return Module;
@@ -475,9 +473,13 @@ Application.prototype._require_module = function(module_name) {
 
     var self = this;
 
-    Module = tryCatch(function() {
-        return self.extension(module_name);
-    });
+    try {
+        Module = this.extension(module_name);
+    } catch (error) {
+        if (!/Cannot\sfind\sextension/.test(error.message)) {
+            throw error;
+        }
+    }
 
     if(Module) {
         return Module;
