@@ -1,3 +1,10 @@
+/**
+ *
+ * @class
+ */
+function SomeClass() {
+}
+
 module.exports = {
     site: {
         local: {
@@ -23,5 +30,10 @@ module.exports = {
             'testable-middleware': function() {
             }
         }
+    },
+
+    some: {
+        function: SomeClass,
+        instance: new SomeClass
     }
 };

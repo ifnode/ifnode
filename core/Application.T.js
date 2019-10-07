@@ -1,8 +1,10 @@
 /**
  * @typedef {Object} ApplicationOptions
  *
- * @property {string}   [app_config.alias]
- * @property {string}   [app_config.project_folder]
- * @property {string}   [app_config.projectFolder]
- * @property {string}   [app_config.environment]
+ * @property {string}           [alias]
+ * @property {string}           [project_folder]
+ * @property {string}           [projectFolder]
+ * @property {string}           [env]
+ * @property {string}           [environment]
+ * @property {object|string}    [configuration]
  */
