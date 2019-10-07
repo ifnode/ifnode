@@ -6,6 +6,7 @@ var _includes = require('lodash/includes');
 
 // var debug = require('debug')('ifnode:config');
 var path = require('path');
+var _cloneDeepPrimitives = require('./helper/cloneDeepPrimitives');
 
 /**
  *
@@ -286,13 +287,12 @@ function initialize_default_config(options) {
 function ConfigurationBuilder(options) {
     var default_config = initialize_default_config(options);
 
-    if(!options.config_path) {
+    if(!options.custom_configuration) {
         initialize_additional_site_config(default_config);
         return default_config;
     }
 
-    var config = require(options.config_path);
-    // var config = Object.create(ConfigPrototype);
+    var config = _cloneDeepPrimitives(options.custom_configuration);
 
     initialize_properties_config(config, default_config, options.project_folder);
     initialize_site_config(config, default_config, options.project_folder);

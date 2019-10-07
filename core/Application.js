@@ -60,7 +60,7 @@ function Application(options) {
     this.project_folder = this.projectFolder = this._project_folder;
     this.backend_folder = this.backendFolder = this._backend_folder;
 
-    this.config = this._initialize_config(options.env || options.environment);
+    this.config = this._initialize_config(options);
     deepFreeze(this.config);
 
     this.listener = this._initialize_listener();
@@ -270,21 +270,26 @@ Application.prototype.down = Util.deprecate(function(callback) {
 /**
  * Initialize application instance configuration
  *
- * @param {string}  environment
  * @private
+ * @param {ApplicationOptions}  options
  */
-Application.prototype._initialize_config = function(environment) {
-    var config_path;
+Application.prototype._initialize_config = function(options) {
+    var environment = options.env || options.environment;
+    var configuration = options.configuration;
+    var custom_configuration = null;
 
     if(environment) {
-        config_path = Path.resolve(this._project_folder, 'config/', environment);
+        custom_configuration = require(Path.resolve(this._project_folder, 'config/', environment));
+    } else if (configuration) {
+        custom_configuration = typeof configuration === 'string' ?
+            require(Path.resolve(this._project_folder, configuration)) :
+            configuration;
     }
 
     return ConfigurationBuilder({
-        environment: environment,
         project_folder: this._project_folder,
         backend_folder: this._backend_folder,
-        config_path: config_path
+        custom_configuration: custom_configuration
     });
 };
 
