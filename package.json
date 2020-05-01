@@ -1,43 +1,47 @@
 {
-    "name": "ifnode",
-    "version": "1.10.0",
-    "description": "Node.js MVC Framework",
-    "main": "index.js",
-    "scripts": {
-        "test": "mocha --check-leaks",
-        "test:coverage-report-full": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --check-leaks",
-        "test:coverage-report-lcovonly": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --check-leaks"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/ilfroloff/ifnode.git"
-    },
-    "keywords": [
-        "mvc",
-        "framework"
-    ],
-    "author": "Ilya Frolov <ilfroloff@gmail.com>",
-    "license": "MIT",
-    "dependencies": {
-        "debug": "3.1.0",
-        "diread": "0.2.0",
-        "express": "4.16.1",
-        "lodash": "4.17.4",
-        "uuid": "3.1.0"
-    },
-    "devDependencies": {
-        "body-parser": "1.17.2",
-        "coveralls": "2.13.1",
-        "es6-promise": "4.2.4",
-        "eslint": "4.5.0",
-        "eslint-plugin-require-jsdoc": "1.0.4",
-        "istanbul": "0.4.5",
-        "mocha": "3.5.0",
-        "serve-static": "1.12.4",
-        "should": "11.2.1",
-        "supertest": "2.0.1"
-    },
-    "engines": {
-        "node": ">=0.10.0"
-    }
+  "name": "ifnode",
+  "version": "1.10.0",
+  "description": "Node.js MVC Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --check-leaks",
+    "test:coverage-report-full": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --check-leaks",
+    "test:coverage-report-lcovonly": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --check-leaks",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ilfroloff/ifnode.git"
+  },
+  "keywords": [
+    "mvc",
+    "framework"
+  ],
+  "author": "Ilya Frolov <ilfroloff@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "3.1.0",
+    "diread": "0.2.0",
+    "express": "4.16.1",
+    "lodash": "4.17.4",
+    "uuid": "3.1.0",
+    "snyk": "^1.316.2"
+  },
+  "devDependencies": {
+    "body-parser": "1.17.2",
+    "coveralls": "2.13.1",
+    "es6-promise": "4.2.4",
+    "eslint": "4.5.0",
+    "eslint-plugin-require-jsdoc": "1.0.4",
+    "istanbul": "0.4.5",
+    "mocha": "3.5.0",
+    "serve-static": "1.12.4",
+    "should": "11.2.1",
+    "supertest": "2.0.1"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "snyk": true
 }
