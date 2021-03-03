@@ -1,5 +1,6 @@
 'use strict';
 
+var _defaults = require('lodash/defaults');
 var Path = require('path');
 var Util = require('util');
 var Express = require('express');
@@ -125,19 +126,40 @@ Application.prototype.register = function(module) {
 };
 
 /**
+ * @typedef {Object} ModuleLoadOptions
+ *
+ * @property {RegExp}   exclude
+ */
+
+/**
+ * @typedef {Object} ApplicationLoadOptions
+ *
+ * @property {boolean|ModuleLoadOptions}    [controllers]
+ */
+
+/**
  * Loads all maintenance parts of application
  *
+ * @param   {ApplicationLoadOptions}    [options]
  * @returns {Application}
  */
-Application.prototype.load = function() {
+Application.prototype.load = function(options) {
+    options = _defaults(options, {
+        controllers: true
+    });
+
     this.models = this._initialize_models();
     Object.freeze(this.models);
 
     this._initialize_components();
     // Object.freeze(this.components);
 
-    this.controllers = this._initialize_controllers();
-    Object.freeze(this.controllers);
+    if(options.controllers) {
+        this.controllers = options.controllers === true?
+            this._initialize_controllers() :
+            this._initialize_controllers(options.controllers);
+        Object.freeze(this.controllers);
+    }
 
     this._is_loaded = true;
 
@@ -441,9 +463,10 @@ Application.prototype._initialize_components = function _initialize_components()
 /**
  *
  * @private
+ * @param {ModuleLoadOptions}   [options]
  */
-Application.prototype._initialize_controllers = function _initialize_controllers() {
-    var controllers_builder = this._controllers_builder = new ControllersBuilder();
+Application.prototype._initialize_controllers = function _initialize_controllers(options) {
+    var controllers_builder = this._controllers_builder = new ControllersBuilder(options);
     var modules = this._modules;
 
     for(var i = 0; i < modules.length; ++i) {
