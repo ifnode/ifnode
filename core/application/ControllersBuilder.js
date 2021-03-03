@@ -26,10 +26,14 @@ function is_directory(root_path, rest_path) {
 /**
  *
  * @class ControllersBuilder
+ * @param {ModuleLoadOptions}   [options]
  */
-function ControllersBuilder() {
+function ControllersBuilder(options) {
     this._controllers = {};
     this._autoformed_config = null;
+    this._options = _defaults(options, {
+        exclude: null
+    });
 }
 
 ControllersBuilder.FIRST_LOADED_FILE = '!';
@@ -139,6 +143,7 @@ ControllersBuilder.prototype._read_controllers = function _read_controllers(main
     var Class = this.constructor;
     var FIRST_LOADED_FILE = Class.FIRST_LOADED_FILE;
     var LAST_LOADED_FILE = Class.LAST_LOADED_FILE;
+    var self = this;
 
     /**
      *
@@ -187,6 +192,10 @@ ControllersBuilder.prototype._read_controllers = function _read_controllers(main
      * @param {function}    finder
      */
     function read_file(root_path, full_file_path, finder) {
+        if(self._options.exclude && self._options.exclude.test(full_file_path)) {
+            return;
+        }
+
         finder(full_file_path, full_file_path.replace(root_path, ''));
     }
 

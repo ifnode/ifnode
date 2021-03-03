@@ -43,6 +43,32 @@ describe('Controllers', function() {
 
             Should.exist(app.controllers.from_custom_folder);
         });
+
+        it('should disable controllers loading', function() {
+            var app = IFNode({
+                project_folder: Path.resolve(__dirname, '../examples/controllers'),
+                alias: 'controllers-not-loaded',
+                environment: 'controllers-partial'
+            }).load({
+                controllers: false
+            });
+
+            app.controllers.should.be.empty();
+        });
+
+        it('should load controllers partially', function() {
+            var app = IFNode({
+                project_folder: Path.resolve(__dirname, '../examples/controllers'),
+                alias: 'controllers-partial-loading',
+                environment: 'controllers-partial'
+            }).load({
+                controllers: {
+                    exclude: /api\/v1\/skip/
+                }
+            });
+
+            Should.not.exist(app.controllers['api/v1/skip']);
+        });
     });
 
     describe('app.Controller(options?: Object)', function() {
