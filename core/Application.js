@@ -128,7 +128,8 @@ Application.prototype.register = function(module) {
 /**
  * @typedef {Object} ModuleLoadOptions
  *
- * @property {RegExp}   exclude
+ * @property {RegExp}   [include]
+ * @property {RegExp}   [exclude]
  */
 
 /**

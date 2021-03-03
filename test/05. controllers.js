@@ -56,7 +56,7 @@ describe('Controllers', function() {
             app.controllers.should.be.empty();
         });
 
-        it('should load controllers partially', function() {
+        it('should load controllers partially (exclude)', function() {
             var app = IFNode({
                 project_folder: Path.resolve(__dirname, '../examples/controllers'),
                 alias: 'controllers-partial-loading',
@@ -64,6 +64,20 @@ describe('Controllers', function() {
             }).load({
                 controllers: {
                     exclude: /api\/v1\/skip/
+                }
+            });
+
+            Should.not.exist(app.controllers['api/v1/skip']);
+        });
+
+        it('should load controllers partially (include)', function() {
+            var app = IFNode({
+                project_folder: Path.resolve(__dirname, '../examples/controllers'),
+                alias: 'controllers-partial-loading',
+                environment: 'controllers-partial'
+            }).load({
+                controllers: {
+                    include: /api\/v1\/user/
                 }
             });
 

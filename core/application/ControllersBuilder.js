@@ -32,6 +32,7 @@ function ControllersBuilder(options) {
     this._controllers = {};
     this._autoformed_config = null;
     this._options = _defaults(options, {
+        include: null,
         exclude: null
     });
 }
@@ -192,7 +193,10 @@ ControllersBuilder.prototype._read_controllers = function _read_controllers(main
      * @param {function}    finder
      */
     function read_file(root_path, full_file_path, finder) {
-        if(self._options.exclude && self._options.exclude.test(full_file_path)) {
+        if(
+            self._options.include && !self._options.include.test(full_file_path) ||
+            self._options.exclude && self._options.exclude.test(full_file_path)
+        ) {
             return;
         }
 
