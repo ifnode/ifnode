@@ -4,6 +4,8 @@
 **/*.DS_store
 
 coverage/
+examples/
+test/
 
 ideas
 manual.txt
