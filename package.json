@@ -18,5 +18,8 @@
         "marked": "0.3.6",
         "mkpath": "1.0.0",
         "prismjs": "1.6.0"
+    },
+    "settings": {
+        "GA_TRACKING_ID": "UA-58324359-1"
     }
 }
