@@ -3,6 +3,7 @@
 var assert = require('assert');
 var Path = require('path');
 var Should = require('should');
+var Component = require("../core/Component");
 var IFNode = require('../');
 
 describe('Application', function() {
@@ -182,6 +183,52 @@ describe('Application', function() {
             modules.should.containEql(require(external_mixed_module_path));
         });
     });
+
+    describe('app.inject(instance)', function() {
+        it('should inject component by id', function() {
+            var app = IFNode({
+                project_folder: Path.resolve(__dirname, '../examples/components'),
+            }).load();
+
+            app.inject('first').should.be.an.Object();
+        });
+
+        it('should inject component by class', function(done) {
+            function Simple(options) {
+                Component.call(this, options);
+            }
+
+            function WithConfig(options, injected_app) {
+                Component.call(this, options);
+                Should.deepEqual(this.config, {
+                    passed: 'options'
+                });
+                Should.equal(injected_app, app);
+            }
+
+            WithConfig.prototype.finish_test = function() {
+                done();
+            }
+
+            var app = IFNode({
+                configuration: {
+                    components: {
+                        WithConfig: {
+                            passed: 'options'
+                        }
+                    }
+                }
+            }).load();
+
+            var component = app.inject(Simple);
+
+            Should.equal(component.name, 'Simple');
+            Should.equal(app.inject(Simple), component);
+
+            component = app.inject(WithConfig)
+            component.finish_test();
+        })
+    })
 
     describe('app.load()', function() {
         var app = IFNode({

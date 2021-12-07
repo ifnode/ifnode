@@ -198,8 +198,38 @@ Application.prototype.ext = Util.deprecate(
 
 /**
  *
+ * @template T
+ * @param   {string|Function}   instance
+ * @returns {T}
+ */
+Application.prototype.inject = function(instance) {
+    if (typeof instance === 'string') {
+        return this.component(instance);
+    } else {
+        var name = instance.name;
+
+        if(name in this.components) {
+            return this.components[name];
+        }
+
+        var components_configs = this.config.components;
+        var component = new instance({
+            name: name,
+            config: (components_configs && components_configs[name]) || {}
+        }, this);
+
+        var components_builder = this._components_builder;
+        components_builder.save_component(component, name);
+        components_builder.components_compiled[name] = true;
+
+        return component;
+    }
+}
+
+/**
+ *
  * @param   {string}    id
- * @returns {Object}
+ * @returns {Component}
  */
 Application.prototype.component = function(id) {
     if(id in this.components) {
