@@ -21,7 +21,7 @@
     "dependencies": {
         "debug": "3.2.7",
         "diread": "0.2.0",
-        "express": "4.17.1",
+        "express": "4.19.2",
         "lodash": "4.17.21",
         "uuid": "3.4.0"
     },
