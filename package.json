@@ -1,6 +1,6 @@
 {
     "name": "ifnode-docs",
-    "version": "1.8.0",
+    "version": "1.12.0",
     "scripts": {
         "static": "DEBUG=ifnode:* node app.js",
         "pages:index": "node _bundlers/index",
@@ -20,6 +20,6 @@
         "prismjs": "1.6.0"
     },
     "settings": {
-        "GA_TRACKING_ID": "UA-58324359-1"
+        "UMAMI_WEBSITE_ID": "04c85e3f-ed3f-421a-a6b3-acfb625c3d0a"
     }
 }
